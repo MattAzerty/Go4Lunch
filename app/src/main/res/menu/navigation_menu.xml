@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--items for navigation controler-->
     <item
         android:id="@+id/nav_menu_item_mapview"
         android:icon="@drawable/ic_f1_mapview_white_24dp"
-        android:tint="@color/primary"
         android:title="@string/fragment_1"/>
 
     <item
         android:id="@+id/nav_menu_item_listview"
         android:icon="@drawable/ic_f2_listview_white_24dp"
-        android:tint="@color/primary"
         android:title="@string/fragment_2"/>
 
     <item
         android:id="@+id/nav_menu_item_workmates"
         android:icon="@drawable/ic_f3_workmates_white_24dp"
-        android:tint="@color/primary"
         android:title="@string/fragment_3"/>
 </menu>

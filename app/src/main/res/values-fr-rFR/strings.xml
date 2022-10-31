@@ -4,4 +4,8 @@
     <string name="fragment_1">Carte</string>
     <string name="fragment_2">Restos</string>
     <string name="fragment_3">Collègues</string>
+    <string name="drawer_item_yourlunch">MON RESTO</string>
+    <string name="drawer_item_settings">PARAMETRES</string>
+    <string name="drawer_item_logout">DECONNEXION</string>
+    <string name="account">Mon compte:</string>
 </resources>

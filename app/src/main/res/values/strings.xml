@@ -3,6 +3,10 @@
     <string name="fragment_1">Map View</string>
     <string name="fragment_2">List View</string>
     <string name="fragment_3">Workmates</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drawer_item_yourlunch">YOUR LUNCH</string>
+    <string name="drawer_item_settings">SETTINGS</string>
+    <string name="drawer_item_logout">LOGOUT</string>
+    <string name="account">My account:</string>
+    <string name="username" translatable="false">Jean BINOT</string>
+    <string name="mail" translatable="false">jbinot@email.com</string>
 </resources>
