@@ -6,11 +6,6 @@
     <solid
         android:color="@color/primaryDark"/>
 
-    <stroke
-        android:width="4dp"
-        android:color="#000000" >
-    </stroke>
-
     <size
         android:width="120dp"
         android:height="120dp"/>

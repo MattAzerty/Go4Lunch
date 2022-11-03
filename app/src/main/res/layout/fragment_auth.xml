@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary"
+    android:theme="@style/ThemeOverlay.Go4Lunch.FullscreenContainer"
+    tools:context=".ui.Authentication.AuthFragment">
+
+    <!-- IMAGE VIEW AUTH -->
+    <ImageView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="290dp"
+        android:layout_height="250dp"
+        android:layout_gravity="top|center"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/ic_logo_24dp"/>
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+            <!-- BUTTON LOGIN -->
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:textColor="#fff"
+                android:textSize="@dimen/default_title_size"
+                android:background="@drawable/shape_button_radius"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_margin="@dimen/default_large_margin"
+                android:padding="@dimen/default_large_margin"/>
+
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>

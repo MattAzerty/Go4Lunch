@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingBottom="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        android:padding="4dp"
+        android:backgroundTint="@color/primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/workmate_item_username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginHorizontal="8dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@id/workmate_item_avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Jean BINOT" />
+            <TextView
+                android:id="@+id/workmate_item_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/workmate_item_username"
+                app:layout_constraintStart_toStartOf="@id/workmate_item_username"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="jbinot@email.com" />
+            <TextView
+                android:id="@+id/workmate_item_mainfield"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:paddingRight="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#99000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Mange au McDo" />
+
+            <ImageView
+                android:id="@+id/workmate_item_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:padding="8dp"
+                android:elevation="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <ImageView
+                android:id="@+id/workmate_item_avatar_border"
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:backgroundTint="@color/white"
+                android:background="@drawable/shape_circle_profile_header"
+                app:layout_constraintStart_toStartOf="@+id/workmate_item_avatar"
+                app:layout_constraintEnd_toEndOf="@+id/workmate_item_avatar"
+                app:layout_constraintTop_toTopOf="@+id/workmate_item_avatar"
+                app:layout_constraintBottom_toBottomOf="@+id/workmate_item_avatar"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

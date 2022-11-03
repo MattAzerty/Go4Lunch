@@ -1,12 +1,29 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
+
+    <!-- MAIN ACTIVITY -->
     <string name="fragment_1">Map View</string>
     <string name="fragment_2">List View</string>
     <string name="fragment_3">Workmates</string>
+    <string name="error_not_connected">Vous devez vous connecter !</string>
+    <string name="error_authentication_canceled">Authentification annulée&#8230;</string>
+    <string name="error_no_internet">Aucune connexion internet !</string>
+    <string name="error_unknown_error">Une erreur inconnue s\'est produite&#8230;</string>
+    <string name="connection_succeed">Authentification réussie !</string>
+    <string name="login">LOGIN</string>
+
+    <!-- DRAWER -->
     <string name="drawer_item_yourlunch">YOUR LUNCH</string>
     <string name="drawer_item_settings">SETTINGS</string>
     <string name="drawer_item_logout">LOGOUT</string>
     <string name="account">My account:</string>
     <string name="username" translatable="false">Jean BINOT</string>
     <string name="mail" translatable="false">jbinot@email.com</string>
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">3016277252002678</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb3016277252002678</string>
+
+    <string name="twitter_consumer_key" translatable="false">Q3FNUU1NYlF3RlNXNmthVUZHdTg6MTpjaQ</string>
+
+    <string name="twitter_consumer_secret" translatable="false">7xa1V-e5ih3W_6g0cRGcZHdrE8oZZ3waL-9-4cuaSKtVOYR-BB</string>
 </resources>
