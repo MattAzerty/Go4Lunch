@@ -28,7 +28,7 @@ public class UserRepository {
 
     private static final String COLLECTION_NAME = "users";
     private final MutableLiveData<User> connectedUserMutableLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<User>> WorkmatesMutableLiveData = new MutableLiveData<>();
+    //private final MutableLiveData<List<User>> WorkmatesMutableLiveData = new MutableLiveData<>();
 
     @Nullable
     public FirebaseUser getCurrentUser(){
@@ -95,7 +95,7 @@ public class UserRepository {
     }
 
 
-    public MutableLiveData<List<User>> getWorkmates() {
+    /*public MutableLiveData<List<User>> getWorkmates() {
         FirebaseHelper.getInstance().getAllWorkmates().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 ArrayList<User> workmates = new ArrayList<>();
@@ -114,7 +114,7 @@ public class UserRepository {
             }
         });
         return WorkmatesMutableLiveData;
-    }
+    }*/
 
 
 

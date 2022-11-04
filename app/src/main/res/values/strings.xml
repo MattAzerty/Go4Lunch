@@ -26,4 +26,6 @@
     <string name="twitter_consumer_key" translatable="false">Q3FNUU1NYlF3RlNXNmthVUZHdTg6MTpjaQ</string>
 
     <string name="twitter_consumer_secret" translatable="false">7xa1V-e5ih3W_6g0cRGcZHdrE8oZZ3waL-9-4cuaSKtVOYR-BB</string>
+    <string name="option_retry">RETRY</string>
+    <string name="option_exit">EXIT</string>
 </resources>

@@ -16,34 +16,21 @@ public class WorkmatesViewModel extends ViewModel {
     //Injected with the ViewModelFactory
     @NonNull
     private final UserRepository userRepository;
-
+    private boolean mIsSigningIn;
 
     //CONSTRUCTOR
     public WorkmatesViewModel(@NonNull UserRepository userRepository) {
         this.userRepository = userRepository;
+        mIsSigningIn = false;
+    }
 
+    public boolean getIsSigningIn() {
+        return mIsSigningIn;
     }
 
 
-    public LiveData<List<WorkmatesStateItem>> getViewStateLiveData() {
-        return Transformations.map(userRepository.getWorkmates(), workmates -> {
-            List<WorkmatesStateItem> workmatesViewStateItems = new ArrayList<>();
-
-            // mapping data to the view
-            for (User user : workmates) {
-                workmatesViewStateItems.add(
-                            new WorkmatesStateItem(
-                                    user.uid,
-                                    user.username,
-                                    user.email,
-                                    user.getUrlPicture(),
-                                    "i'm eating @La fourchette"
-                            )
-                    );
-            }
-
-            return workmatesViewStateItems;
-        });
+    public void setIsSigningIn(boolean mIsSigningIn) {
+        this.mIsSigningIn = mIsSigningIn;
     }
 
 

@@ -1,7 +1,14 @@
 package fr.melanoxy.go4lunch.data;
 
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -20,5 +27,6 @@ public class FirebaseHelper {
     public Task<QuerySnapshot> getAllWorkmates(){
         return workmatesRef.get();
     }
+
 
 }
