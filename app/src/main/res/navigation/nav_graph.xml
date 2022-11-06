@@ -7,13 +7,13 @@
     <fragment
         android:id="@+id/nav_menu_item_mapview"
         android:name="fr.melanoxy.go4lunch.ui.MapView.MapViewFragment"
-        android:label="MapViewFragment" />
+        android:label="@string/nav_map" />
     <fragment
         android:id="@+id/nav_menu_item_listview"
         android:name="fr.melanoxy.go4lunch.ui.ListView.ListViewFragment"
-        android:label="ListViewFragment" />
+        android:label="@string/nav_list" />
     <fragment
         android:id="@+id/nav_menu_item_workmates"
         android:name="fr.melanoxy.go4lunch.ui.Workmates.WorkmatesFragment"
-        android:label="WorkmatesFragment" />
+        android:label="@string/nav_workmates" />
 </navigation>

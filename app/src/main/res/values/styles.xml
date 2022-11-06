@@ -33,5 +33,17 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <!-- STYLE MaterialComponents -->
+    <style name="ShapeAppearance.Go4Lunch.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Go4Lunch.MediumComponent.ItemRV" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamilyTopLeft">rounded</item>
+        <item name="cornerFamilyBottomLeft">cut</item>
+        <item name="cornerSizeTopLeft">10dp</item>
+        <item name="cornerSizeBottomLeft">40dp</item>
+    </style>
 
 </resources>

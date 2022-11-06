@@ -41,7 +41,6 @@ dependencies {
 
 //VERSIONS
     def nav_version = "2.5.3"
-    def fba_version = "31.0.2"
     def lifecycle_version = "2.5.1"
     def arch_version = "2.1.0"
 
@@ -84,4 +83,7 @@ dependencies {
 
 //GOOGLE PLAY services for Maps SDK
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
+// GPS-related classes : FusedLocationProviderClient
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }

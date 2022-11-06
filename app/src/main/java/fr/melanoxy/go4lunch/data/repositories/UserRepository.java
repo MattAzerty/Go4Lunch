@@ -1,5 +1,6 @@
 package fr.melanoxy.go4lunch.data.repositories;
 
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -28,7 +29,9 @@ public class UserRepository {
 
     private static final String COLLECTION_NAME = "users";
     private final MutableLiveData<User> connectedUserMutableLiveData = new MutableLiveData<>();
-    //private final MutableLiveData<List<User>> WorkmatesMutableLiveData = new MutableLiveData<>();
+
+    public UserRepository() {
+    }
 
     @Nullable
     public FirebaseUser getCurrentUser(){

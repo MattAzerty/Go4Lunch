@@ -1,40 +1,65 @@
 package fr.melanoxy.go4lunch.utils;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import fr.melanoxy.go4lunch.MainActivityViewModel;
-import fr.melanoxy.go4lunch.config.BuildConfigResolver;
+import com.google.android.gms.location.LocationServices;
+
+import fr.melanoxy.go4lunch.MainApplication;
+import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
+import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
+import fr.melanoxy.go4lunch.MainActivityViewModel;
 import fr.melanoxy.go4lunch.ui.Workmates.WorkmatesViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
-    private static ViewModelFactory factory;
+    private volatile static ViewModelFactory sInstance;
+
+    @NonNull
+    private final UserRepository userRepository;
+    @NonNull
+    private final PermissionChecker permissionChecker;
+    @NonNull
+    private final LocationRepository locationRepository;
 
     public static ViewModelFactory getInstance() {
-        if (factory == null) {
+        if (sInstance == null) {
+            // Double Checked Locking singleton pattern with Volatile works on Android since Honeycomb
             synchronized (ViewModelFactory.class) {
-                if (factory == null) {
-                    factory = new ViewModelFactory(
+                if (sInstance == null) {
+                    Application application = MainApplication.getApplication();
+
+                    sInstance = new ViewModelFactory(
                             new UserRepository(
-                                    //TODO new BuildConfigResolver()
+                            ),
+                            new PermissionChecker(
+                                    application
+                            ),
+                            new LocationRepository(
+                                    LocationServices.getFusedLocationProviderClient(
+                                            application
+                                    )
                             )
                     );
                 }
             }
         }
 
-        return factory;
+        return sInstance;
     }
 
-    // This field inherit the singleton property from the ViewModelFactory : it is scoped to the ViewModelFactory
-    @NonNull
-    private final UserRepository userRepository;
-
-    private ViewModelFactory(@NonNull UserRepository userRepository) {
+    private ViewModelFactory(
+            @NonNull UserRepository userRepository,
+            @NonNull PermissionChecker permissionChecker,
+            @NonNull LocationRepository locationRepository
+    ) {
         this.userRepository = userRepository;
+        this.permissionChecker = permissionChecker;
+        this.locationRepository = locationRepository;
     }
 
     @SuppressWarnings("unchecked")
@@ -43,7 +68,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass.isAssignableFrom(MainActivityViewModel.class)) {
             return (T) new MainActivityViewModel(
-                    userRepository
+                    userRepository,
+                    permissionChecker,
+                    locationRepository
             );
         /*} else if (modelClass.isAssignableFrom(FilterPageViewModel.class)) {
             return (T) new FilterPageViewModel(
@@ -55,6 +82,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     userRepository
             );
         }
-        throw new IllegalArgumentException("Unknown ViewModel class");
+        throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);
     }
 }

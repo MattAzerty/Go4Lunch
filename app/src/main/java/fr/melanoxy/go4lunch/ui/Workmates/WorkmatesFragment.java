@@ -1,15 +1,9 @@
 package fr.melanoxy.go4lunch.ui.Workmates;
 
-import android.app.Activity;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,21 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 
-import java.util.Collections;
 
-import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.FragmentWorkmatesBinding;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
@@ -43,9 +29,6 @@ public class WorkmatesFragment extends Fragment {
     private WorkmatesViewModel mViewModel;
     private WorkmatesAdapter mAdapter;
     private Query mQuery;
-    //private WorkmatesAdapter.OnWorkmateSelectedListener mListener;
-
-    //private static final int LIMIT = 50;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,11 +114,11 @@ public class WorkmatesFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        // Start sign in if necessary
-        if (shouldStartSignIn()) {
+        // Start sign in if necessary//TODO check if user logged
+        /*if (shouldStartSignIn()) {
             startSignIn();
             return;
-        }
+        }*/
 
         // Start listening for Firestore updates
         if (mAdapter != null) {
@@ -152,81 +135,4 @@ public class WorkmatesFragment extends Fragment {
     }
 
 
-    private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
-        IdpResponse response = result.getIdpResponse();
-        mViewModel.setIsSigningIn(false);
-
-        if (result.getResultCode() != Activity.RESULT_OK) {
-            if (response == null) {
-                // User pressed the back button.
-                requireActivity().finish();
-            } else if (response.getError() != null
-                    && response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                showSignInErrorDialog(R.string.error_no_internet);
-            } else {
-                showSignInErrorDialog(R.string.error_unknown_error);
-            }
-        }
-    }
-
-
-    /*@Override
-    public void onWorkmateSelected(DocumentSnapshot workmate) {
-        // Go to the details page for the selected workmate
-
-        Snackbar.make(mBinding.getRoot(),
-                workmate.toString(), Snackbar.LENGTH_LONG).show();
-
-        MainFragmentDirections.ActionMainFragmentToRestaurantDetailFragment action = MainFragmentDirections
-                .actionMainFragmentToRestaurantDetailFragment(restaurant.getId());
-
-        NavHostFragment.findNavController(this)
-                .navigate(action);
-    }*/
-
-
-
-    private boolean shouldStartSignIn() {
-        return (!mViewModel.getIsSigningIn() && FirebaseAuth.getInstance().getCurrentUser() == null);
-    }
-
-    private void startSignIn() {
-        // Sign in with FirebaseUI
-        ActivityResultLauncher<Intent> signinLauncher = requireActivity()
-                .registerForActivityResult(new FirebaseAuthUIActivityResultContract(),
-                        this::onSignInResult
-                );
-
-        Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-                .setAvailableProviders(Collections.singletonList(
-                        new AuthUI.IdpConfig.EmailBuilder().build()))
-                .setIsSmartLockEnabled(false)
-                .build();
-
-        signinLauncher.launch(intent);
-        mViewModel.setIsSigningIn(true);
-    }
-
-
-    private void showSignInErrorDialog(@StringRes int message) {
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.error_authentication_canceled)
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(R.string.option_retry, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startSignIn();
-                    }
-                })
-                .setNegativeButton(R.string.option_exit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        requireActivity().finish();
-                    }
-                }).create();
-
-        dialog.show();
-    }
-
-}
+}//END

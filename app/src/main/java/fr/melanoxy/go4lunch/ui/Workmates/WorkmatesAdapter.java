@@ -21,8 +21,6 @@ import fr.melanoxy.go4lunch.databinding.WorkmatesItemBinding;
 
 public class WorkmatesAdapter extends FirestoreAdapter<WorkmatesAdapter.ViewHolder> {
 
-
-
     private final OnWorkmateSelectedListener mListener;
 
     public WorkmatesAdapter(Query query, OnWorkmateSelectedListener listener) {
@@ -58,11 +56,10 @@ public class WorkmatesAdapter extends FirestoreAdapter<WorkmatesAdapter.ViewHold
                          final OnWorkmateSelectedListener listener) {
 
             User workmate = snapshot.toObject(User.class);
-            //Resources resources = itemView.getResources();
 
-            binding.workmateItemUsername.setText(workmate.getUsername());
-            binding.workmateItemEmail.setText(workmate.getEmail());
-            binding.workmateItemMainfield.setText("toto");
+            binding.workmateItemUsername.setText("- "+workmate.getUsername()+" ");
+            binding.workmateItemEmail.setText("."+workmate.getEmail());
+            binding.workmateItemMainfield.setText(" Hey! Je mange @LaFourchette");
             Glide.with(binding.workmateItemAvatar)
                     .load(workmate.urlPicture)
                     .apply(RequestOptions.circleCropTransform())

@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,6 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,13 +48,10 @@ public class MainActivity extends AppCompatActivity {
     // initialize variables
     private ActivityMainBinding mMainActivityBinding;
     private MainActivityViewModel mMainActivityViewModel;
-    //Request code id for Firebase UI authentication
-    //private static final int RC_SIGN_IN = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         //binding ActivityMain layout
         mMainActivityBinding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -73,13 +72,20 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(mMainActivityBinding.activityMainNavViewDrawer);
 
         //Setup for NavController with the BottomNavigationView.
-        NavController navController = Navigation.findNavController(this, R.id.activity_main_nav_host_fragment);
-        NavigationUI.setupWithNavController(mMainActivityBinding.activityMainBottomNavigationView, navController);
+        setupBottomNav();
 
-
+        //setupFAB GPS Location
+        setupFab();
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        //CHECK if gps location is still granted
+        mMainActivityViewModel.refresh();
+
+    }
 
     private void initMainActivityViewModel() {
         mMainActivityViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
@@ -153,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             // Successfully signed in
             mMainActivityViewModel.onUserLoggedSuccess();
             showSnackBar(getString(R.string.connection_succeed));
-            // ...
+
         } else {
             // ERRORS
             if (response == null) {
@@ -171,7 +177,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     // Show Snack Bar with a message
     private void showSnackBar(String message){
@@ -198,8 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         }
-
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -211,11 +214,7 @@ public class MainActivity extends AppCompatActivity {
                 mMainActivityBinding.activityMainDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.top_app_bar_search:
-                /*if (binding.activityMainViewpager.getCurrentItem() == 0) {
-                    binding.activityMainViewpager.setCurrentItem(1);
-                } else {
-                    onBackPressed();
-                }*/
+//TODO Search BAR
                 return true;
         }
 
@@ -261,6 +260,45 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityBinding.activityMainDrawerLayout.closeDrawers();
     }
 
+    // ---------------- GPS LOCATION PERMISSION FAB ---------------- //
+    private void setupFab() {
 
+        mMainActivityBinding.activityMainFabMylocation.setOnClickListener(v ->
+                ActivityCompat.requestPermissions(
+                        this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        0
+                )
+        );
+        mMainActivityViewModel.getIsGpsPermissionGrantedLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean permission) {
+                if (permission) {
+                    mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_fixed_24dp);
+                } else {
+                    mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_off_24dp);
+                }
+            }});
+    }
+
+    // ---------------- BOTTOM NAV ---------------- //
+    private void setupBottomNav() {
+
+        NavController mNavController = Navigation.findNavController(this, R.id.activity_main_nav_host_fragment);
+        NavigationUI.setupWithNavController(mMainActivityBinding.activityMainBottomNavigationView, mNavController);
+        //fab remove when not in mapview
+        mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+
+            MainActivity.this.getSupportActionBar().setTitle(destination.getLabel());
+
+            //Change icon on fab according to gps access permission
+            if(destination.getId() == R.id.nav_menu_item_mapview) {
+                mMainActivityBinding.activityMainFabMylocation.show();
+            } else {
+                mMainActivityBinding.activityMainFabMylocation.hide();
+            }
+
+        });
+    }
 
 }//END MainActivity

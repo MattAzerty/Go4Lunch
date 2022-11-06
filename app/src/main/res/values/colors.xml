@@ -13,6 +13,7 @@
     <color name="primary">#FD9157</color>
     <color name="secondary">#57a8fa</color>
     <color name="primaryDark">#e5e5e5</color>
+    <color name="secondaryDark">#272B2E</color>
     <color name="accent">#f95757</color>
     <color name="colorAccent">#f95757</color>
     <color name="error">#52FF7D</color>

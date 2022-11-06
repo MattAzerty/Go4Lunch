@@ -9,7 +9,9 @@
     tools:openDrawer="start">
 
         <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/activity_main_body"
+            xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
@@ -66,6 +68,22 @@
                 app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
                 app:itemIconSize="20sp"
                 app:menu="@menu/navigation_menu"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/activity_main_fab_mylocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:elevation="4dp"
+                app:backgroundTint="@color/white"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="8dp"
+                app:maxImageSize="32dp"
+                android:clickable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_anchor="@+id/activity_main_body"
+                app:layout_anchorGravity="top|right|end"
+                app:srcCompat="@drawable/ic_gps_fixed_24dp" />
 
 
 

@@ -10,10 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import fr.melanoxy.go4lunch.R;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+
+import fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding;
 
 
-public class MapViewFragment extends Fragment {
+public class MapViewFragment extends Fragment implements OnMapReadyCallback {
+
+    private MapViewViewModel mMapViewViewModel;
+    private FragmentMapViewBinding mFragmentMapViewBinding;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +30,21 @@ public class MapViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map_view, container, false);
+        //binding FragmentWorkmatesBinding layout
+        mFragmentMapViewBinding = FragmentMapViewBinding.inflate(getLayoutInflater());
+        View view = mFragmentMapViewBinding.getRoot();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        //mMapViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MapViewViewModel.class);
+
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+
     }
 }
