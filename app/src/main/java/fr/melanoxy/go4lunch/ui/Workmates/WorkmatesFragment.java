@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -62,77 +63,25 @@ public class WorkmatesFragment extends Fragment {
                 .get(WorkmatesViewModel.class);
 
 //Init RecyclerView
-
-        // Enable Firestore logging
-        FirebaseFirestore.setLoggingEnabled(true);
-
-        // Firestore
-        FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-
-        // Get ${LIMIT} collection
-        mQuery = mFirestore.collection("users");
-                //.orderBy("avgRating", Query.Direction.DESCENDING)
-                //.limit(LIMIT);
-
-        // RecyclerView
-        mAdapter = new WorkmatesAdapter(mQuery, new OnWorkmateSelectedListener() {
+        WorkmatesAdapter adapter = new WorkmatesAdapter(new OnWorkmateClickedListener() {
             @Override
-            public void onWorkmateSelected(DocumentSnapshot workmate) {
-
-                User user = workmate.toObject(User.class);
-                Snackbar.make(mBinding.getRoot(),
-                        user.username, Snackbar.LENGTH_LONG).show();
+            public void onWorkmateClicked(String uid) {
+                Toast.makeText(getActivity(), "details about the lunch of my workmate", Toast.LENGTH_LONG).show();
             }
-        }) {
-            @Override
-            protected void onDataChanged() {// TODO ViewEmpty
-                // Show/hide content if the query returns empty.
-                if (getItemCount() == 0) {
-                    mBinding.workmatesRv.setVisibility(View.VISIBLE);
-                    //mBinding.viewEmpty.setVisibility(View.VISIBLE);
-                } else {
-                    mBinding.workmatesRv.setVisibility(View.VISIBLE);
-                    //mBinding.viewEmpty.setVisibility(View.GONE);
-                }
-            }
+        });
 
-            @Override
-            protected void onError(FirebaseFirestoreException e) {
-                // Show a snackbar on errors
-                Snackbar.make(mBinding.getRoot(),
-                        "Error: check logs for info.", Snackbar.LENGTH_LONG).show();
-            }
-        };
+        mBinding.workmatesRv.setAdapter(adapter);
 
-        mBinding.workmatesRv.setLayoutManager(new LinearLayoutManager(requireContext()));
-        mBinding.workmatesRv.setAdapter(mAdapter);
+
+//link ViewStateItem to liveDataViewStateItem
+        mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), workmatesViewStateItems ->
+                adapter.submitList(workmatesViewStateItems)
+        );
 
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        // Start sign in if necessary//TODO check if user logged
-        /*if (shouldStartSignIn()) {
-            startSignIn();
-            return;
-        }*/
-
-        // Start listening for Firestore updates
-        if (mAdapter != null) {
-            mAdapter.startListening();
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAdapter != null) {
-            mAdapter.stopListening();
-        }
-    }
 
 
 }//END

@@ -24,8 +24,8 @@ public class FirebaseHelper {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     public final CollectionReference workmatesRef = db.collection("users");
 
-    public Task<QuerySnapshot> getAllWorkmates(){
-        return workmatesRef.get();
+    public CollectionReference getWorkmateCollection(){
+        return workmatesRef;
     }
 
 

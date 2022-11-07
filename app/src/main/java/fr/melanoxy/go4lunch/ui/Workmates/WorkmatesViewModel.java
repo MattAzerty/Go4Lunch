@@ -33,8 +33,27 @@ public class WorkmatesViewModel extends ViewModel {
         this.mIsSigningIn = mIsSigningIn;
     }
 
+    public LiveData<List<WorkmatesStateItem>> getViewStateLiveData() {
+        return Transformations.map(userRepository.getWorkmates(), workmates -> {
+            List<WorkmatesStateItem> workmatesViewStateItems = new ArrayList<>();
+
+            // mapping data to the view
+            for (User user : workmates) {
+                workmatesViewStateItems.add(
+                        new WorkmatesStateItem(
+                                user.uid,
+                                user.username,
+                                user.email,
+                                user.getUrlPicture(),
+                                "i'm eating @La fourchette"
+                        )
+                );
+            }
+
+            return workmatesViewStateItems;
+        });
 
 
-
+    }
 
 }//end of WorkmatesViewModel
