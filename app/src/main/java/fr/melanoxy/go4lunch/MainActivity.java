@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.Observer;
@@ -14,6 +15,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -189,6 +192,38 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_app_bar, menu);
 
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        //Listener for searchfield
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                callSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+//              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
+                //callSearch(newText);
+//              }
+                return true;
+            }
+
+            public void callSearch(String query) {
+                //Do searching
+                Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+                searchView.setIconified(true);
+                searchView.onActionViewCollapsed();
+            }
+
+        });
+
         // To show icons in the actionbar's overflow menu:
         //if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
         if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
@@ -213,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mMainActivityBinding.activityMainDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            case R.id.top_app_bar_search:
+            case R.id.action_search:
 //TODO Search BAR
                 return true;
         }

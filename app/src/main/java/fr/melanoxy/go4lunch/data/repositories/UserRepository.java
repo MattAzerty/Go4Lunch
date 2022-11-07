@@ -1,28 +1,23 @@
 package fr.melanoxy.go4lunch.data.repositories;
 
-import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.internal.zzt;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.melanoxy.go4lunch.data.FirebaseHelper;
 import fr.melanoxy.go4lunch.data.models.User;
 
 public class UserRepository {
@@ -50,8 +45,13 @@ public class UserRepository {
     // Create User in Firestore
     public void createUser() {
         FirebaseUser user = getCurrentUser();
+        List<? extends UserInfo> userInfos = user.getProviderData();
+        UserInfo userinfo = userInfos.get(1);
+
         if(user != null){
-            String urlPicture = (user.getPhotoUrl() != null) ? user.getPhotoUrl().toString() : null;
+            String urlPicture;
+            if (user.getPhotoUrl() != null) urlPicture = user.getPhotoUrl().toString();
+            else urlPicture = null;
             String username = user.getDisplayName();
             String uid = user.getUid();
             String email = user.getEmail();

@@ -2,16 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <!-- ACCESS GRANTED -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="22" />
-    <!-- Location permission-->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="22" /> <!-- Location permission -->
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify coarse and fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
@@ -31,16 +34,13 @@
            1. Open the root project's local.properties file
            2. Add this line, where YOUR_API_KEY is your API key:
                MAPS_API_KEY=YOUR_API_KEY
-       -->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
-
-        <!--Google Play services version number-->
+            android:value="${MAPS_API_KEY}" /> <!-- Google Play services version number -->
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <!--app is targeting API level 28 (Android 9.0) or above-->
+            android:value="@integer/google_play_services_version" /> <!-- app is targeting API level 28 (Android 9.0) or above -->
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -57,8 +57,13 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-        </activity>
 
+            <!-- enable the search -->
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+
+        </activity>
     </application>
 
 </manifest>

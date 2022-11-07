@@ -25,6 +25,7 @@
     <!-- Twitter ID n key -->
     <string name="twitter_consumer_key" translatable="false">Q3FNUU1NYlF3RlNXNmthVUZHdTg6MTpjaQ</string>
     <string name="twitter_consumer_secret" translatable="false">7xa1V-e5ih3W_6g0cRGcZHdrE8oZZ3waL-9-4cuaSKtVOYR-BB</string>
+
     <string name="option_retry" translatable="false">RETRY</string>
     <string name="option_exit" translatable="false">EXIT</string>
     <string name="error_not_connected">You need to login!</string>
@@ -33,4 +34,6 @@
     <string name="error_unknown_error">" An unknown error has occurred"</string>
     <string name="connection_succeed">Authentication successful!</string>
     <string name="nav_list">Nearby restaurants:</string>
+    <string name="search_title">search</string>
+    <string name="search_hint">icite</string>
 </resources>
