@@ -16,4 +16,7 @@
     <string name="error_unknown_error">Une erreur inconnue s\'est produite</string>
     <string name="connection_succeed">Authentification réussie !</string>
     <string name="nav_list">Restaurants à proximité:</string>
+    <string name="my_position_marker">"Ma position: "</string>
+    <string name="search_hint">recherche...</string>
+    <string name="search_title">rechercher</string>
 </resources>

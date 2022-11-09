@@ -38,6 +38,7 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +46,11 @@ import java.util.List;
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.ActivityMainBinding;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -111,13 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 username.setText(user.username);
                 TextView email = (TextView)headerContainer.findViewById(R.id.drawer_header_email);
                 email.setText(user.email);
-
-                    if (user.getUrlPicture()!=null)   {
-                Glide.with(navigationView.getContext())
-                        .load(user.getUrlPicture())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into((ImageView) headerContainer.findViewById(R.id.drawer_header_pfp));
-                    }
             }
         });
 
@@ -162,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             // Successfully signed in
             mMainActivityViewModel.onUserLoggedSuccess();
             showSnackBar(getString(R.string.connection_succeed));
+            setupPermissions();
 
         } else {
             // ERRORS
@@ -179,6 +181,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void setupPermissions() {
+
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                0
+        );
+
     }
 
     // Show Snack Bar with a message
@@ -217,11 +229,20 @@ public class MainActivity extends AppCompatActivity {
 
             public void callSearch(String query) {
                 //Do searching
-                Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-                searchView.setIconified(true);
-                searchView.onActionViewCollapsed();
+                mMainActivityViewModel.onSearchQueryCall(query);
+                //Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
+                //searchView.setIconified(true);
+                //searchView.onActionViewCollapsed();
             }
 
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mMainActivityViewModel.onSearchQueryCall(null);
+                return false;
+            }
         });
 
         // To show icons in the actionbar's overflow menu:
@@ -256,8 +277,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     // ---------------- DRAWER ---------------- //
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
@@ -289,8 +308,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
         // Close the navigation drawer
         mMainActivityBinding.activityMainDrawerLayout.closeDrawers();
     }
@@ -299,21 +316,16 @@ public class MainActivity extends AppCompatActivity {
     private void setupFab() {
 
         mMainActivityBinding.activityMainFabMylocation.setOnClickListener(v ->
-                ActivityCompat.requestPermissions(
-                        this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                        0
-                )
+                setupPermissions()
         );
-        mMainActivityViewModel.getIsGpsPermissionGrantedLiveData().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean permission) {
-                if (permission) {
-                    mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_fixed_24dp);
-                } else {
-                    mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_off_24dp);
-                }
-            }});
+
+        mMainActivityViewModel.getIsGpsPermissionGrantedLiveData().observe(this, permission -> {
+            if (permission) {
+                mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_fixed_24dp);
+            } else {
+                mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_off_24dp);
+            }
+        });
     }
 
     // ---------------- BOTTOM NAV ---------------- //
@@ -327,10 +339,14 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.getSupportActionBar().setTitle(destination.getLabel());
 
             //Change icon on fab according to gps access permission
-            if(destination.getId() == R.id.nav_menu_item_mapview) {
-                mMainActivityBinding.activityMainFabMylocation.show();
-            } else {
-                mMainActivityBinding.activityMainFabMylocation.hide();
+            switch (destination.getId()) {
+                case R.id.nav_menu_item_mapview:
+                case R.id.nav_menu_item_listview:
+                    mMainActivityBinding.activityMainFabMylocation.show();
+                    break;
+                default: mMainActivityBinding.activityMainFabMylocation.hide();
+                    break;
+
             }
 
         });

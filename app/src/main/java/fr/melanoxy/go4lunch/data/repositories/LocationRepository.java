@@ -49,7 +49,7 @@ public class LocationRepository {
 
         fusedLocationProviderClient.removeLocationUpdates(callback);
 
-        fusedLocationProviderClient.requestLocationUpdates(
+        fusedLocationProviderClient.requestLocationUpdates(//TODO resolve deprecated
                 LocationRequest.create()
                         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                         .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)

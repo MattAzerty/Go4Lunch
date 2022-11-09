@@ -6,21 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-
-
-import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.FragmentWorkmatesBinding;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
@@ -28,8 +19,6 @@ public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding mBinding;
     private WorkmatesViewModel mViewModel;
-    private WorkmatesAdapter mAdapter;
-    private Query mQuery;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

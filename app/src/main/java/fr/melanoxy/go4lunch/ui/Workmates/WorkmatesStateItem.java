@@ -55,6 +55,9 @@ public class WorkmatesStateItem {
         return mainfield;
     }
 
+    // Les fonctions equals(), hashcode() et sont utiles pour les tests unitaires (dans les assertions)
+    // et peuvent être autogénérées avec Alt + Inser
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,7 +72,6 @@ public class WorkmatesStateItem {
     }
 
 
-    // Les fonctions equals(), hashcode() et sont utiles pour les tests unitaires (dans les assertions)
-    // et peuvent être autogénérées avec Alt + Inser
+
 
 }

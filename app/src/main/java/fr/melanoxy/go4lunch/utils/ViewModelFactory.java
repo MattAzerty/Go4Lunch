@@ -9,6 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.location.LocationServices;
 
 import fr.melanoxy.go4lunch.MainApplication;
+import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
+import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
+import fr.melanoxy.go4lunch.ui.ListView.ListViewViewModel;
+import fr.melanoxy.go4lunch.ui.MapView.MapViewViewModel;
 import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
@@ -25,6 +29,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final PermissionChecker permissionChecker;
     @NonNull
     private final LocationRepository locationRepository;
+    @NonNull
+    private final SearchRepository searchRepository;
+    @NonNull
+    private final RestaurantRepository restaurantRepository;
 
     public static ViewModelFactory getInstance() {
         if (sInstance == null) {
@@ -43,6 +51,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                                     LocationServices.getFusedLocationProviderClient(
                                             application
                                     )
+                            ),
+                            new SearchRepository(
+                            ),
+                            new RestaurantRepository(
                             )
                     );
                 }
@@ -55,11 +67,15 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private ViewModelFactory(
             @NonNull UserRepository userRepository,
             @NonNull PermissionChecker permissionChecker,
-            @NonNull LocationRepository locationRepository
+            @NonNull LocationRepository locationRepository,
+            @NonNull SearchRepository searchRepository,
+            @NonNull RestaurantRepository restaurantRepository
     ) {
         this.userRepository = userRepository;
         this.permissionChecker = permissionChecker;
         this.locationRepository = locationRepository;
+        this.searchRepository = searchRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     @SuppressWarnings("unchecked")
@@ -70,16 +86,26 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MainActivityViewModel(
                     userRepository,
                     permissionChecker,
+                    locationRepository,
+                    searchRepository,
+                    restaurantRepository
+            );
+        } else if (modelClass.isAssignableFrom(MapViewViewModel.class)) {
+            return (T) new MapViewViewModel(
                     locationRepository
             );
-        /*} else if (modelClass.isAssignableFrom(FilterPageViewModel.class)) {
-            return (T) new FilterPageViewModel(
-                    MainApplication.getInstance(),
-                    reunionRepository
-            );*/
-        } else if (modelClass.isAssignableFrom(WorkmatesViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(ListViewViewModel.class)) {
+            return (T) new ListViewViewModel(
+                    /*userRepository,
+                    permissionChecker,
+                    locationRepository,
+                    searchRepository,*/
+                    restaurantRepository
+            );
+        }else if (modelClass.isAssignableFrom(WorkmatesViewModel.class)) {
             return (T) new WorkmatesViewModel(
-                    userRepository
+                    userRepository,
+                    searchRepository
             );
         }
         throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);

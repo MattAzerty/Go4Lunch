@@ -58,7 +58,8 @@
             <!--Bottom navigation controller (to navigate btwn fragments)-->
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/activity_main_bottom_navigation_view"
-                android:layout_width="match_parent"
+                android:fitsSystemWindows="true"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -66,7 +67,6 @@
                 app:itemBackground="@color/BottomNavBarColor"
                 app:itemIconTint="@drawable/bottom_nav_icon_color_selector"
                 app:itemTextColor="@drawable/bottom_nav_icon_color_selector"
-                app:itemIconSize="20sp"
                 app:menu="@menu/navigation_menu"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

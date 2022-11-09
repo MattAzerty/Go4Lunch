@@ -63,7 +63,7 @@ public class UserRepository {
         if(user != null){
             String urlPicture;
             if (user.getPhotoUrl() != null) urlPicture = user.getPhotoUrl().toString();
-            else urlPicture = null;
+            else urlPicture = generateAvatarUrl();
             String username = user.getDisplayName();
             String uid = user.getUid();
             String email = user.getEmail();
@@ -133,6 +133,11 @@ public class UserRepository {
                 });
 
         return WorkmatesMutableLiveData;
+    }
+
+    @NonNull
+    private String generateAvatarUrl() {
+        return "https://i.pravatar.cc/200?u=" + System.currentTimeMillis();
     }
 
 }// END UserRepository

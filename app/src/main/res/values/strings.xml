@@ -19,6 +19,9 @@
     <string name="nav_map">My location:</string>
     <string name="nav_workmates">Available workmates:</string>
 
+    <!-- MAIN ACTIVITY -->
+    <string name="my_position_marker">I\'m here: </string>
+
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <string name="facebook_application_id" translatable="false">3016277252002678</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb3016277252002678</string>
@@ -35,5 +38,5 @@
     <string name="connection_succeed">Authentication successful!</string>
     <string name="nav_list">Nearby restaurants:</string>
     <string name="search_title">search</string>
-    <string name="search_hint">icite</string>
+    <string name="search_hint">enter query...</string>
 </resources>

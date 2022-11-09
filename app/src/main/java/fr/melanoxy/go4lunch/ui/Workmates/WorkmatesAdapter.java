@@ -9,10 +9,9 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 
-import fr.melanoxy.go4lunch.databinding.WorkmatesItemBinding;
+import fr.melanoxy.go4lunch.databinding.WorkmateItemBinding;
 
 public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesAdapter.ViewHolder> {
 
@@ -27,7 +26,7 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(WorkmatesItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(WorkmateItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -38,9 +37,9 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         //Bind workmates item
-        private WorkmatesItemBinding binding;
+        private WorkmateItemBinding binding;
 
-        public ViewHolder(@NonNull WorkmatesItemBinding binding) {
+        public ViewHolder(@NonNull WorkmateItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }

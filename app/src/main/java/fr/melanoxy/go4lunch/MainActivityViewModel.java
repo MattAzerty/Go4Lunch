@@ -17,6 +17,8 @@ import java.util.Date;
 
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
+import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
+import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 
@@ -29,6 +31,10 @@ public class MainActivityViewModel extends ViewModel {
     private final PermissionChecker permissionChecker;
     @NonNull
     private final LocationRepository locationRepository;
+    @NonNull
+    private final SearchRepository searchRepository;
+    @NonNull
+    private final RestaurantRepository restaurantRepository;
 
     public LiveData<User> userLiveData;
     private final MutableLiveData<Boolean> isGpsPermissionGrantedLiveData = new MutableLiveData<>();
@@ -38,11 +44,15 @@ public class MainActivityViewModel extends ViewModel {
     public MainActivityViewModel(
         @NonNull UserRepository userRepository,
         @NonNull PermissionChecker permissionChecker,
-        @NonNull LocationRepository locationRepository
+        @NonNull LocationRepository locationRepository,
+        @NonNull SearchRepository searchRepository,
+        @NonNull RestaurantRepository restaurantRepository
     ) {
         this.userRepository = userRepository;
         this.permissionChecker = permissionChecker;
         this.locationRepository = locationRepository;
+        this.searchRepository = searchRepository;
+        this.restaurantRepository = restaurantRepository;
 
         LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
 
@@ -92,7 +102,7 @@ public class MainActivityViewModel extends ViewModel {
     public Boolean isUserAuthenticated() {
         return userRepository.isUserAuthenticatedInFirebase();
     }
-//On User authentification success create him on firestore base
+//On User authentication success create him on firestore base
     public void onUserLoggedSuccess() {
         userRepository.createUser();
     }
@@ -103,6 +113,10 @@ public class MainActivityViewModel extends ViewModel {
 
     public LiveData<User> getConnectedUserLiveData() {
         return userRepository.getConnectedUserLiveData();
+    }
+
+    public void onSearchQueryCall(String query) {
+        searchRepository.searchField(query);
     }
 
 }//END
