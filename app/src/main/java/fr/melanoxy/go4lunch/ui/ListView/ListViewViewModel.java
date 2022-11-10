@@ -1,5 +1,7 @@
 package fr.melanoxy.go4lunch.ui.ListView;
 
+import android.location.Location;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -7,36 +9,38 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.data.models.RestaurantsNearbyResponse;
 import fr.melanoxy.go4lunch.data.models.Result;
+import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
+import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 
 public class ListViewViewModel extends ViewModel {
 
     @NonNull
+    private final LocationRepository locationRepository;
+    @NonNull
     private final RestaurantRepository restaurantRepository;
+
     private final MediatorLiveData<List<ListViewStateItem>> restaurantsMediatorLiveData = new MediatorLiveData<>();
     private LiveData<RestaurantsNearbyResponse> restaurantsResponseLiveData;
+
     //CONSTRUCTOR
     public ListViewViewModel(
+            @NonNull LocationRepository locationRepository,
             @NonNull RestaurantRepository restaurantRepository
     ) {
+        this.locationRepository = locationRepository;
         this.restaurantRepository = restaurantRepository;
+
         restaurantsResponseLiveData = restaurantRepository.getRestaurantNearbyResponseLiveData();
         final LiveData<RestaurantsNearbyResponse> restaurantsLiveData = restaurantRepository.getRestaurantNearbyResponseLiveData();
 
-        restaurantsMediatorLiveData.addSource(restaurantsLiveData, new Observer<RestaurantsNearbyResponse>() {
-            @Override
-            public void onChanged(RestaurantsNearbyResponse restaurantsNearbyResponse) {
-                combine(restaurantsNearbyResponse);
-            }
-        });
+        restaurantsMediatorLiveData.addSource(restaurantsLiveData, restaurantsNearbyResponse ->
+                combine(restaurantsNearbyResponse));
     }
 
 
@@ -49,8 +53,6 @@ public class ListViewViewModel extends ViewModel {
             for (Result result : restaurantsNearby) {
                 listViewStateItem.add(mapRestaurant(result));
             }
-
-
             restaurantsMediatorLiveData.setValue(listViewStateItem);
         }
 
@@ -70,11 +72,7 @@ public class ListViewViewModel extends ViewModel {
         return restaurantsMediatorLiveData;
     }
 
-    public void searchNearbyRestaurant(String location, String radius, String type, String apiKey) {
-        restaurantRepository.searchNearbyRestaurants(location, radius, type, apiKey);
-    }
 
-    public LiveData<RestaurantsNearbyResponse> getVolumesResponseLiveData() {
-        return restaurantRepository.getRestaurantNearbyResponseLiveData();
-    }
-}
+
+
+}//END of ListViewModel

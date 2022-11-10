@@ -16,7 +16,7 @@ import com.google.android.gms.location.LocationResult;
 public class LocationRepository {
 
     private static final int LOCATION_REQUEST_INTERVAL_MS = 10_000;
-    private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25;
+    private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 100;
 
     @NonNull
     private final FusedLocationProviderClient fusedLocationProviderClient;
@@ -49,7 +49,7 @@ public class LocationRepository {
 
         fusedLocationProviderClient.removeLocationUpdates(callback);
 
-        fusedLocationProviderClient.requestLocationUpdates(//TODO resolve deprecated
+        fusedLocationProviderClient.requestLocationUpdates(//TODO (minor) resolve deprecated
                 LocationRequest.create()
                         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                         .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
@@ -64,4 +64,5 @@ public class LocationRepository {
             fusedLocationProviderClient.removeLocationUpdates(callback);
         }
     }
-}
+
+}//END of LocationRepository

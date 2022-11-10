@@ -2,7 +2,6 @@
     <!-- Base application theme. -->
     <style name="Theme.Go4Lunch" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <!-- Primary brand color. -->
         <item name="colorPrimary">#FF8C4E</item>
         <item name="colorPrimaryVariant">#000000</item>
         <item name="colorOnPrimary">@color/white</item>

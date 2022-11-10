@@ -2,6 +2,8 @@ package fr.melanoxy.go4lunch;
 
 import static android.content.ContentValues.TAG;
 
+import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
+
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
@@ -119,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
                 username.setText(user.username);
                 TextView email = (TextView)headerContainer.findViewById(R.id.drawer_header_email);
                 email.setText(user.email);
+
+                if (user.getUrlPicture()!=null)   {
+                    Glide.with(navigationView.getContext())
+                            .load(user.getUrlPicture())
+                            .apply(RequestOptions.circleCropTransform())
+                            .into((ImageView) headerContainer.findViewById(R.id.drawer_header_pfp));
+                }
+
             }
         });
 
@@ -326,6 +336,20 @@ public class MainActivity extends AppCompatActivity {
                 mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_off_24dp);
             }
         });
+
+
+        //Observe userLocation then ask for NearbyRestaurants if location is not null or changed
+        mMainActivityViewModel.getUserLocationLiveData().observe(this, userLocation -> {
+            if (userLocation!=null){
+                mMainActivityViewModel.searchNearbyRestaurant(
+                        userLocation,
+                        "2000",//in meters
+                        "restaurant",//keyword see list here https://developers.google.com/maps/documentation/places/web-service/supported_types
+                        MAPS_API_KEY
+                );
+            }});
+
+
     }
 
     // ---------------- BOTTOM NAV ---------------- //

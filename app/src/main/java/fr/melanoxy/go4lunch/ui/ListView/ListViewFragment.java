@@ -2,11 +2,13 @@ package fr.melanoxy.go4lunch.ui.ListView;
 
 import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -14,9 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.FragmentListViewBinding;
-import fr.melanoxy.go4lunch.databinding.FragmentWorkmatesBinding;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
 
@@ -71,9 +71,6 @@ public class ListViewFragment extends Fragment {
         mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), workmatesViewStateItems ->
                 adapter.submitList(workmatesViewStateItems)
         );
-
-//Send a RestaurantsNearbyRequest to the Places API via ViewModel
-        mViewModel.searchNearbyRestaurant("myLocation???","2000","restaurant",MAPS_API_KEY);
 
     }
 

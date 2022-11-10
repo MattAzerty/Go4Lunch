@@ -36,7 +36,7 @@ public class MainActivityViewModel extends ViewModel {
     @NonNull
     private final RestaurantRepository restaurantRepository;
 
-    public LiveData<User> userLiveData;
+    private Location previousLocation = new Location("point_nemo_provider");
     private final MutableLiveData<Boolean> isGpsPermissionGrantedLiveData = new MutableLiveData<>();
     private final MediatorLiveData<String> gpsMessageLiveData = new MediatorLiveData<>();
 
@@ -53,6 +53,10 @@ public class MainActivityViewModel extends ViewModel {
         this.locationRepository = locationRepository;
         this.searchRepository = searchRepository;
         this.restaurantRepository = restaurantRepository;
+
+        //point nemo coordinate
+        previousLocation.setLatitude(-48.876667);
+        previousLocation.setLongitude(-123.393333);
 
         LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
 
@@ -113,6 +117,22 @@ public class MainActivityViewModel extends ViewModel {
 
     public LiveData<User> getConnectedUserLiveData() {
         return userRepository.getConnectedUserLiveData();
+    }
+
+    public void searchNearbyRestaurant(Location location, String radius, String type, String apiKey) {
+        //Check if distance with previous location is less than 500 meters.
+        previousLocation = previousLocation;
+        if (location.distanceTo(previousLocation) > 500) {
+            String latitude = String.valueOf(location.getLatitude());
+            String longitude = String.valueOf(location.getLongitude());
+            restaurantRepository.searchNearbyRestaurants(latitude + "," + longitude, radius, type, apiKey);
+            previousLocation = location;
+        }
+    }
+
+    //GPS location of current user
+    public LiveData<Location> getUserLocationLiveData() {
+        return locationRepository.getLocationLiveData();
     }
 
     public void onSearchQueryCall(String query) {
