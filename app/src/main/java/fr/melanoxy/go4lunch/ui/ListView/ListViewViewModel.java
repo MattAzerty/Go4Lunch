@@ -1,22 +1,20 @@
 package fr.melanoxy.go4lunch.ui.ListView;
 
-import android.location.Location;
+import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.melanoxy.go4lunch.data.models.RestaurantsNearbyResponse;
-import fr.melanoxy.go4lunch.data.models.Result;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
-import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 
 public class ListViewViewModel extends ViewModel {
 
@@ -25,7 +23,7 @@ public class ListViewViewModel extends ViewModel {
     @NonNull
     private final RestaurantRepository restaurantRepository;
 
-    private final MediatorLiveData<List<ListViewStateItem>> restaurantsMediatorLiveData = new MediatorLiveData<>();
+    private final MediatorLiveData<List<RestaurantStateItem>> restaurantsMediatorLiveData = new MediatorLiveData<>();
     private LiveData<RestaurantsNearbyResponse> restaurantsResponseLiveData;
 
     //CONSTRUCTOR
@@ -49,26 +47,29 @@ public class ListViewViewModel extends ViewModel {
            List<Result> restaurantsNearby = restaurantsNearbyResponse.getResults();
 
             // map on a ViewStateItem
-            List<ListViewStateItem> listViewStateItem = new ArrayList<>();
+            List<RestaurantStateItem> restaurantStateItem = new ArrayList<>();
             for (Result result : restaurantsNearby) {
-                listViewStateItem.add(mapRestaurant(result));
+                restaurantStateItem.add(mapRestaurant(result));
             }
-            restaurantsMediatorLiveData.setValue(listViewStateItem);
+            restaurantsMediatorLiveData.setValue(restaurantStateItem);
         }
 
     @NonNull
-    private ListViewStateItem mapRestaurant(@NonNull Result result) {
-        return new ListViewStateItem(
+    private RestaurantStateItem mapRestaurant(@NonNull Result result) {
+
+        String urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ result.getPhotos().get(0).getPhotoReference() + "&key=" + MAPS_API_KEY;
+
+        return new RestaurantStateItem(
                 result.getPlaceId(),
                 result.getName(),
-                result.getFormattedAddress(),
-                "open?:"+result.getReference(),
-                result.getBusinessStatus()
+                result.getFormattedAddress().trim(),
+                result.getBusinessStatus(),
+                urlPreview
         );
     }
 
-    // Getter typé en LiveData (et pas MediatorLiveData pour éviter la modification de la valeur de la LiveData dans la View)
-    public LiveData<List<ListViewStateItem>> getViewStateLiveData() {
+    // Getter in LiveData
+    public LiveData<List<RestaurantStateItem>> getViewStateLiveData() {
         return restaurantsMediatorLiveData;
     }
 

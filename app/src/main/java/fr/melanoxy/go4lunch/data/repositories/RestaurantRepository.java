@@ -5,8 +5,13 @@ package fr.melanoxy.go4lunch.data.repositories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.List;
+import java.util.Locale;
+
 import fr.melanoxy.go4lunch.data.RestaurantSearchService;
-import fr.melanoxy.go4lunch.data.models.RestaurantsNearbyResponse;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
+import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -19,9 +24,11 @@ public class RestaurantRepository {
 
     private RestaurantSearchService restaurantSearchService;
     private MutableLiveData<RestaurantsNearbyResponse> restaurantNearbyMutableLiveData;
+    private MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseMutableLiveData;
 
     public RestaurantRepository() {
         restaurantNearbyMutableLiveData = new MutableLiveData<>();
+        placeIdDetailsResponseMutableLiveData = new MutableLiveData<>();
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
@@ -53,8 +60,29 @@ public class RestaurantRepository {
                 });
     }
 
+    public void searchPlaceIdDetails(String place_id, String fields, String apiKey) {
+        restaurantSearchService.searchPlaceIdDetails(place_id, fields, Locale.getDefault().getLanguage(), apiKey)
+                .enqueue(new Callback<PlaceIdDetailsResponse>() {
+                    @Override
+                    public void onResponse(Call<PlaceIdDetailsResponse> call, Response<PlaceIdDetailsResponse> response) {
+                        if (response.body() != null) {
+                            placeIdDetailsResponseMutableLiveData.postValue(response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PlaceIdDetailsResponse> call, Throwable t) {
+                        placeIdDetailsResponseMutableLiveData.postValue(null);
+                    }
+                });
+    }
+
     public LiveData<RestaurantsNearbyResponse> getRestaurantNearbyResponseLiveData() {
         return restaurantNearbyMutableLiveData;
+    }
+
+    public LiveData<PlaceIdDetailsResponse> getPlaceIdDetailsResponseLiveData() {
+        return placeIdDetailsResponseMutableLiveData;
     }
 
 }

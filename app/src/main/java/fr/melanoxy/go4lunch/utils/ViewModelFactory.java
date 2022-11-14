@@ -17,6 +17,7 @@ import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 import fr.melanoxy.go4lunch.MainActivityViewModel;
+import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsViewModel;
 import fr.melanoxy.go4lunch.ui.Workmates.WorkmatesViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
@@ -106,6 +107,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new WorkmatesViewModel(
                     userRepository,
                     searchRepository
+            );
+        }else if (modelClass.isAssignableFrom(RestaurantDetailsViewModel.class)) {
+            return (T) new RestaurantDetailsViewModel(
+                    restaurantRepository
             );
         }
         throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);

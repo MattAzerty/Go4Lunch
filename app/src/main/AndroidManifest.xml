@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <!-- ACCESS GRANTED -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -17,6 +18,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -28,7 +31,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Go4Lunch"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.RestaurantDetailsActivity.RestaurantDetailsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label=""
+            android:theme="@style/Theme.Go4Lunch.Fullscreen" />
         <!--
            To add your Maps API key to this project:
            1. Open the root project's local.properties file
@@ -59,10 +67,9 @@
                 android:value="" />
 
             <!-- enable the search -->
-            <meta-data android:name="android.app.searchable"
+            <meta-data
+                android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
-
-
         </activity>
     </application>
 

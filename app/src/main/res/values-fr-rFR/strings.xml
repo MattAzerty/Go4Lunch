@@ -19,4 +19,9 @@
     <string name="my_position_marker">"Ma position: "</string>
     <string name="search_hint">recherche...</string>
     <string name="search_title">rechercher</string>
+    <string name="details">INFORMATIONS:</string>
+    <string name="CALL">TELEPHONE</string>
+    <string name="WEBSITE">SITE WEB</string>
+    <string name="LIKE">JAIME</string>
+    <string name="opening_hours">- Horaire d\'ouverture -</string>
 </resources>

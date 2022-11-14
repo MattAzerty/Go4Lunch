@@ -8,9 +8,12 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import fr.melanoxy.go4lunch.databinding.RestaurantItemBinding;
 
-public class ListViewAdapter extends ListAdapter<ListViewStateItem, ListViewAdapter.ViewHolder> {
+public class ListViewAdapter extends ListAdapter<RestaurantStateItem, ListViewAdapter.ViewHolder> {
 
     private final OnRestaurantClickedListener listener;
 
@@ -41,26 +44,26 @@ public class ListViewAdapter extends ListAdapter<ListViewStateItem, ListViewAdap
             this.binding = binding;
         }
 
-        public void bind(ListViewStateItem item, OnRestaurantClickedListener listener) {
-            itemView.setOnClickListener(v -> listener.onRestaurantClicked(item.getPlace_name()));
+        public void bind(RestaurantStateItem item, OnRestaurantClickedListener listener) {
+            itemView.setOnClickListener(v -> listener.onRestaurantClicked(item));
             binding.restaurantItemName.setText(item.getPlace_name());
-            binding.restaurantItemAdress.setText(item.getPlace_address());
+            binding.restaurantItemAddress.setText(item.getPlace_address());
             binding.restaurantItemOpenhours.setText(item.getPlace_openhour());
-            /*Glide.with(binding.restaurantItemSmallThumbnail)
-                    .load(item.getAvatarUrl())
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(binding.workmateItemAvatar);*/
+            Glide.with(binding.restaurantItemSmallThumbnail)
+                    .load(item.getPlace_preview_pic_url())
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(binding.restaurantItemSmallThumbnail);
         }
     }
 
-    private static class ListRestaurantsItemCallback extends DiffUtil.ItemCallback<ListViewStateItem> {
+    private static class ListRestaurantsItemCallback extends DiffUtil.ItemCallback<RestaurantStateItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull ListViewStateItem oldItem, @NonNull ListViewStateItem newItem) {
+        public boolean areItemsTheSame(@NonNull RestaurantStateItem oldItem, @NonNull RestaurantStateItem newItem) {
             return oldItem.getPlace_id() == newItem.getPlace_id();
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull ListViewStateItem oldItem, @NonNull ListViewStateItem newItem) {
+        public boolean areContentsTheSame(@NonNull RestaurantStateItem oldItem, @NonNull RestaurantStateItem newItem) {
             return oldItem.equals(newItem);
         }
     }

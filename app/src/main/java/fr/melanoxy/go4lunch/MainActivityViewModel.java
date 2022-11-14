@@ -121,8 +121,8 @@ public class MainActivityViewModel extends ViewModel {
 
     public void searchNearbyRestaurant(Location location, String radius, String type, String apiKey) {
         //Check if distance with previous location is less than 500 meters.
-        previousLocation = previousLocation;
-        if (location.distanceTo(previousLocation) > 500) {
+
+        if (location.distanceTo(previousLocation) > 500 || restaurantRepository.getRestaurantNearbyResponseLiveData() == null) {
             String latitude = String.valueOf(location.getLatitude());
             String longitude = String.valueOf(location.getLongitude());
             restaurantRepository.searchNearbyRestaurants(latitude + "," + longitude, radius, type, apiKey);

@@ -13,6 +13,8 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 
     <!-- STYLE SIGN-IN ACTIVITY -->
     <style name="LoginTheme" parent="android:Theme.Light.NoTitleBar">
@@ -44,6 +46,10 @@
         <item name="cornerFamilyBottomLeft">cut</item>
         <item name="cornerSizeTopLeft">10dp</item>
         <item name="cornerSizeBottomLeft">40dp</item>
+    </style>
+
+    <style name="Widget.Theme.Go4Lunch.ActionBar.Fullscreen" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
 </resources>

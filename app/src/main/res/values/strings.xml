@@ -39,4 +39,8 @@
     <string name="nav_list">Nearby restaurants:</string>
     <string name="search_title">search</string>
     <string name="search_hint">enter query...</string>
+    <string name="CALL">CALL</string>
+    <string name="LIKE">LIKE</string>
+    <string name="WEBSITE">WEBSITE</string>
+    <string name="opening_hours">- Opening hours -</string>
 </resources>

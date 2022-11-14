@@ -3,9 +3,11 @@ package fr.melanoxy.go4lunch.ui.MapView;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NONE;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 
+import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
+
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -40,8 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.R;
-import fr.melanoxy.go4lunch.data.models.Result;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
 import fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding;
+import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
+import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
 
@@ -55,7 +59,7 @@ public class MapViewFragment extends Fragment implements
     private Marker myPositionMaker;
     private GoogleMap mMap = null;
     private List<Result> restaurantsNearbyResults = new ArrayList<>();
-    private final List<Marker> restaurantsMarker = new ArrayList<Marker>();
+    private final List<Marker> restaurantsMarker = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +79,7 @@ public class MapViewFragment extends Fragment implements
        SupportMapFragment mMapFragment =
                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
     // Then use getMapAsync() to register for the map callback:
-       mMapFragment.getMapAsync(this);
+    mMapFragment.getMapAsync(this);
 
         return view;
     }
@@ -122,22 +126,30 @@ public class MapViewFragment extends Fragment implements
         if(userLocation!=null){
         // Add a marker in current user's location
         LatLng myLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-        if (myPositionMaker!=null){myPositionMaker.remove();}
+        if (myPositionMaker!=null){
+            myPositionMaker.remove();
+        }
         myPositionMaker = googleMap.addMarker(new MarkerOptions()
                 .position(myLocation).icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 .snippet("(lat:" + userLocation.getLatitude() + ", long:" + userLocation.getLongitude() + ")")
                 .title(getString(R.string.my_position_marker)));
-//MARKER listener
-        //googleMap.setOnMarkerClickListener(this);
+
         // and move the map's camera to the same location with a zoom of 15.
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+        if (restaurantsMarker.isEmpty()) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+        }
 
     }
 }
 
     private void addNearbyRestaurants(GoogleMap mMap, List<Result> restaurantsNearbyResults) {
 
+        if (!restaurantsMarker.isEmpty()){
+            restaurantsMarker.clear();
+        }
+
+        //restaurantsMarker.clear();
         LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
 
         for (Result result : restaurantsNearbyResults) {
@@ -151,7 +163,16 @@ public class MapViewFragment extends Fragment implements
 
         builderBounds.include(marker.getPosition());
 
-        marker.setTag(result);
+    String urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ result.getPhotos().get(0).getPhotoReference() + "&key=" + MAPS_API_KEY;
+
+        RestaurantStateItem item = new RestaurantStateItem(
+        result.getPlaceId(),
+        result.getName(),
+        result.getFormattedAddress().trim(),
+        result.getBusinessStatus(),
+        urlPreview
+);
+        marker.setTag(item);
         restaurantsMarker.add(marker);
 
     }
@@ -159,7 +180,7 @@ public class MapViewFragment extends Fragment implements
 
         mMap.setOnInfoWindowClickListener(this);
         LatLngBounds bounds = builderBounds.build();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
 
     }
 
@@ -187,11 +208,7 @@ public class MapViewFragment extends Fragment implements
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-
-        Result result = (Result) marker.getTag();
-
-        String message = result.getName();
-
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+        RestaurantStateItem item = (RestaurantStateItem) marker.getTag();
+        startActivity(RestaurantDetailsActivity.navigate(requireContext(), item));
     }
 }//END of MapViewFragment

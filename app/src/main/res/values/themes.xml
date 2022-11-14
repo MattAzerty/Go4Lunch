@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Go4Lunch" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.Go4Lunch" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#FF8C4E</item>
         <item name="colorPrimaryVariant">#000000</item>
@@ -24,5 +24,11 @@
     <style name="ThemeOverlay.Go4Lunch.FullscreenContainer" parent="">
         <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
         <item name="fullscreenTextColor">@color/light_blue_A400</item>
+    </style>
+
+    <style name="Theme.Go4Lunch.Fullscreen" parent="Theme.Go4Lunch">
+        <item name="android:actionBarStyle">@style/Widget.Theme.Go4Lunch.ActionBar.Fullscreen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
     </style>
 </resources>

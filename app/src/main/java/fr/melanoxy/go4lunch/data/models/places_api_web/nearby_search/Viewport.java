@@ -1,5 +1,5 @@
 
-package fr.melanoxy.go4lunch.data.models;
+package fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

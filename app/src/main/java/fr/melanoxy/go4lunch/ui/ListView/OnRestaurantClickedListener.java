@@ -2,6 +2,6 @@ package fr.melanoxy.go4lunch.ui.ListView;
 
 public interface OnRestaurantClickedListener {
 
-    void onRestaurantClicked(String place_id);
+    void onRestaurantClicked(RestaurantStateItem place_id);
 
 }

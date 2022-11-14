@@ -8,15 +8,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import fr.melanoxy.go4lunch.data.models.RestaurantsNearbyResponse;
-import fr.melanoxy.go4lunch.data.models.Result;
-import fr.melanoxy.go4lunch.data.models.User;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
-import fr.melanoxy.go4lunch.ui.ListView.ListViewStateItem;
 
 public class MapViewViewModel extends ViewModel {
 

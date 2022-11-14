@@ -92,4 +92,5 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     //(optional) get HTTP request and response logs for our Android app within Logcat.
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+
 }

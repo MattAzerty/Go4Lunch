@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="divider">#FFFFFF</color>
+    <color name="lightWhite">#CCFFFFFF</color>
     <color name="InactiveBottomNavIconColor">@color/white</color>
     <color name="BottomNavBarColor">#000000</color>
     <color name="primary">#FD9157</color>
