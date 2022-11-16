@@ -13,7 +13,7 @@ public class PlaceIdDetailsResponse {
     private List<Object> mHtmlAttributions;
     @SerializedName("result")
     @Expose
-    private Result mResult;
+    private DetailsResult mDetailsResult;
     @SerializedName("status")
     @Expose
     private String mStatus;
@@ -26,12 +26,12 @@ public class PlaceIdDetailsResponse {
         mHtmlAttributions = htmlAttributions;
     }
 
-    public Result getResult() {
-        return mResult;
+    public DetailsResult getResult() {
+        return mDetailsResult;
     }
 
-    public void setResult(Result result) {
-        mResult = result;
+    public void setResult(DetailsResult detailsResult) {
+        mDetailsResult = detailsResult;
     }
 
     public String getStatus() {

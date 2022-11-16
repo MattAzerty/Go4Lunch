@@ -66,8 +66,7 @@ public class ListViewFragment extends Fragment {
 
 
 //link ViewStateItem to liveDataViewStateItem
-        mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), workmatesViewStateItems ->
-                adapter.submitList(workmatesViewStateItems)
+        mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), adapter::submitList
         );
 
     }

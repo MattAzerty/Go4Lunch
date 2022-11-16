@@ -1,6 +1,7 @@
 package fr.melanoxy.go4lunch.utils;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -34,6 +35,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final SearchRepository searchRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
+
 
     public static ViewModelFactory getInstance() {
         if (sInstance == null) {
@@ -98,9 +100,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             );
         } else if (modelClass.isAssignableFrom(ListViewViewModel.class)) {
             return (T) new ListViewViewModel(
-                    /*userRepository,*/
                     locationRepository,
-                    //searchRepository,
                     restaurantRepository
             );
         }else if (modelClass.isAssignableFrom(WorkmatesViewModel.class)) {
@@ -110,6 +110,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             );
         }else if (modelClass.isAssignableFrom(RestaurantDetailsViewModel.class)) {
             return (T) new RestaurantDetailsViewModel(
+                    userRepository,
                     restaurantRepository
             );
         }

@@ -5,11 +5,11 @@ import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.transition.AutoTransition;
@@ -20,9 +20,9 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.Objects;
 
 import fr.melanoxy.go4lunch.R;
-import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.Result;
 import fr.melanoxy.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
@@ -30,6 +30,8 @@ import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 public class RestaurantDetailsActivity extends AppCompatActivity {
     // Initialize variables
     private ActivityRestaurantDetailsBinding mRestaurantDetailsBinding;
+    private String phone = null;
+    private String webUrl = null;
 
     public static Intent navigate(Context context, RestaurantStateItem item) {
         Intent intent = new Intent(context, RestaurantDetailsActivity.class);
@@ -87,9 +89,27 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
             }
         });
 
-//FAB listener
-        //TODO FAB action
+//FAB listener onRestaurantForToday
+        mRestaurantDetailsBinding.restaurantDetailFabToday.setOnClickListener(v -> {
+            viewModel.onRestaurantForTodayClicked(
+                    item.getPlace_id(),item.getPlace_name(),item.getPlace_address());
+        });
+// phone listener
+        //TODO like button
+        mRestaurantDetailsBinding.restaurantDetailCall.setOnClickListener(v -> {
+            if(phone!=null) {
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                startActivity(phoneIntent);
+            }else{}//TODO snakbar
+        });
 
+
+        mRestaurantDetailsBinding.restaurantDetailWebsite.setOnClickListener(v -> {
+            if(webUrl!=null) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+        startActivity(browserIntent);
+            }else{}//TODO snakbar
+            });
 
     }
 
@@ -99,18 +119,37 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         mRestaurantDetailsBinding.restaurantDetailTvName.setText(item.getPlace_name());
         mRestaurantDetailsBinding.restaurantDetailTvAddress.setText(item.getPlace_address());
 
+        viewModel.getUserLiveData().observe(this, user -> {
+
+                    if ((Objects.equals(user.restaurant_for_today_id, item.getPlace_id()))) {
+                        mRestaurantDetailsBinding.restaurantDetailFabToday.setImageResource(R.drawable.ic_bookmark_added_white_24dp);
+                    } else {
+                        mRestaurantDetailsBinding.restaurantDetailFabToday.setImageResource(R.drawable.ic_bookmark_border_white_24dp);
+                    }
+                }
+        );
+
         Glide.with(mRestaurantDetailsBinding.restaurantDetailIvPreview)
                 .load(item.getPlace_preview_pic_url())
                 .into(mRestaurantDetailsBinding.restaurantDetailIvPreview);
+
         //DETAILS INFO (Restaurant details)
         viewModel.getRestaurantDetailsResults().observe(this, restaurantDetails -> {
             //Opening hours
             List<String> list = restaurantDetails.getOpeningHours().getWeekdayText();
             mRestaurantDetailsBinding.restaurantDetailOpeningHours.setText(TextUtils.join("\n",list));
+
+            //TODO Rating / Price level / Distance
+
+            //Phone Number of the restaurant
+            phone = restaurantDetails.getFormattedPhoneNumber();
+            //WEB browser
+            webUrl = restaurantDetails.getWebsite();
         }
         );
 
-        //RV TODO rv
+        //FIRESTORE INFOs
+        //TODO rv
 
 
     }

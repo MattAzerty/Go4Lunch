@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         //Setup for NavController with the BottomNavigationView.
         setupBottomNav();
 
-        //setupFAB GPS Location
+        //setupFAB GPS NearbyPlaceLocation
         setupFab();
 
     }

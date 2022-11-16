@@ -5,12 +5,10 @@ package fr.melanoxy.go4lunch.data.repositories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
 import java.util.Locale;
 
 import fr.melanoxy.go4lunch.data.RestaurantSearchService;
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

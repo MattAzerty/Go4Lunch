@@ -16,7 +16,7 @@
     <string name="mail" translatable="false">jbinot@email.com</string>
 
     <!-- NAVIGATION CONTROLER LABELS -->
-    <string name="nav_map">My location:</string>
+    <string name="nav_map">My nearbyPlaceLocation:</string>
     <string name="nav_workmates">Available workmates:</string>
 
     <!-- MAIN ACTIVITY -->
@@ -38,9 +38,12 @@
     <string name="connection_succeed">Authentication successful!</string>
     <string name="nav_list">Nearby restaurants:</string>
     <string name="search_title">search</string>
-    <string name="search_hint">enter query...</string>
+    <string name="search_hint">enter query…</string>
     <string name="CALL">CALL</string>
     <string name="LIKE">LIKE</string>
     <string name="WEBSITE">WEBSITE</string>
     <string name="opening_hours">- Opening hours -</string>
+    <string name="hr_open">OPEN</string>
+    <string name="hr_close">CLOSE</string>
+    <string name="hr_unknown">" HOURS UNKNOWN"</string>
 </resources>

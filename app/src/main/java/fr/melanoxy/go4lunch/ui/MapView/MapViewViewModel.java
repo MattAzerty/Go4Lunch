@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.NearbyResult;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 
@@ -24,8 +24,9 @@ public class MapViewViewModel extends ViewModel {
     @NonNull
     private final RestaurantRepository restaurantRepository;
     private LiveData<RestaurantsNearbyResponse> restaurantsResponseLiveData;
-    private final MediatorLiveData<List<Result>> restaurantsResponseMediatorLiveData = new MediatorLiveData<>();
-    List<Result> restaurantsNearby;
+    private final MediatorLiveData<List<NearbyResult>> restaurantsResponseMediatorLiveData = new MediatorLiveData<>();
+    List<NearbyResult> restaurantsNearby;
+
     //CONSTRUCTOR
     public MapViewViewModel(
             @NonNull LocationRepository locationRepository,
@@ -51,7 +52,7 @@ public class MapViewViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<Result>> getNearbyRestaurantsResults() {
+    public LiveData<List<NearbyResult>> getNearbyRestaurantsResults() {
         return restaurantsResponseMediatorLiveData;
 
     }

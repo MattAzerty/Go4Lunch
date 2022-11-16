@@ -6,23 +6,27 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.List;
-
+import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
-import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.Result;
+import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.DetailsResult;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
+import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 
 public class RestaurantDetailsViewModel extends ViewModel {
 
     @NonNull
+    private final UserRepository userRepository;
+    @NonNull
     private final RestaurantRepository restaurantRepository;
     private LiveData<PlaceIdDetailsResponse> placeIdDetailsResponseLiveData;
-    Result restaurantDetails;
-    private final MediatorLiveData<Result> restaurantDetailsMediatorLiveData = new MediatorLiveData<>();
+    DetailsResult restaurantDetails;
+    private final MediatorLiveData<DetailsResult> restaurantDetailsMediatorLiveData = new MediatorLiveData<>();
 
     public RestaurantDetailsViewModel(
+            @NonNull UserRepository userRepository,
             @NonNull RestaurantRepository restaurantRepository
     ){
+        this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
         placeIdDetailsResponseLiveData = restaurantRepository.getPlaceIdDetailsResponseLiveData();
 
@@ -39,8 +43,17 @@ public class RestaurantDetailsViewModel extends ViewModel {
         restaurantRepository.searchPlaceIdDetails(place_id,fields,apiKey);
     }
 
-    public LiveData<Result> getRestaurantDetailsResults() {
+    public LiveData<DetailsResult> getRestaurantDetailsResults() {
         return restaurantDetailsMediatorLiveData;
+
+    }
+
+    public void onRestaurantForTodayClicked(String place_id, String place_name, String place_address) {
+        userRepository.updateTodayRestaurantUser(place_id,place_name,place_address);
+    }
+
+    public LiveData<User> getUserLiveData() {
+        return userRepository.getConnectedUserLiveData();
 
     }
 

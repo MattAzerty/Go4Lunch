@@ -1,6 +1,7 @@
 package fr.melanoxy.go4lunch.ui.ListView;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -48,18 +49,23 @@ public class ListViewAdapter extends ListAdapter<RestaurantStateItem, ListViewAd
             itemView.setOnClickListener(v -> listener.onRestaurantClicked(item));
             binding.restaurantItemName.setText(item.getPlace_name());
             binding.restaurantItemAddress.setText(item.getPlace_address());
-            binding.restaurantItemOpenhours.setText(item.getPlace_openhour());
+            binding.restaurantItemOpenhours.setText(item.getPlace_is_open());
+            binding.restaurantItemDistance.setText(item.getPlace_distance()+"km");
             Glide.with(binding.restaurantItemSmallThumbnail)
                     .load(item.getPlace_preview_pic_url())
                     .apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantItemSmallThumbnail);
+
+            binding.restaurantItemStar1.setVisibility(item.getPlace_rating()>=1? View.VISIBLE : View.INVISIBLE);
+            binding.restaurantItemStar2.setVisibility(item.getPlace_rating()>=1.5? View.VISIBLE : View.INVISIBLE);
+            binding.restaurantItemStar3.setVisibility(item.getPlace_rating()>=2.5? View.VISIBLE : View.INVISIBLE);
         }
     }
 
     private static class ListRestaurantsItemCallback extends DiffUtil.ItemCallback<RestaurantStateItem> {
         @Override
         public boolean areItemsTheSame(@NonNull RestaurantStateItem oldItem, @NonNull RestaurantStateItem newItem) {
-            return oldItem.getPlace_id() == newItem.getPlace_id();
+            return oldItem.getPlace_id().equals(newItem.getPlace_id());
         }
 
         @Override

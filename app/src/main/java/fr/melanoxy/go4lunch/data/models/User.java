@@ -12,14 +12,38 @@ public class User implements Serializable {
     public String urlPicture;
     @SuppressWarnings("WeakerAccess")
     public String email;
+    //RestaurantForTodayFields
+    @Nullable
+    public String restaurant_for_today_id;
+    @Nullable
+    public String restaurant_for_today_name;
+    @Nullable
+    public String restaurant_for_today_address;
 
     public User() {}
 
-    public User(String uid, String username, @Nullable String urlPicture, String email) {
+
+
+    public User(
+
+            String uid,
+            String username,
+            @Nullable String urlPicture,
+            String email,
+            @Nullable String restaurant_for_today_id,
+            @Nullable String restaurant_for_today_name,
+            @Nullable String restaurant_for_today_address
+
+            ) {
+
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
         this.email = email;
+        this.restaurant_for_today_id = restaurant_for_today_id;
+        this.restaurant_for_today_name = restaurant_for_today_name;
+        this.restaurant_for_today_address = restaurant_for_today_address;
+
     }
 
     // --- GETTERS ---
@@ -38,6 +62,21 @@ public class User implements Serializable {
         return email;
     }
 
+    @Nullable
+    public String getRestaurant_for_today_id() {
+        return restaurant_for_today_id;
+    }
+
+    @Nullable
+    public String getRestaurant_for_today_name() {
+        return restaurant_for_today_name;
+    }
+
+    @Nullable
+    public String getRestaurant_for_today_address() {
+        return restaurant_for_today_address;
+    }
+
     // --- SETTERS ---
     public void setUrlPicture(@Nullable String urlPicture) { this.urlPicture = urlPicture; }
 
@@ -51,6 +90,18 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setRestaurant_for_today_id(@Nullable String restaurant_for_today_id) {
+        this.restaurant_for_today_id = restaurant_for_today_id;
+    }
+
+    public void setRestaurant_for_today_name(@Nullable String restaurant_for_today_name) {
+        this.restaurant_for_today_name = restaurant_for_today_name;
+    }
+
+    public void setRestaurant_for_today_address(@Nullable String restaurant_for_today_address) {
+        this.restaurant_for_today_address = restaurant_for_today_address;
     }
 
     @Override

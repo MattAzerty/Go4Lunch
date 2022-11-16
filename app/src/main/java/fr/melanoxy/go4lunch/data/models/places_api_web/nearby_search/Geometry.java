@@ -8,17 +8,17 @@ public class Geometry {
 
     @SerializedName("location")
     @Expose
-    private Location mLocation;
+    private NearbyPlaceLocation mNearbyPlaceLocation;
     @SerializedName("viewport")
     @Expose
     private Viewport mViewport;
 
-    public Location getLocation() {
-        return mLocation;
+    public NearbyPlaceLocation getLocation() {
+        return mNearbyPlaceLocation;
     }
 
-    public void setLocation(Location location) {
-        mLocation = location;
+    public void setLocation(NearbyPlaceLocation nearbyPlaceLocation) {
+        mNearbyPlaceLocation = nearbyPlaceLocation;
     }
 
     public Viewport getViewport() {

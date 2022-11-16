@@ -16,7 +16,7 @@ public class RestaurantsNearbyResponse {
     private String mNextPageToken;
     @SerializedName("results")
     @Expose
-    private List<Result> mResults;
+    private List<NearbyResult> mResults;
     @SerializedName("status")
     @Expose
     private String mStatus;
@@ -37,11 +37,11 @@ public class RestaurantsNearbyResponse {
         mNextPageToken = nextPageToken;
     }
 
-    public List<Result> getResults() {
+    public List<NearbyResult> getResults() {
         return mResults;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(List<NearbyResult> results) {
         mResults = results;
     }
 

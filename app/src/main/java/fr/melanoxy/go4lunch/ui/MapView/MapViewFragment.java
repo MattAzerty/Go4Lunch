@@ -5,7 +5,6 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 
 import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.R;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.Result;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.NearbyResult;
 import fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
@@ -58,7 +57,6 @@ public class MapViewFragment extends Fragment implements
     private FragmentMapViewBinding mFragmentMapViewBinding;
     private Marker myPositionMaker;
     private GoogleMap mMap = null;
-    private List<Result> restaurantsNearbyResults = new ArrayList<>();
     private final List<Marker> restaurantsMarker = new ArrayList<>();
 
     @Override
@@ -143,7 +141,7 @@ public class MapViewFragment extends Fragment implements
     }
 }
 
-    private void addNearbyRestaurants(GoogleMap mMap, List<Result> restaurantsNearbyResults) {
+    private void addNearbyRestaurants(GoogleMap mMap, List<NearbyResult> restaurantsNearbyResults) {
 
         if (!restaurantsMarker.isEmpty()){
             restaurantsMarker.clear();
@@ -152,7 +150,7 @@ public class MapViewFragment extends Fragment implements
         //restaurantsMarker.clear();
         LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
 
-        for (Result result : restaurantsNearbyResults) {
+        for (NearbyResult result : restaurantsNearbyResults) {
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng()))
@@ -163,13 +161,19 @@ public class MapViewFragment extends Fragment implements
 
         builderBounds.include(marker.getPosition());
 
-    String urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ result.getPhotos().get(0).getPhotoReference() + "&key=" + MAPS_API_KEY;
+        String urlPreview;
+            if(result.getPhotos()!=null){
+                String photoRef = result.getPhotos().get(0).getPhotoReference();
+                urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
+        }else{urlPreview="https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG";}
 
         RestaurantStateItem item = new RestaurantStateItem(
         result.getPlaceId(),
         result.getName(),
         result.getFormattedAddress().trim(),
-        result.getBusinessStatus(),
+        "2",
+        R.string.error_unknown_error,
+        3*result.getRating()/5,
         urlPreview
 );
         marker.setTag(item);

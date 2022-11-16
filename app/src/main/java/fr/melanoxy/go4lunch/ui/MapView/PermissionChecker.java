@@ -22,4 +22,5 @@ public class PermissionChecker {
     public boolean hasLocationPermission() {
         return ContextCompat.checkSelfPermission(application, ACCESS_FINE_LOCATION) == PERMISSION_GRANTED;
     }
+
 }

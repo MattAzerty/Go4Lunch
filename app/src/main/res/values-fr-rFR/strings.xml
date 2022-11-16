@@ -24,4 +24,7 @@
     <string name="WEBSITE">SITE WEB</string>
     <string name="LIKE">JAIME</string>
     <string name="opening_hours">- Horaire d\'ouverture -</string>
+    <string name="hr_open">OUVERT</string>
+    <string name="hr_close">FERMÉ</string>
+    <string name="hr_unknown">HORAIRES NON COMMUNIQUÉES</string>
 </resources>
