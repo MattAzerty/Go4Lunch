@@ -43,6 +43,7 @@ public class WorkmatesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        //StopListener
         mBinding = null;
     }
 

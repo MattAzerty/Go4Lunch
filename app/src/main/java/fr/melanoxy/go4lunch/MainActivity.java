@@ -40,19 +40,14 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.ActivityMainBinding;
+import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -290,13 +285,18 @@ public class MainActivity extends AppCompatActivity {
     // ---------------- DRAWER ---------------- //
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
+
+        //SingleLiveEvent to launch restaurant details activity
+        mMainActivityViewModel.getRestaurantDetailsActivitySingleLiveEvent().observe(this, item -> {
+
+           if(item.getPlace_id()!=null){
+            startActivity(RestaurantDetailsActivity.navigate(this, item));
+           }else{ showSnackBar(getString(R.string.my_restaurant));}
+        });
 
         bindDrawer();
     }
@@ -305,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.drawer_menu_item_yourlunch:
-                //TODO launch restaurant details
+                mMainActivityViewModel.onYourLunchClicked();
                 break;
             case R.id.drawer_menu_item_settings:
                 //TODO launch settings details

@@ -36,6 +36,7 @@
     <string name="error_no_internet">" No internet connection!"</string>
     <string name="error_unknown_error">" An unknown error has occurred"</string>
     <string name="connection_succeed">Authentication successful!</string>
+    <string name="my_restaurant">no restaurant saved</string>
     <string name="nav_list">Nearby restaurants:</string>
     <string name="search_title">search</string>
     <string name="search_hint">enter query…</string>

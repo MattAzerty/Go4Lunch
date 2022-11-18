@@ -29,4 +29,5 @@
     <string name="lunchmates_item">" y va !"</string>
     <string name="workmates_eating_at">Je mange @</string>
     <string name="workmates_restaurant_not_set">ne sais pas encore</string>
+    <string name="my_restaurant">aucun restaurant enregistré</string>
 </resources>

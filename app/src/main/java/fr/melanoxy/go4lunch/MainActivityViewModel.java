@@ -20,7 +20,9 @@ import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
+import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
 import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
+import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.SingleLiveEvent;
 
 public class MainActivityViewModel extends ViewModel {
 //INIT
@@ -39,6 +41,10 @@ public class MainActivityViewModel extends ViewModel {
     private Location previousLocation = new Location("point_nemo_provider");
     private final MutableLiveData<Boolean> isGpsPermissionGrantedLiveData = new MutableLiveData<>();
     private final MediatorLiveData<String> gpsMessageLiveData = new MediatorLiveData<>();
+
+    //restaurant details activity SingleLiveEvent
+    // Check https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
+    private final SingleLiveEvent<RestaurantStateItem> restaurantDetailsActivitySingleLiveEvent = new SingleLiveEvent<>();
 
 //CONSTRUCTOR
     public MainActivityViewModel(
@@ -108,6 +114,7 @@ public class MainActivityViewModel extends ViewModel {
     }
 //On User authentication success create him on firestore base
     public void onUserLoggedSuccess() {
+        userRepository.getWorkmates();
         userRepository.createUser();
     }
 
@@ -139,4 +146,24 @@ public class MainActivityViewModel extends ViewModel {
         searchRepository.searchField(query);
     }
 
+    public LiveData<RestaurantStateItem> getRestaurantDetailsActivitySingleLiveEvent() {
+        return restaurantDetailsActivitySingleLiveEvent;
+    }
+
+    public void onYourLunchClicked() {
+
+        User user = userRepository.mUser;
+
+        RestaurantStateItem rItem = new RestaurantStateItem(
+                user.getRestaurant_for_today_id(),
+                user.getRestaurant_for_today_name(),
+                user.getRestaurant_for_today_address(),
+                "",
+                R.string.error_unknown_error,
+                1,
+                user.getRestaurant_for_today_pic_url()
+        );
+
+        restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
+    }
 }//END

@@ -33,7 +33,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
     private String phone = null;
     private String webUrl = null;
     private RestaurantDetailsViewModel mViewModel;
-
+    private RestaurantStateItem mItem = null;
     public static Intent navigate(Context context, RestaurantStateItem item) {
         Intent intent = new Intent(context, RestaurantDetailsActivity.class);
         intent.putExtra("item_key", item);
@@ -60,13 +60,16 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
 
         //retrieve the item restaurant
         Intent intent = getIntent();
-        RestaurantStateItem item = (RestaurantStateItem) intent.getSerializableExtra("item_key");
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            mItem = intent.getSerializableExtra("item_key",RestaurantStateItem.class);
+        }else{mItem = (RestaurantStateItem) intent.getSerializableExtra("item_key");}
         //Ask for restaurant details
-        mViewModel.searchPlaceIdDetails(item.getPlace_id(),"opening_hours,website,formatted_phone_number",MAPS_API_KEY);
+        mViewModel.searchPlaceIdDetails(mItem.getPlace_id(),"opening_hours,website,formatted_phone_number",MAPS_API_KEY);
 
         //BINDING
-        bindLayout(item);
-        bindRecyclerview(item);
+        bindLayout(mItem);
+        bindRecyclerview(mItem);
 
         //EXPANDABLE CARDVIEW
         mRestaurantDetailsBinding.restaurantDetailArrowButton.setOnClickListener(v -> {
@@ -91,7 +94,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
 //FAB listener onRestaurantForToday
         mRestaurantDetailsBinding.restaurantDetailFabToday.setOnClickListener(v -> {
             mViewModel.onRestaurantForTodayClicked(
-                    item.getPlace_id(),item.getPlace_name(),item.getPlace_address(), item.getPlace_preview_pic_url());
+                    mItem.getPlace_id(),mItem.getPlace_name(),mItem.getPlace_address(), mItem.getPlace_preview_pic_url());
         });
 // phone button listener
         mRestaurantDetailsBinding.restaurantDetailCall.setOnClickListener(v -> {
@@ -102,7 +105,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         });
 // like button listener
         mRestaurantDetailsBinding.restaurantDetailLike.setOnClickListener(v ->
-                mViewModel.onFavClicked(item.getPlace_id()));
+                mViewModel.onFavClicked(mItem.getPlace_id()));
 // website button listener
         mRestaurantDetailsBinding.restaurantDetailWebsite.setOnClickListener(v -> {
             if(webUrl!=null) {

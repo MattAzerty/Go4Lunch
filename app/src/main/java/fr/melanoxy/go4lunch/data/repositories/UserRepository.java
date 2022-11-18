@@ -34,7 +34,7 @@ public class UserRepository {
 
     private static final String COLLECTION_NAME = "users";
     private static final String FIELD_NAME_FAV_RESTAURANTS = "my_favorite_restaurants";
-    private User mUser;
+    public User mUser;
     private ListenerRegistration mRegistration;
     private final MutableLiveData<User> connectedUserMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<User>> workmatesMutableLiveData = new MutableLiveData<>();
