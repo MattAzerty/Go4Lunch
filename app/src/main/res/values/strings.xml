@@ -16,7 +16,7 @@
     <string name="mail" translatable="false">jbinot@email.com</string>
 
     <!-- NAVIGATION CONTROLER LABELS -->
-    <string name="nav_map">My nearbyPlaceLocation:</string>
+    <string name="nav_map">My location:</string>
     <string name="nav_workmates">Available workmates:</string>
 
     <!-- MAIN ACTIVITY -->
@@ -46,4 +46,7 @@
     <string name="hr_open">OPEN</string>
     <string name="hr_close">CLOSE</string>
     <string name="hr_unknown">" HOURS UNKNOWN"</string>
+    <string name="lunchmates_item">" is joining!"</string>
+    <string name="workmates_eating_at">"i'm eating @"</string>
+    <string name="workmates_restaurant_not_set">"hasn't decided yet"</string>
 </resources>

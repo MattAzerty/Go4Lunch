@@ -3,6 +3,7 @@ package fr.melanoxy.go4lunch.data.models;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class User implements Serializable {
@@ -19,9 +20,12 @@ public class User implements Serializable {
     public String restaurant_for_today_name;
     @Nullable
     public String restaurant_for_today_address;
+    @Nullable
+    public String restaurant_for_today_pic_url;
+    @Nullable
+    public List<String> my_favorite_restaurants;
 
     public User() {}
-
 
 
     public User(
@@ -32,7 +36,9 @@ public class User implements Serializable {
             String email,
             @Nullable String restaurant_for_today_id,
             @Nullable String restaurant_for_today_name,
-            @Nullable String restaurant_for_today_address
+            @Nullable String restaurant_for_today_address,
+            @Nullable String restaurant_for_today_pic_url,
+            @Nullable List<String> my_favorite_restaurants
 
             ) {
 
@@ -43,6 +49,8 @@ public class User implements Serializable {
         this.restaurant_for_today_id = restaurant_for_today_id;
         this.restaurant_for_today_name = restaurant_for_today_name;
         this.restaurant_for_today_address = restaurant_for_today_address;
+        this.restaurant_for_today_pic_url = restaurant_for_today_pic_url;
+        this.my_favorite_restaurants = my_favorite_restaurants;
 
     }
 
@@ -77,6 +85,17 @@ public class User implements Serializable {
         return restaurant_for_today_address;
     }
 
+    @Nullable
+    public List<String> getMy_favorite_restaurants() {
+        return my_favorite_restaurants;
+    }
+
+    @Nullable
+    public String getRestaurant_for_today_pic_url() {
+        return restaurant_for_today_pic_url;
+    }
+
+
     // --- SETTERS ---
     public void setUrlPicture(@Nullable String urlPicture) { this.urlPicture = urlPicture; }
 
@@ -104,7 +123,15 @@ public class User implements Serializable {
         this.restaurant_for_today_address = restaurant_for_today_address;
     }
 
-    @Override
+    public void setMy_favorite_restaurants(@Nullable List<String> my_favorite_restaurants) {
+        this.my_favorite_restaurants = my_favorite_restaurants;
+    }
+
+    public void setRestaurant_for_today_pic_url(@Nullable String restaurant_for_today_pic_url) {
+        this.restaurant_for_today_pic_url = restaurant_for_today_pic_url;
+    }
+
+    @Override//TODO update
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

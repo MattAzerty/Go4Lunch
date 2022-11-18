@@ -45,10 +45,10 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
         }
 
         public void bind(WorkmatesStateItem item, OnWorkmateClickedListener listener) {
-            itemView.setOnClickListener(v -> listener.onWorkmateClicked(item.getAvatarUrl()));
+            itemView.setOnClickListener(v -> listener.onWorkmateClicked(item));
             binding.workmateItemUsername.setText(item.getUsername());
             binding.workmateItemEmail.setText(item.getEmail());
-            binding.workmateItemMainfield.setText(item.getMainfield());
+            binding.workmateItemMainfield.setText(item.getMainField());
             Glide.with(binding.workmateItemAvatar)
                     .load(item.getAvatarUrl())
                     .apply(RequestOptions.circleCropTransform())

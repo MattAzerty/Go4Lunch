@@ -78,6 +78,7 @@
 
 <!-- This is a ConstraintLayout for the entire CardView including the expandable portion -->
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/restaurant_detail_cl_main_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -122,6 +123,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@id/restaurant_details_workmates_rv"
                         app:layout_constraintTop_toBottomOf="@id/restaurant_detail_arrow_button">
 
                         <com.google.android.material.divider.MaterialDivider
@@ -166,8 +168,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_detail_cv_info">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -200,7 +200,7 @@
                         android:backgroundTint="@color/white"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
-                        android:drawableTop="@drawable/ic_thumb_up_off_alt_primary_24dp"
+                        android:drawableTop="@drawable/ic_favorite_border_primary_24dp"
                         app:layout_constraintStart_toEndOf="@id/restaurant_detail_call"
                         app:layout_constraintEnd_toStartOf="@id/restaurant_detail_website"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -221,16 +221,22 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/restaurant_detail_cv_buttons"
+                app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/restaurant_details_workmates_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/workmate_restaurant_details_item"
-                app:layout_constraintTop_toBottomOf="@id/restaurant_detail_cv_buttons"/>
+                android:layout_marginTop="8dp"
+                tools:layout_editor_absoluteX="0dp"
+                tools:listitem="@layout/workmate_restaurant_details_item" />
 
-
+        </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -244,7 +250,8 @@
         app:layout_anchorGravity="top|end"
         app:backgroundTint="@color/white"
         app:rippleColor="@color/primary"
-        app:fabSize="normal"
+        app:maxImageSize="34dp"
+        app:fabSize="auto"
         app:tint="@color/primary"
         android:src="@drawable/ic_bookmark_border_white_24dp"/>
 

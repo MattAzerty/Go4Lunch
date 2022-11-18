@@ -19,7 +19,6 @@
     <string name="my_position_marker">"Ma position: "</string>
     <string name="search_hint">recherche...</string>
     <string name="search_title">rechercher</string>
-    <string name="details">INFORMATIONS:</string>
     <string name="CALL">TELEPHONE</string>
     <string name="WEBSITE">SITE WEB</string>
     <string name="LIKE">JAIME</string>
@@ -27,4 +26,7 @@
     <string name="hr_open">OUVERT</string>
     <string name="hr_close">FERMÉ</string>
     <string name="hr_unknown">HORAIRES NON COMMUNIQUÉES</string>
+    <string name="lunchmates_item">" y va !"</string>
+    <string name="workmates_eating_at">Je mange @</string>
+    <string name="workmates_restaurant_not_set">ne sais pas encore</string>
 </resources>

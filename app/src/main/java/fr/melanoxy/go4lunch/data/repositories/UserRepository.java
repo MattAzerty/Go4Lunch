@@ -1,9 +1,6 @@
 package fr.melanoxy.go4lunch.data.repositories;
 
-import static androidx.fragment.app.FragmentManager.TAG;
-
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,20 +8,18 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.auth.internal.zzt;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -38,61 +33,72 @@ import fr.melanoxy.go4lunch.data.models.User;
 public class UserRepository {
 
     private static final String COLLECTION_NAME = "users";
+    private static final String FIELD_NAME_FAV_RESTAURANTS = "my_favorite_restaurants";
     private User mUser;
+    private ListenerRegistration mRegistration;
     private final MutableLiveData<User> connectedUserMutableLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<User>> WorkmatesMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> workmatesMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> lunchmatesMutableLiveData = new MutableLiveData<>();
 
     public UserRepository() {
     }
-
+//Current user logged
     @Nullable
     public FirebaseUser getCurrentUser(){
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    //SignOut
+//SignOut
     public Task<Void> signOut(Context context){
         return AuthUI.getInstance().signOut(context);
     }
 
-    // Get the Collection Reference
+// Get the Collection Reference
     private CollectionReference getUsersCollection(){
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
-    // Create User in Firestore
+// Create User in Firestore
     public void createUser() {
-
+    //get User document ref firestore
         FirebaseUser user = getCurrentUser();
         DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(user.getUid());
 
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot userDocument = task.getResult();
-                    if (userDocument.exists()) {
-                        mUser = userDocument.toObject(User.class);
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot userDocument = task.getResult();
+                if (userDocument.exists()) {
+                    mUser = userDocument.toObject(User.class);
+                    connectedUserMutableLiveData.setValue(mUser);
+                } else {//if no document in firestore we create it
+                        String urlPicture;
+                        if (user.getPhotoUrl() != null) urlPicture = user.getPhotoUrl().toString();
+                        else urlPicture = generateAvatarUrl();
+                        String username = user.getDisplayName();
+                        String uid = user.getUid();
+                        String email = user.getEmail();
+                        String place_id = null;
+                        String place_name = null;
+                        String place_address =null;
+                        String place_pic_url =null;
+                        List<String> my_favorite_restaurants = new ArrayList<>();
+                        // Create the User object
+                        mUser = new User(
+                                uid,
+                                username,
+                                urlPicture,
+                                email,
+                                place_id,
+                                place_name,
+                                place_address,
+                                place_pic_url,
+                                my_favorite_restaurants);
+                        // Store User to Firestore
+                        UserRepository.this.getUsersCollection().document(uid).set(mUser);
                         connectedUserMutableLiveData.setValue(mUser);
-                    } else {
-                            String urlPicture;
-                            if (user.getPhotoUrl() != null) urlPicture = user.getPhotoUrl().toString();
-                            else urlPicture = generateAvatarUrl();
-                            String username = user.getDisplayName();
-                            String uid = user.getUid();
-                            String email = user.getEmail();
-                            String place_id = null;
-                            String place_name = null;
-                            String place_address =null;
-                            // Create the User object
-                            mUser = new User(uid, username, urlPicture, email, place_id, place_name, place_address);
-                            // Store User to Firestore
-                            UserRepository.this.getUsersCollection().document(uid).set(mUser);
-                            connectedUserMutableLiveData.setValue(mUser);
-                    }
-                } else {
-                    connectedUserMutableLiveData.setValue(null);//TODO handle error
                 }
+            } else {
+                connectedUserMutableLiveData.setValue(null);//TODO handle error
             }
         });
 
@@ -105,47 +111,70 @@ public class UserRepository {
     public void updateTodayRestaurantUser(
             String restaurant_for_today_id,
             String restaurant_for_today_name,
-            String restaurant_for_today_address
+            String restaurant_for_today_address,
+            String restaurant_for_today_pic_url
     ) {
 
         FirebaseUser user = getCurrentUser();
         DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(user.getUid());
-
+//Case when this exact restaurant was already stored in Firestore
         if (Objects.equals(restaurant_for_today_id, mUser.restaurant_for_today_id)){
             restaurant_for_today_id = null;
             restaurant_for_today_name = null;
             restaurant_for_today_address = null;
+            restaurant_for_today_pic_url = null;
         }
 
         String finalRestaurant_for_today_id = restaurant_for_today_id;
         String finalRestaurant_for_today_name = restaurant_for_today_name;
         String finalRestaurant_for_today_address = restaurant_for_today_address;
+        String finalRestaurant_for_today_pic_url = restaurant_for_today_pic_url;
 
+//update the restaurant for today info
         userRef
                 .update(
                         "restaurant_for_today_id", restaurant_for_today_id,
                         "restaurant_for_today_name",restaurant_for_today_name,
-                        "restaurant_for_today_address",restaurant_for_today_address
+                        "restaurant_for_today_address",restaurant_for_today_address,
+                        "restaurant_for_today_pic_url",restaurant_for_today_pic_url
 
                 )
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        mUser.setRestaurant_for_today_id(finalRestaurant_for_today_id);
-                        mUser.setRestaurant_for_today_name(finalRestaurant_for_today_name);
-                        mUser.setRestaurant_for_today_address(finalRestaurant_for_today_address);
-                        connectedUserMutableLiveData.setValue(mUser);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    //report those modifications to connectedUserLiveData
+                    mUser.setRestaurant_for_today_id(finalRestaurant_for_today_id);
+                    mUser.setRestaurant_for_today_name(finalRestaurant_for_today_name);
+                    mUser.setRestaurant_for_today_address(finalRestaurant_for_today_address);
+                    mUser.setRestaurant_for_today_address(finalRestaurant_for_today_pic_url);
+                    connectedUserMutableLiveData.setValue(mUser);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Log.w(TAG, "Error updating document", e);TODO handle error
-                    }
+                .addOnFailureListener(e -> {
+                    //Log.w(TAG, "Error updating document", e);TODO handle error
                 });
     }
 
-    //TODO add a restaurant to favorite list
+    public void updateFavList(String place_id) {
+
+        FirebaseUser user = getCurrentUser();
+        DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(user.getUid());
+
+        List<String> updatedList = mUser.my_favorite_restaurants;
+
+        if(mUser.my_favorite_restaurants.contains(place_id)){
+            // Atomically remove a region from the "regions" array field.
+            userRef.update(FIELD_NAME_FAV_RESTAURANTS, FieldValue.arrayRemove(place_id));
+
+            updatedList.remove(place_id);
+            mUser.setMy_favorite_restaurants(updatedList);
+            connectedUserMutableLiveData.setValue(mUser);
+        }else{
+            // Atomically add a new region to the "regions" array field.
+            userRef.update(FIELD_NAME_FAV_RESTAURANTS, FieldValue.arrayUnion(place_id));
+
+            updatedList.add(place_id);
+            mUser.setMy_favorite_restaurants(updatedList);
+            connectedUserMutableLiveData.setValue(mUser);
+}
+    }
 
     // Check if user is logged on Firebase
     public Boolean isUserAuthenticatedInFirebase() {
@@ -182,34 +211,62 @@ public class UserRepository {
         return connectedUserMutableLiveData;
     }
 
+    public MutableLiveData<List<User>> getLunchmates(String place_id) {
+
+        Query query = FirebaseHelper.getInstance().getWorkmateCollection()
+                .whereEqualTo("restaurant_for_today_id", place_id);
+
+        mRegistration = query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    lunchmatesMutableLiveData.postValue(new ArrayList<>());//TODO handle error
+                    return;
+                }
+                ArrayList<User> lunchmates = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : value) {
+                            doc = doc;
+                        lunchmates.add(doc.toObject(User.class));
+                }
+                lunchmatesMutableLiveData.postValue(lunchmates);
+            }
+        });
+
+        return lunchmatesMutableLiveData;
+
+    }
+
+    public void onEndOfDetailsActivity() {
+        mRegistration.remove();
+        lunchmatesMutableLiveData.setValue(new ArrayList<>());
+
+    }
+
     public MutableLiveData<List<User>> getWorkmates() {
 
         FirebaseHelper.getInstance().getWorkmateCollection()
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            WorkmatesMutableLiveData.postValue(new ArrayList<>());//TODO handle error
-                            return;
-                        }
-
-                        ArrayList<User> workmates = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : value) {
-                            if (doc.get("username") != null) {
-                                workmates.add(doc.toObject(User.class));
-                            }
-                        }
-                        WorkmatesMutableLiveData.postValue(workmates);
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        workmatesMutableLiveData.postValue(new ArrayList<>());//TODO handle error
+                        return;
                     }
+                    ArrayList<User> workmates = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : value) {
+                        if (doc.get("username") != null) {
+                            workmates.add(doc.toObject(User.class));
+                        }
+                    }
+                    workmatesMutableLiveData.postValue(workmates);
                 });
 
-        return WorkmatesMutableLiveData;
+        return workmatesMutableLiveData;
     }
 
     @NonNull
     private String generateAvatarUrl() {
         return "https://i.pravatar.cc/200?u=" + System.currentTimeMillis();
     }
+
 
 }// END UserRepository

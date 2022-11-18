@@ -21,9 +21,6 @@ public class RestaurantStateItem implements Serializable {
     @NonNull
     private final String place_preview_pic_url;
 
-
-
-
     public RestaurantStateItem(
             @NonNull String place_id,
             @NonNull String place_name,

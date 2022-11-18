@@ -305,8 +305,10 @@ public class MainActivity extends AppCompatActivity {
 
         switch (menuItem.getItemId()) {
             case R.id.drawer_menu_item_yourlunch:
+                //TODO launch restaurant details
                 break;
             case R.id.drawer_menu_item_settings:
+                //TODO launch settings details
                 break;
             case R.id.drawer_menu_item_logout:
                 mMainActivityViewModel.onSignOut(this).addOnSuccessListener(aVoid -> {

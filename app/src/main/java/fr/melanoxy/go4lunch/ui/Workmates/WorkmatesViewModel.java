@@ -1,21 +1,22 @@
 package fr.melanoxy.go4lunch.ui.Workmates;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.data.models.User;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.NearbyResult;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
+import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 
@@ -27,17 +28,21 @@ public class WorkmatesViewModel extends ViewModel {
     @NonNull
     private final SearchRepository searchRepository;
 
+    private final Application application;
+
     private final MediatorLiveData<List<WorkmatesStateItem>> workmatesMediatorLiveData = new MediatorLiveData<>();
 
     //CONSTRUCTOR
     public WorkmatesViewModel(
             @NonNull UserRepository userRepository,
-            @NonNull SearchRepository searchRepository
-    ) {
+            @NonNull SearchRepository searchRepository,
+            Application application) {
+
         this.userRepository = userRepository;
         this.searchRepository = searchRepository;
+        this.application = application;
 
-        final LiveData<List<User>> workmatesLiveData = userRepository.getWorkmates();
+        LiveData<List<User>> workmatesLiveData = userRepository.getWorkmates();
         LiveData<String> queryLiveData = searchRepository.getSearchFieldLiveData();
 
         workmatesMediatorLiveData.addSource(workmatesLiveData, workmates ->
@@ -45,9 +50,13 @@ public class WorkmatesViewModel extends ViewModel {
 
         workmatesMediatorLiveData.addSource(queryLiveData, query ->
                 combine(workmatesLiveData.getValue(), query));
+
     }
 
-    private void combine(@Nullable final List<User> workmates, @Nullable String query) {
+    private void combine(
+            @Nullable final List<User> workmates,
+            @Nullable String query
+    ) {
 
         // Filter workmates with query parameter
         List<User> filteredWorkmates = getFilteredWorkmates(workmates, query);
@@ -82,15 +91,28 @@ public class WorkmatesViewModel extends ViewModel {
     // This is here we transform the "raw data" (User) into a "user pleasing" view model (ViewStateItem)
     @NonNull
     private WorkmatesStateItem mapWorkmate(@NonNull User user) {
+
+        String place_name;
+        if(user.restaurant_for_today_name!=null){
+            place_name=application.getApplicationContext().getResources().getString(R.string.workmates_eating_at)+user.restaurant_for_today_name;
+        }else{
+            place_name= application.getApplicationContext().getResources().getString(R.string.workmates_restaurant_not_set);
+        }
+
+
         return new WorkmatesStateItem(
                 user.uid,
                 "- "+user.username,
                 "."+user.email,
                 user.getUrlPicture(),
-                "i'm eating @La fourchette "
+                place_name+".",
+                user.getRestaurant_for_today_id(),
+                user.restaurant_for_today_name,
+                user.getRestaurant_for_today_address(),
+                user.getRestaurant_for_today_pic_url()
         );
     }
-    // Getter typé en LiveData (et pas MediatorLiveData pour éviter la modification de la valeur de la LiveData dans la View)
+
     public LiveData<List<WorkmatesStateItem>> getViewStateLiveData() {
         return workmatesMediatorLiveData;
     }

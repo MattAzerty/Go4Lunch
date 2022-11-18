@@ -4,8 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.DetailsResult;
@@ -32,6 +37,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
 
         restaurantDetailsMediatorLiveData.addSource(placeIdDetailsResponseLiveData, placeIdDetailsResponse ->
                 combine(placeIdDetailsResponse));
+
     }
 
     private void combine(@Nullable final PlaceIdDetailsResponse placeIdDetailsResponse) {
@@ -48,14 +54,37 @@ public class RestaurantDetailsViewModel extends ViewModel {
 
     }
 
-    public void onRestaurantForTodayClicked(String place_id, String place_name, String place_address) {
-        userRepository.updateTodayRestaurantUser(place_id,place_name,place_address);
+    public void onRestaurantForTodayClicked(String place_id, String place_name, String place_address, String place_pic_url) {
+        userRepository.updateTodayRestaurantUser(place_id,place_name,place_address,place_pic_url);
     }
 
     public LiveData<User> getUserLiveData() {
         return userRepository.getConnectedUserLiveData();
-
     }
 
+    public void onFavClicked(String place_id) {
+        userRepository.updateFavList(place_id);
+    }
 
+    public LiveData<List<LunchmateStateItem>> getLunchmateStateItemsLiveData(String place_id) {
+        return Transformations.map(userRepository.getLunchmates(place_id), lunchmates -> {
+            List<LunchmateStateItem> lunchmateStateItems = new ArrayList<>();
+
+            // mapping
+            for (User lunchmate : lunchmates) {
+                    lunchmateStateItems.add(
+                            new LunchmateStateItem(
+                                    lunchmate.getUid(),
+                                    lunchmate.getUsername(),
+                                    lunchmate.getUrlPicture()
+                            )
+                    );
+            }
+            return lunchmateStateItems;
+        });
+    }
+
+    public void onBackPressed() {
+        userRepository.onEndOfDetailsActivity();
+    }
 }//END of RestaurantDetailsViewModel

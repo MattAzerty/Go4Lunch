@@ -35,7 +35,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final SearchRepository searchRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
-
+    @NonNull
+    private final Application application;
 
     public static ViewModelFactory getInstance() {
         if (sInstance == null) {
@@ -58,7 +59,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new SearchRepository(
                             ),
                             new RestaurantRepository(
-                            )
+                            ),
+                            application
                     );
                 }
             }
@@ -72,13 +74,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             @NonNull PermissionChecker permissionChecker,
             @NonNull LocationRepository locationRepository,
             @NonNull SearchRepository searchRepository,
-            @NonNull RestaurantRepository restaurantRepository
-    ) {
+            @NonNull RestaurantRepository restaurantRepository,
+            @NonNull Application application) {
         this.userRepository = userRepository;
         this.permissionChecker = permissionChecker;
         this.locationRepository = locationRepository;
         this.searchRepository = searchRepository;
         this.restaurantRepository = restaurantRepository;
+        this.application = application;
     }
 
     @SuppressWarnings("unchecked")
@@ -106,7 +109,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         }else if (modelClass.isAssignableFrom(WorkmatesViewModel.class)) {
             return (T) new WorkmatesViewModel(
                     userRepository,
-                    searchRepository
+                    searchRepository,
+                    application
             );
         }else if (modelClass.isAssignableFrom(RestaurantDetailsViewModel.class)) {
             return (T) new RestaurantDetailsViewModel(

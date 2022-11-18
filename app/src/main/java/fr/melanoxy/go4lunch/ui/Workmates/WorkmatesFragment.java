@@ -12,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.FragmentWorkmatesBinding;
+import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
+import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
 public class WorkmatesFragment extends Fragment {
@@ -54,8 +57,19 @@ public class WorkmatesFragment extends Fragment {
 //Init RecyclerView
         WorkmatesAdapter adapter = new WorkmatesAdapter(new OnWorkmateClickedListener() {
             @Override
-            public void onWorkmateClicked(String uid) {
-                Toast.makeText(getActivity(), "details about the lunch of my workmate", Toast.LENGTH_LONG).show();
+            public void onWorkmateClicked(WorkmatesStateItem item) {
+
+                if(item.getPlace_id()!=null){
+                RestaurantStateItem rItem = new RestaurantStateItem(
+                        item.getPlace_id(),
+                        item.getPlace_name(),
+                        item.getPlace_address(),
+                        "",
+                        R.string.error_unknown_error,
+                        1,
+                        item.getPlace_pic_url()
+                );
+                startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));}
             }
         });
 

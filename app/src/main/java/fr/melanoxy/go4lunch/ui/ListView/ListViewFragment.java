@@ -47,31 +47,19 @@ public class ListViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-
 //ViewModel used for this fragment
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
                 .get(ListViewViewModel.class);
 
 //Init RecyclerView
-        ListViewAdapter adapter = new ListViewAdapter(new OnRestaurantClickedListener() {
-            @Override
-            public void onRestaurantClicked(RestaurantStateItem item) {
-
-                startActivity(RestaurantDetailsActivity.navigate(requireContext(), item));
-
-            }
-        });
+        ListViewAdapter adapter = new ListViewAdapter(item ->
+                startActivity(RestaurantDetailsActivity.navigate(requireContext(), item)));
 
         mBinding.restaurantsRv.setAdapter(adapter);
-
 
 //link ViewStateItem to liveDataViewStateItem
         mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), adapter::submitList
         );
-
     }
 
-
-
-
-}//END
+}//END of ListViewFragment
