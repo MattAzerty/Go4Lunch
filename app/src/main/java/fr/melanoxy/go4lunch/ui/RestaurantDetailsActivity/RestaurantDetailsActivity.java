@@ -4,30 +4,52 @@ import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.hilt.work.HiltWorkerFactory;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Configuration;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+import dagger.hilt.android.HiltAndroidApp;
 import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
 public class RestaurantDetailsActivity extends AppCompatActivity {
+
     // Initialize variables
     private ActivityRestaurantDetailsBinding mRestaurantDetailsBinding;
     private String phone = null;
@@ -40,6 +62,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         return intent;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +118,19 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         mRestaurantDetailsBinding.restaurantDetailFabToday.setOnClickListener(v -> {
             mViewModel.onRestaurantForTodayClicked(
                     mItem.getPlace_id(),mItem.getPlace_name(),mItem.getPlace_address(), mItem.getPlace_preview_pic_url());
+//Ask notification permission
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    0
+            );
         });
 // phone button listener
         mRestaurantDetailsBinding.restaurantDetailCall.setOnClickListener(v -> {
             if(phone!=null) {
                 Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                 startActivity(phoneIntent);
-            }else{}//TODO snakbar
+            }else{showSnackBar(getString(R.string.no_phone_number));}
         });
 // like button listener
         mRestaurantDetailsBinding.restaurantDetailLike.setOnClickListener(v ->
@@ -111,7 +140,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
             if(webUrl!=null) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
         startActivity(browserIntent);
-            }else{}//TODO snakbar
+            }else{showSnackBar(getString(R.string.no_web_url));}
             });
     }
 
@@ -183,6 +212,14 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
 
     }
 
+    // Show Snack Bar with a message
+    private void showSnackBar(String message){
+        ContextThemeWrapper ctw = new ContextThemeWrapper(this, R.style.CustomSnackbarTheme);
+        Snackbar.make(ctw, mRestaurantDetailsBinding.restaurantDetailClMain, message, Snackbar.LENGTH_LONG)
+                .setTextColor(Color.WHITE)
+                .show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -198,4 +235,5 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         mViewModel.onBackPressed();
         finish();
     }
+
 }

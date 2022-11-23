@@ -161,7 +161,7 @@ public class MapViewFragment extends Fragment implements
 
         builderBounds.include(marker.getPosition());
 
-        String urlPreview;
+        String urlPreview;//TODO move this to restaurantRepository
             if(result.getPhotos()!=null){
                 String photoRef = result.getPhotos().get(0).getPhotoReference();
                 urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;

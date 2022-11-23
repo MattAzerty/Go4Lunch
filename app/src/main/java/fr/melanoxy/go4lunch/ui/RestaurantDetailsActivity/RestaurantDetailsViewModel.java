@@ -67,7 +67,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     public LiveData<List<LunchmateStateItem>> getLunchmateStateItemsLiveData(String place_id) {
-        return Transformations.map(userRepository.getLunchmates(place_id), lunchmates -> {
+        return Transformations.map(userRepository.getLunchmatesLiveData(place_id), lunchmates -> {
             List<LunchmateStateItem> lunchmateStateItems = new ArrayList<>();
 
             // mapping

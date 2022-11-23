@@ -8,7 +8,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import fr.melanoxy.go4lunch.data.FirebaseHelper;
 import fr.melanoxy.go4lunch.data.models.User;
@@ -144,8 +147,8 @@ public class UserRepository {
                     mUser.setRestaurant_for_today_id(finalRestaurant_for_today_id);
                     mUser.setRestaurant_for_today_name(finalRestaurant_for_today_name);
                     mUser.setRestaurant_for_today_address(finalRestaurant_for_today_address);
-                    mUser.setRestaurant_for_today_address(finalRestaurant_for_today_pic_url);
-                    connectedUserMutableLiveData.setValue(mUser);
+                    mUser.setRestaurant_for_today_pic_url(finalRestaurant_for_today_pic_url);
+                    connectedUserMutableLiveData.postValue(mUser);
                 })
                 .addOnFailureListener(e -> {
                     //Log.w(TAG, "Error updating document", e);TODO handle error
@@ -211,7 +214,36 @@ public class UserRepository {
         return connectedUserMutableLiveData;
     }
 
-    public MutableLiveData<List<User>> getLunchmates(String place_id) {
+    //--------------------------For notification
+
+    public User getDataUser(String uid) throws ExecutionException, InterruptedException {
+
+        //getUsersCollection().document(uid).get()
+        DocumentSnapshot doc = com.google.android.gms.tasks.Tasks.await(getUsersCollection().document(uid).get());
+        mUser = doc.toObject(User.class);
+        return mUser;
+    }
+
+
+    public List<String> getLunchmates(String placeId) throws ExecutionException, InterruptedException {
+
+        ArrayList<String> lunchmates = new ArrayList<>();
+
+        //getUsersCollection().document(uid).get()
+        QuerySnapshot documents = Tasks.await(
+                FirebaseHelper.getInstance().getWorkmateCollection()
+                        .whereEqualTo("restaurant_for_today_id", placeId)
+                        .get());
+
+        for (DocumentSnapshot document : documents.getDocuments()) {
+            lunchmates.add((document.toObject(User.class)).getUsername());}
+
+        return lunchmates;
+    }
+
+                                                        //---------------------------------------------
+
+    public MutableLiveData<List<User>> getLunchmatesLiveData(String place_id) {
 
         Query query = FirebaseHelper.getInstance().getWorkmateCollection()
                 .whereEqualTo("restaurant_for_today_id", place_id);
@@ -226,7 +258,6 @@ public class UserRepository {
                 }
                 ArrayList<User> lunchmates = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : value) {
-                            doc = doc;
                         lunchmates.add(doc.toObject(User.class));
                 }
                 lunchmatesMutableLiveData.postValue(lunchmates);

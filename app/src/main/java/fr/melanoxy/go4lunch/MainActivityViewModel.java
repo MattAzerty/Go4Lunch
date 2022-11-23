@@ -13,8 +13,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
 
-import java.util.Date;
-
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
@@ -42,6 +40,9 @@ public class MainActivityViewModel extends ViewModel {
     private final MutableLiveData<Boolean> isGpsPermissionGrantedLiveData = new MutableLiveData<>();
     private final MediatorLiveData<String> gpsMessageLiveData = new MediatorLiveData<>();
 
+    private final MutableLiveData<Boolean> isNotifyPermissionGrantedLiveData = new MutableLiveData<>();
+    private final MediatorLiveData<User> notifyStateMediatorLiveData = new MediatorLiveData<>();
+
     //restaurant details activity SingleLiveEvent
     // Check https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
     private final SingleLiveEvent<RestaurantStateItem> restaurantDetailsActivitySingleLiveEvent = new SingleLiveEvent<>();
@@ -60,36 +61,57 @@ public class MainActivityViewModel extends ViewModel {
         this.searchRepository = searchRepository;
         this.restaurantRepository = restaurantRepository;
 
-        //point nemo coordinate
+//GPS LOCATION
+        //point nemo coordinates
         previousLocation.setLatitude(-48.876667);
         previousLocation.setLongitude(-123.393333);
 
         LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
 
         gpsMessageLiveData.addSource(locationLiveData, location ->
-                combine(location, isGpsPermissionGrantedLiveData.getValue())
+                combineLocation(location, isGpsPermissionGrantedLiveData.getValue())
+        );
+        gpsMessageLiveData.addSource(isGpsPermissionGrantedLiveData, hasGpsPermission ->
+                combineLocation(locationLiveData.getValue(), hasGpsPermission)
         );
 
-        gpsMessageLiveData.addSource(isGpsPermissionGrantedLiveData, hasGpsPermission ->
-                combine(locationLiveData.getValue(), hasGpsPermission)
+        LiveData<User> userLiveData = userRepository.getConnectedUserLiveData();
+
+//NOTIFICATION
+        notifyStateMediatorLiveData.addSource(isNotifyPermissionGrantedLiveData, hasNotifyPermission ->
+                combineNotify(hasNotifyPermission,userLiveData.getValue())
         );
+
+        notifyStateMediatorLiveData.addSource(userLiveData, user ->
+                combineNotify(isNotifyPermissionGrantedLiveData.getValue(),user)
+        );
+
+        //TODO settings input
 }
 
-    private void combine(@Nullable Location location, @Nullable Boolean hasGpsPermission) {
+    private void combineLocation(@Nullable Location location, @Nullable Boolean hasGpsPermission) {
         if (location == null) {
             if (hasGpsPermission == null || !hasGpsPermission) {
                 // Never hardcode translatable Strings, always use Context.getString(R.string.my_string) instead !
                 gpsMessageLiveData.setValue("I am lost... Should I click the permission button ?!");
-            } else {
-                gpsMessageLiveData.setValue("Querying location, please wait for a few seconds...");
             }
-        } else {
-            gpsMessageLiveData.setValue("I am at coordinates (lat:" + location.getLatitude() + ", long:" + location.getLongitude() + ")");
         }
+    }
+
+    private void combineNotify(@Nullable Boolean hasNotifyPermission,@Nullable User user) {
+        if(hasNotifyPermission && user!=null){
+        notifyStateMediatorLiveData.setValue(user);}
     }
 
     @SuppressLint("MissingPermission")
     public void refresh() {
+//NOTIFICATION
+        boolean hasNotifyPermission = true;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            hasNotifyPermission = permissionChecker.hasNotificationPermission();
+        }
+        isNotifyPermissionGrantedLiveData.setValue(hasNotifyPermission);
+//GPS
         boolean hasGpsPermission = permissionChecker.hasLocationPermission();
         isGpsPermissionGrantedLiveData.setValue(hasGpsPermission);
 
@@ -104,8 +126,16 @@ public class MainActivityViewModel extends ViewModel {
         return isGpsPermissionGrantedLiveData;
     }
 
+    public LiveData<Boolean> getIsNotifyPermissionGrantedLiveData() {
+        return isNotifyPermissionGrantedLiveData;
+    }
+
     public LiveData<String> getGpsMessageLiveData() {
         return gpsMessageLiveData;
+    }
+
+    public LiveData<User> getNotifyStateLiveData() {
+        return notifyStateMediatorLiveData;
     }
 
 //Ask repo to check on firebase if the user instance exist
@@ -128,7 +158,6 @@ public class MainActivityViewModel extends ViewModel {
 
     public void searchNearbyRestaurant(Location location, String radius, String type, String apiKey) {
         //Check if distance with previous location is less than 500 meters.
-
         if (location.distanceTo(previousLocation) > 500 || restaurantRepository.getRestaurantNearbyResponseLiveData() == null) {
             String latitude = String.valueOf(location.getLatitude());
             String longitude = String.valueOf(location.getLongitude());

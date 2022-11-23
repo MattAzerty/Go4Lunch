@@ -6,6 +6,8 @@ import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
@@ -15,13 +17,24 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,12 +54,18 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.ActivityMainBinding;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
+import fr.melanoxy.go4lunch.utils.NotifyWorker;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
     // initialize variables
     private ActivityMainBinding mMainActivityBinding;
     private MainActivityViewModel mMainActivityViewModel;
+    private WorkManager mWorkManager;
+    private final String mTagUniqueWork ="notifyTag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +95,64 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
-        // Setup for Drawer
-        setupDrawerContent(mMainActivityBinding.activityMainNavViewDrawer);
+        //Configure Drawer
+        setupDrawer(mMainActivityBinding.activityMainNavViewDrawer);
 
-        //Setup for NavController with the BottomNavigationView.
+        //Configure NavController with the BottomNavigationView.
         setupBottomNav();
 
-        //setupFAB GPS NearbyPlaceLocation
+        //configure GPS NearbyPlaceLocation button (top-right)
         setupFab();
+
+        //setup Notification
+        setupNotify();
 
     }
 
+   private void setupNotify() {
+
+       mMainActivityViewModel.getNotifyStateLiveData().observe(this, user -> {
+
+           if(user.getRestaurant_for_today_name()!=null) {
+
+//Delay in minutes for next lunch/noon time:
+               LocalDateTime now = LocalDateTime.now();
+               LocalDateTime lunchDateTimeForToday = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
+
+               Duration duration = Duration.between(now,//and next lunchtime.
+                       (now.isAfter(lunchDateTimeForToday)) ? LocalDateTime.of(LocalDate.from(now.plusDays(1)), LocalTime.NOON) : lunchDateTimeForToday);
+               long delay = Math.abs(duration.toMinutes());
+
+//Workmanager for notification
+               mWorkManager = WorkManager.getInstance(getApplicationContext());
+
+
+               Data data = new Data.Builder()
+                       .putString(NotifyWorker.EXTRA_USER_ID, user.getUid())
+                       .build();
+
+//need internet
+               Constraints constraints = new Constraints.Builder()
+                       .setRequiredNetworkType(NetworkType.CONNECTED)
+                       .build();
+
+//'run only one' time request
+               OneTimeWorkRequest uploadWorkRequest =
+                       new OneTimeWorkRequest.Builder(NotifyWorker.class)
+                               .setInputData(data)//Restaurant for today info
+                               .setConstraints(constraints)//Internet required
+                               .setInitialDelay(delay, TimeUnit.MINUTES)
+                               .addTag(mTagUniqueWork)//tag for canceling a simple work request
+                               .build();
+
+            /*with 'ExistingPeriodicWorkPolicy.KEEP'.
+                It will run the new PeriodicWorkRequest only
+                if there is no pending work labelled with uniqueWorkName*/
+
+               mWorkManager.enqueueUniqueWork(mTagUniqueWork, ExistingWorkPolicy.KEEP, uploadWorkRequest);
+           }else{mWorkManager.cancelUniqueWork(mTagUniqueWork);}
+       });
+       }
 
 
     @Override
@@ -102,31 +170,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void  checkIfUserIsAuthenticated(){
         if (!mMainActivityViewModel.isUserAuthenticated()){startSignInActivity();}
-    }
-
-    private void  bindDrawer(){
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view_drawer);
-        View headerContainer = navigationView.getHeaderView(0); // This returns the container layout from your navigation drawer header layout file (e.g., the parent RelativeLayout/LinearLayout in your my_nav_drawer_header.xml file)
-
-        mMainActivityViewModel.getConnectedUserLiveData().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                TextView username = (TextView)headerContainer.findViewById(R.id.drawer_header_username);
-                username.setText(user.username);
-                TextView email = (TextView)headerContainer.findViewById(R.id.drawer_header_email);
-                email.setText(user.email);
-
-                if (user.getUrlPicture()!=null)   {
-                    Glide.with(navigationView.getContext())
-                            .load(user.getUrlPicture())
-                            .apply(RequestOptions.circleCropTransform())
-                            .into((ImageView) headerContainer.findViewById(R.id.drawer_header_pfp));
-                }
-
-            }
-        });
-
     }
 
     private void startSignInActivity(){
@@ -153,12 +196,7 @@ public class MainActivity extends AppCompatActivity {
     //See: https://developer.android.com/training/basics/intents/result
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
-            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                @Override
-                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
-                    onSignInResult(result);
-                }
-            }
+            this::onSignInResult
     );
 
     // Method that handles response after SignIn Activity close
@@ -166,12 +204,12 @@ public class MainActivity extends AppCompatActivity {
         IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
-            mMainActivityViewModel.onUserLoggedSuccess();
-            showSnackBar(getString(R.string.connection_succeed));
-            setupPermissions();
+            mMainActivityViewModel.onUserLoggedSuccess();//the system will know that the user is log.
+            showSnackBar(getString(R.string.connection_succeed));//send welcome message.
+            setupPermissions();//ask gps location permission
 
         } else {
-            // ERRORS
+            // ERRORS (Toast because we will leave this activity after)
             if (response == null) {
                 Toast.makeText(getApplicationContext(),R.string.error_authentication_canceled,Toast.LENGTH_SHORT).show();
                 //showSnackBar(getString(R.string.error_authentication_canceled));
@@ -189,18 +227,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPermissions() {
-
+        //GPS LOCATION PERMISSIONS
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                 0
         );
-
     }
 
-    // Show Snack Bar with a message
-    private void showSnackBar(String message){
-        Snackbar.make(mMainActivityBinding.activityMainDrawerLayout, message, Snackbar.LENGTH_SHORT).show();
+    // Show Snack Bar with a message (bg/text color custom)
+    public void showSnackBar(String message){
+        ContextThemeWrapper ctw = new ContextThemeWrapper(this, R.style.CustomSnackbarTheme);
+        Snackbar.make(ctw, mMainActivityBinding.activityMainDrawerLayout, message, Snackbar.LENGTH_LONG)
+                .setTextColor(Color.WHITE)
+                .show();
     }
 
     @Override
@@ -283,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ---------------- DRAWER ---------------- //
-    private void setupDrawerContent(NavigationView navigationView) {
+    private void setupDrawer(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
                     selectDrawerItem(menuItem);
@@ -292,13 +332,28 @@ public class MainActivity extends AppCompatActivity {
 
         //SingleLiveEvent to launch restaurant details activity
         mMainActivityViewModel.getRestaurantDetailsActivitySingleLiveEvent().observe(this, item -> {
-
-           if(item.getPlace_id()!=null){
             startActivity(RestaurantDetailsActivity.navigate(this, item));
-           }else{ showSnackBar(getString(R.string.my_restaurant));}
         });
 
-        bindDrawer();
+        mMainActivityViewModel.getConnectedUserLiveData().observe(this, user -> {
+
+            //setup: name, mail and pfp in drawer
+
+            //NavigationView navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view_drawer);
+            View headerContainer = navigationView.getHeaderView(0); // This returns the container layout from your navigation drawer header layout file (e.g., the parent RelativeLayout/LinearLayout in your my_nav_drawer_header.xml file)
+
+            TextView username = (TextView)headerContainer.findViewById(R.id.drawer_header_username);
+            username.setText(user.username);
+            TextView email = (TextView)headerContainer.findViewById(R.id.drawer_header_email);
+            email.setText(user.email);
+
+            if (user.getUrlPicture()!=null)   {
+                Glide.with(navigationView.getContext())
+                        .load(user.getUrlPicture())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into((ImageView) headerContainer.findViewById(R.id.drawer_header_pfp));
+            }
+        });
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
@@ -312,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.drawer_menu_item_logout:
                 mMainActivityViewModel.onSignOut(this).addOnSuccessListener(aVoid -> {
+                    mWorkManager.cancelUniqueWork(mTagUniqueWork);
                     startSignInActivity();
                 });
                 break;
@@ -372,9 +428,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 default: mMainActivityBinding.activityMainFabMylocation.hide();
                     break;
-
             }
-
         });
     }
 

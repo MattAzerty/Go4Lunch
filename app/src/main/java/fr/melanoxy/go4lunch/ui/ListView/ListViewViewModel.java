@@ -85,7 +85,7 @@ public class ListViewViewModel extends ViewModel {
         }
 
 //Web url
-        String urlPreview;
+        String urlPreview;//TODO move this to restaurantRepo
         if(result.getPhotos()!=null){
             String photoRef = result.getPhotos().get(0).getPhotoReference();
             urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;

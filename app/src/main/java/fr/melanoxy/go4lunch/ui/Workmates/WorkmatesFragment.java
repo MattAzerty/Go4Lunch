@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import fr.melanoxy.go4lunch.MainActivity;
 import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.FragmentWorkmatesBinding;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
@@ -59,7 +60,6 @@ public class WorkmatesFragment extends Fragment {
         WorkmatesAdapter adapter = new WorkmatesAdapter(new OnWorkmateClickedListener() {
             @Override
             public void onWorkmateClicked(WorkmatesStateItem item) {
-
                 if(item.getPlace_id()!=null){
                 RestaurantStateItem rItem = new RestaurantStateItem(
                         item.getPlace_id(),
@@ -70,7 +70,8 @@ public class WorkmatesFragment extends Fragment {
                         1,
                         item.getPlace_pic_url()
                 );
-                startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));}
+                startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));
+                }else{((MainActivity)getActivity()).showSnackBar(getString(R.string.workmates_restaurant_not_set));}
             }
         });
 

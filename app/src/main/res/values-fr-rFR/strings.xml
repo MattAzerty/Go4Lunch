@@ -21,7 +21,7 @@
     <string name="search_title">rechercher</string>
     <string name="CALL">TELEPHONE</string>
     <string name="WEBSITE">SITE WEB</string>
-    <string name="LIKE">JAIME</string>
+    <string name="LIKE">J\'AIME</string>
     <string name="opening_hours">- Horaire d\'ouverture -</string>
     <string name="hr_open">OUVERT</string>
     <string name="hr_close">FERMÉ</string>
@@ -30,4 +30,6 @@
     <string name="workmates_eating_at">Je mange @</string>
     <string name="workmates_restaurant_not_set">ne sais pas encore</string>
     <string name="my_restaurant">aucun restaurant enregistré</string>
+    <string name="no_phone_number">aucun téléphone trouvé</string>
+    <string name="no_web_url">aucun site web trouvé</string>
 </resources>

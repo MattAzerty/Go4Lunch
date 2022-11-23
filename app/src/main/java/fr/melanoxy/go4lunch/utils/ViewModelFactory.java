@@ -1,7 +1,6 @@
 package fr.melanoxy.go4lunch.utils;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -38,6 +37,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     private final Application application;
 
+
     public static ViewModelFactory getInstance() {
         if (sInstance == null) {
             // Double Checked Locking singleton pattern with Volatile works on Android since Honeycomb
@@ -46,8 +46,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     Application application = MainApplication.getApplication();
 
                     sInstance = new ViewModelFactory(
-                            new UserRepository(
-                            ),
+                            new UserRepository(),
                             new PermissionChecker(
                                     application
                             ),

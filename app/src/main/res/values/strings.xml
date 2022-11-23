@@ -50,4 +50,6 @@
     <string name="lunchmates_item">" is joining!"</string>
     <string name="workmates_eating_at">"i'm eating @"</string>
     <string name="workmates_restaurant_not_set">"hasn't decided yet"</string>
+    <string name="no_phone_number">"no phone number found"</string>
+    <string name="no_web_url">"no website found"</string>
 </resources>

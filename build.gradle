@@ -11,7 +11,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.3.1'
         classpath 'com.google.gms:google-services:4.3.14'//Firebase setup
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'//Crashlytics
-
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.44.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -20,6 +20,7 @@ buildscript {
 plugins {
     //  Secrets Gradle Plugin for Android. To install the plugin and store your API key
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1' apply false
+    id 'com.google.dagger.hilt.android' version '2.44' apply false
 }
 
 allprojects {

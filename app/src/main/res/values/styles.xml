@@ -35,6 +35,14 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <style name="CustomSnackbarTheme">
+        <item name="snackbarStyle">@style/MySnackBarStyle</item>
+    </style>
+
+    <style name="MySnackBarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="android:background">@color/accent</item>
+    </style>
+
     <!-- STYLE MaterialComponents -->
     <style name="ShapeAppearance.Go4Lunch.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>

@@ -4,8 +4,11 @@ plugins {
     id 'com.google.gms.google-services'
     //for API n google maps use
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    //hilt
+    id 'com.google.dagger.hilt.android'
 }
 
+apply plugin: 'dagger.hilt.android.plugin'
 android {
     namespace 'fr.melanoxy.go4lunch'
     compileSdk 33
@@ -32,6 +35,9 @@ android {
     }
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -43,6 +49,7 @@ dependencies {
     def nav_version = "2.5.3"
     def lifecycle_version = "2.5.1"
     def arch_version = "2.1.0"
+    def work_version = "2.7.1"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'
@@ -65,7 +72,6 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
     //Facebook
     implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
-    implementation 'androidx.work:work-runtime:2.7.1'
     implementation("com.facebook.android:facebook-login:12.0.0")
 
 //FIRESTORE
@@ -92,5 +98,18 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     //(optional) get HTTP request and response logs for our Android app within Logcat.
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+//WorkManager
+    // (Java only)
+    implementation "androidx.work:work-runtime:$work_version"
+    //localTime for API 21 mini
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
+//hilt
+    implementation "com.google.dagger:hilt-android:2.44"
+        annotationProcessor "com.google.dagger:hilt-compiler:2.44"
+    //work
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+        // When using Java.
+        annotationProcessor 'androidx.hilt:hilt-compiler:1.0.0'
 }
+
