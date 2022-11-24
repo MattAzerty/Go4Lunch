@@ -103,6 +103,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (modelClass.isAssignableFrom(ListViewViewModel.class)) {
             return (T) new ListViewViewModel(
                     locationRepository,
+                    searchRepository,
                     restaurantRepository
             );
         }else if (modelClass.isAssignableFrom(WorkmatesViewModel.class)) {

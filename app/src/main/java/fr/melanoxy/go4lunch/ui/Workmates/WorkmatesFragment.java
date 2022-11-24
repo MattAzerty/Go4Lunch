@@ -82,8 +82,6 @@ public class WorkmatesFragment extends Fragment {
         mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), workmatesViewStateItems ->
                 adapter.submitList(workmatesViewStateItems)
         );
-
-
     }
 
 

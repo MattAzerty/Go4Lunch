@@ -1,15 +1,10 @@
 
 package fr.melanoxy.go4lunch.data.models.places_api_web.place_details;
 
-import android.text.TextUtils;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import fr.melanoxy.go4lunch.data.models.User;
 
 public class OpeningHours {
 

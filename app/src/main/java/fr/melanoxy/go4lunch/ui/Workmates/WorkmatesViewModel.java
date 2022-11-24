@@ -77,7 +77,7 @@ public class WorkmatesViewModel extends ViewModel {
         List<User> filteredWorkmates = new ArrayList<>();
 
         if (workmates == null) {return filteredWorkmates;}
-        if (workmates != null && query == null) {return workmates;}
+        if (query == null) {return workmates;}
 
         for (User user : workmates) {
             if (user.getUsername().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {

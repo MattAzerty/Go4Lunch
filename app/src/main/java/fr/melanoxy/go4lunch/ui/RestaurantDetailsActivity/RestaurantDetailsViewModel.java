@@ -10,10 +10,9 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.data.models.User;
-import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.DetailsResult;
+import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 
