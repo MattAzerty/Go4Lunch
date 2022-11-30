@@ -120,7 +120,11 @@ public class RestaurantRepository {
         return predictionsDetailstMutableLiveData;
     }
 
-    public LiveData<Integer> getRestaurantsByQueryLiveData() {
+    public LiveData<Integer> getRestaurantsSizeByQueryLiveData() {
         return autocompleteSizeResponseMutableLiveData;
+    }
+
+    public String getUrlPicture(String photoRef) {
+        return  "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
     }
 }

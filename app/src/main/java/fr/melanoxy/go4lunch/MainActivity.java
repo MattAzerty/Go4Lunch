@@ -53,6 +53,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -61,6 +62,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import fr.melanoxy.go4lunch.data.models.User;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityViewModel mMainActivityViewModel;
     private WorkManager mWorkManager;
     private final String mTagUniqueWork ="notifyTag";
+    private Menu mOptionsMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
    private void setupNotify() {
 
+        //Workmanager for notification
+       mWorkManager = WorkManager.getInstance(getApplicationContext());
+
        mMainActivityViewModel.getNotifyStateLiveData().observe(this, user -> {
 
            if(user.getRestaurant_for_today_name()!=null) {
@@ -123,9 +129,6 @@ public class MainActivity extends AppCompatActivity {
                Duration duration = Duration.between(now,//and next lunchtime.
                        (now.isAfter(lunchDateTimeForToday)) ? LocalDateTime.of(LocalDate.from(now.plusDays(1)), LocalTime.NOON) : lunchDateTimeForToday);
                long delay = Math.abs(duration.toMinutes());
-
-//Workmanager for notification
-               mWorkManager = WorkManager.getInstance(getApplicationContext());
 
 
                Data data = new Data.Builder()
@@ -151,7 +154,11 @@ public class MainActivity extends AppCompatActivity {
                 if there is no pending work labelled with uniqueWorkName*/
 
                mWorkManager.enqueueUniqueWork(mTagUniqueWork, ExistingWorkPolicy.KEEP, uploadWorkRequest);
-           }else{mWorkManager.cancelUniqueWork(mTagUniqueWork);}
+
+           }else{//No restaurant for today set or notify not allowed or notify disabled
+               //CANCEL uniqueWork if one exist.
+               mWorkManager.cancelUniqueWork(mTagUniqueWork);
+                }
        });
        }
 
@@ -246,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mOptionsMenu = menu;
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_app_bar, menu);
@@ -385,8 +393,16 @@ public class MainActivity extends AppCompatActivity {
     // ---------------- GPS LOCATION PERMISSION FAB ---------------- //
     private void setupFab() {
 
-        mMainActivityBinding.activityMainFabMylocation.setOnClickListener(v ->
-                setupPermissions()
+        mMainActivityBinding.activityMainFabMylocation.setOnClickListener(v -> {
+            setupPermissions();//Check if locationQuery allowed
+
+            //Close searchview n reset if user press the button but was in an autocomplete query
+                    mMainActivityViewModel.onSearchQueryCall(null);
+                    SearchView searchView =
+                            (SearchView) mOptionsMenu.findItem(R.id.action_search).getActionView();
+                    searchView.setIconified(true);
+                    searchView.onActionViewCollapsed();
+        }
         );
 
         mMainActivityViewModel.getIsGpsPermissionGrantedLiveData().observe(this, permission -> {
@@ -432,6 +448,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    mMainActivityViewModel.refresh();
     }
 
 }//END MainActivity

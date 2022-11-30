@@ -1,15 +1,15 @@
 
 package fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search;
 
-import android.location.Location;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class NearbyPlaceLocation {
+import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.Location;
+
+public class NearbyPlaceLocation{
 
     @SerializedName("lat")
     @Expose

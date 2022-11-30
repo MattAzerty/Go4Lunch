@@ -84,7 +84,7 @@ public class NotifyWorker extends Worker {
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setContentTitle(title)
-                .setContentText(message)
+                .setContentText(message)//TextLong
                 .setSmallIcon(R.mipmap.ic_launcher);
 
         notificationManager.notify(1, notification.build());

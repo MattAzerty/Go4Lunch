@@ -120,6 +120,8 @@ public class MainActivityViewModel extends ViewModel {
         } else {
             locationRepository.stopLocationRequest();
         }
+//QUERY
+searchRepository.searchField(null);
     }
 
     public LiveData<Boolean> getIsGpsPermissionGrantedLiveData() {
@@ -190,8 +192,8 @@ public class MainActivityViewModel extends ViewModel {
                 "",
                 R.string.error_unknown_error,
                 1,
-                user.getRestaurant_for_today_pic_url()
-        );
+                user.getRestaurant_for_today_pic_url(),
+                0);
 
         restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
     }

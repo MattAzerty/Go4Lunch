@@ -3,12 +3,9 @@ package fr.melanoxy.go4lunch.ui.MapView;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NONE;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 
-import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
@@ -41,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.R;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.NearbyResult;
 import fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
@@ -57,7 +53,7 @@ public class MapViewFragment extends Fragment implements
     private FragmentMapViewBinding mFragmentMapViewBinding;
     private Marker myPositionMaker;
     private GoogleMap mMap = null;
-    private final List<Marker> restaurantsMarker = new ArrayList<>();
+    private List<Marker> restaurantsMarker = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,15 +98,21 @@ public class MapViewFragment extends Fragment implements
                 mMap.setMapType(MAP_TYPE_NONE);//map is hidden on no location permission provided
             } else {
                 mMap.setMapType(MAP_TYPE_NORMAL);//unveil the map
-
-                MapViewFragment.this.addMyLocationMarker(mMap, userLocation);//Place userCurrentLocation
+                LatLng latLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+                MapViewFragment.this.addMyLocationMarker(mMap,latLng);//Place userCurrentLocation
             }
         });
 
-        //Observe restaurantNearbyList for any change
-        mMapViewViewModel.getNearbyRestaurantsResults().observe(getViewLifecycleOwner(), restaurantsNearbyResults ->
-                addNearbyRestaurants(mMap, restaurantsNearbyResults)//Place nearbyRestaurantsLocation associated
+        //Observe MarkerInfos for any change
+        mMapViewViewModel.getMarkerInfosLiveData().observe(getViewLifecycleOwner(), markerInfos -> {
+
+            if(!markerInfos.isEmpty()) {
+                MapViewFragment.this.addNearbyRestaurants(mMap, markerInfos);
+            }
+        }
         );
+
+        //TODO observe singleLiveEvent for center camera
     }
 
     private void setSelectedStyle() {
@@ -119,63 +121,55 @@ public class MapViewFragment extends Fragment implements
         mMap.setMapStyle(style);
     }
 
-    private void addMyLocationMarker(@NonNull GoogleMap googleMap, Location userLocation) {
+    private void addMyLocationMarker(@NonNull GoogleMap googleMap, LatLng latLng) {
 
-        if(userLocation!=null){
-        // Add a marker in current user's location
-        LatLng myLocation = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
         if (myPositionMaker!=null){
             myPositionMaker.remove();
         }
         myPositionMaker = googleMap.addMarker(new MarkerOptions()
-                .position(myLocation).icon(BitmapDescriptorFactory
+                .position(latLng).icon(BitmapDescriptorFactory
                 .defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                .snippet("(lat:" + userLocation.getLatitude() + ", long:" + userLocation.getLongitude() + ")")
+                .snippet("(lat:" + latLng.latitude + ", long:" + latLng.longitude + ")")
                 .title(getString(R.string.my_position_marker)));
 
         // and move the map's camera to the same location with a zoom of 15.
         if (restaurantsMarker.isEmpty()) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
-
-    }
 }
 
-    private void addNearbyRestaurants(GoogleMap mMap, List<NearbyResult> restaurantsNearbyResults) {
+    private void addNearbyRestaurants(GoogleMap mMap, List<MarkerInfoStateItem> markerInfoStateItems) {
 
         if (!restaurantsMarker.isEmpty()){
             restaurantsMarker.clear();
+            mMap.clear();
+            addMyLocationMarker(mMap,myPositionMaker.getPosition());
         }
 
-        //restaurantsMarker.clear();
+
         LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
 
-        for (NearbyResult result : restaurantsNearbyResults) {
+        for (MarkerInfoStateItem markerInfos : markerInfoStateItems) {
 
         Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng()))
-                    .title(result.getName())
-                    .snippet("Pam, Tom & Marl will eat here today")
-                    .icon(vectorToBitmap(R.drawable.ic_restaurant_menu_white_24dp, getResources().getColor(R.color.primary)))
+                    .position(new LatLng(markerInfos.getLatitude(),markerInfos.getLongitude()))
+                    .title(markerInfos.getPlaceName())
+                    .snippet(markerInfos.getNumberOfLunchmates()+getResources().getString(R.string.marker_snipet))
+                    .icon(vectorToBitmap(R.drawable.ic_restaurant_menu_white_24dp,
+                            (markerInfos.getNumberOfLunchmates()==0)?getResources().getColor(R.color.secondary):getResources().getColor(R.color.primary)))
                     .infoWindowAnchor(0.5f, 0.5f));
 
         builderBounds.include(marker.getPosition());
 
-        String urlPreview;//TODO move this to restaurantRepository
-            if(result.getPhotos()!=null){
-                String photoRef = result.getPhotos().get(0).getPhotoReference();
-                urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
-        }else{urlPreview="https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG";}
-
         RestaurantStateItem item = new RestaurantStateItem(
-        result.getPlaceId(),
-        result.getName(),
-        result.getFormattedAddress().trim(),
+        markerInfos.getPlaceId(),
+        markerInfos.getPlaceName(),
+        markerInfos.getPlaceAddress().trim(),
         "2",
         R.string.error_unknown_error,
-        3*result.getRating()/5,
-        urlPreview
-);
+        3,
+        markerInfos.getPlacePreviewPicUrl(),
+        0);
         marker.setTag(item);
         restaurantsMarker.add(marker);
 

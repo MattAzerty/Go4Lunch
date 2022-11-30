@@ -32,4 +32,5 @@
     <string name="my_restaurant">aucun restaurant enregistré</string>
     <string name="no_phone_number">aucun téléphone trouvé</string>
     <string name="no_web_url">aucun site web trouvé</string>
+    <string name="marker_snipet">" personne(s) aujourd'hui"</string>
 </resources>

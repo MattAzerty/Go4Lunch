@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
@@ -17,14 +18,15 @@ import java.util.Objects;
 import fr.melanoxy.go4lunch.R;
 import android.location.Location;
 
+import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.NearbyResult;
-import fr.melanoxy.go4lunch.data.models.places_api_web.place_autocomplete.PlaceAutocompleteResponse;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.DetailsResult;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
+import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 
 public class ListViewViewModel extends ViewModel {
 
@@ -34,17 +36,22 @@ public class ListViewViewModel extends ViewModel {
     private final SearchRepository searchRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
+    @NonNull
+    private final UserRepository userRepository;
+
     private String mPreviousQuery=null;
 
     @NonNull private final MediatorLiveData<List<RestaurantStateItem>> restaurantsMediatorLiveData = new MediatorLiveData<>();
+    //private final MutableLiveData<Integer> currentLunchmatesLiveData = new MutableLiveData<>();
 
     //CONSTRUCTOR
     public ListViewViewModel(
+            @NonNull UserRepository userRepository,
             @NonNull LocationRepository locationRepository,
             @NonNull SearchRepository searchRepository,
             @NonNull RestaurantRepository restaurantRepository
     ) {
-
+        this.userRepository = userRepository;
         this.locationRepository = locationRepository;
         this.searchRepository = searchRepository;
         this.restaurantRepository = restaurantRepository;
@@ -52,34 +59,40 @@ public class ListViewViewModel extends ViewModel {
         LiveData<Location> userLocationLiveData = locationRepository.getLocationLiveData();
         LiveData<RestaurantsNearbyResponse> restaurantsLiveData = restaurantRepository.getRestaurantNearbyResponseLiveData();
         LiveData<String> queryLiveData = searchRepository.getSearchFieldLiveData();
-        LiveData<Integer> sizeAutocompleteLiveData = restaurantRepository.getRestaurantsByQueryLiveData();
+        LiveData<Integer> sizeAutocompleteLiveData = restaurantRepository.getRestaurantsSizeByQueryLiveData();
         LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData = restaurantRepository.getPredictionsDetailsLiveData();
+        LiveData<List<User>> workmatesLiveData = userRepository.getWorkmates();
 
-        //StateItems creation
+        //RestaurantStateItems creation (NearbyResults+UserLocation+QueryInput+AutocompleteResponse+lunchmates)
         restaurantsMediatorLiveData.addSource(restaurantsLiveData, restaurantsNearbyResponse ->
                 combine(restaurantsNearbyResponse, userLocationLiveData.getValue(),
                         queryLiveData.getValue(),sizeAutocompleteLiveData.getValue(),
-                        predictionsDetailsLiveData.getValue()));
+                        predictionsDetailsLiveData.getValue(),workmatesLiveData.getValue()));
 
         restaurantsMediatorLiveData.addSource(userLocationLiveData, userLocation ->
                 combine(restaurantsLiveData.getValue(), userLocation,
                         queryLiveData.getValue(),sizeAutocompleteLiveData.getValue(),
-                        predictionsDetailsLiveData.getValue()));
+                        predictionsDetailsLiveData.getValue(),workmatesLiveData.getValue()));
 
         restaurantsMediatorLiveData.addSource(queryLiveData, query ->
                 combine(restaurantsLiveData.getValue(), userLocationLiveData.getValue(),
                         query,sizeAutocompleteLiveData.getValue(),
-                        predictionsDetailsLiveData.getValue()));
+                        predictionsDetailsLiveData.getValue(),workmatesLiveData.getValue()));
 
         restaurantsMediatorLiveData.addSource(sizeAutocompleteLiveData, size ->
                 combine(restaurantsLiveData.getValue(), userLocationLiveData.getValue(),
                         queryLiveData.getValue(),size,
-                        predictionsDetailsLiveData.getValue()));
+                        predictionsDetailsLiveData.getValue(),workmatesLiveData.getValue()));
 
         restaurantsMediatorLiveData.addSource(predictionsDetailsLiveData, predictionsDetails ->
                 combine(restaurantsLiveData.getValue(), userLocationLiveData.getValue(),
                         queryLiveData.getValue(),sizeAutocompleteLiveData.getValue(),
-                        predictionsDetails));
+                        predictionsDetails,workmatesLiveData.getValue()));
+
+        restaurantsMediatorLiveData.addSource(workmatesLiveData, workmates ->
+                combine(restaurantsLiveData.getValue(), userLocationLiveData.getValue(),
+                        queryLiveData.getValue(),sizeAutocompleteLiveData.getValue(),
+                        predictionsDetailsLiveData.getValue(),workmates));
     }
 
     private void combine(
@@ -87,120 +100,105 @@ public class ListViewViewModel extends ViewModel {
             @Nullable Location userLocation,
             @Nullable String query,
             @Nullable Integer size,
-            @Nullable List<PlaceIdDetailsResponse> predictionsDetails
-    ) {
+            @Nullable List<PlaceIdDetailsResponse> predictionsDetails,
+            List<User> workmates) {
 
-        List<NearbyResult> restaurantsNearby;
-
+        List<RestaurantStateItem> restaurantStateItems = new ArrayList<>();
 //Case with NearbySearch
-        if (restaurantsNearbyResponse != null && query == null) {
-            List<RestaurantStateItem> nearbyStateItems = new ArrayList<>();
+        if (restaurantsNearbyResponse != null && query == null && userLocation!=null && workmates!=null) {
             //getNearbyResult
-            restaurantsNearby = restaurantsNearbyResponse.getResults();
+            List<NearbyResult> restaurantsNearby = restaurantsNearbyResponse.getResults();
             // map on a ViewStateItem for rv
             for (NearbyResult result : restaurantsNearby) {
-                nearbyStateItems.add(mapRestaurant(result, userLocation));
+                restaurantStateItems.add(mapRestaurant(result, userLocation, workmates));
             }
-            restaurantsMediatorLiveData.setValue(nearbyStateItems);
+//case autocomplete
+        }else if (query != null && userLocation!=null && !Objects.equals(query, mPreviousQuery)){
 
-        }else if (query != null && !Objects.equals(query, mPreviousQuery)){
-                mPreviousQuery=query;
+            mPreviousQuery=query;
                 //Ask for predictions
                 String coordinate = userLocation.getLatitude() + "," + userLocation.getLongitude();
                 restaurantRepository.searchFromQueryPlaces(query, "restaurant", coordinate, "500", MAPS_API_KEY);
-                List<RestaurantStateItem> resetStateItems = new ArrayList<>();
-                restaurantsMediatorLiveData.setValue(resetStateItems);
+                restaurantStateItems = new ArrayList<>();
+
         }else if(query !=null && predictionsDetails!=null && size!=null && predictionsDetails.size()==size) {
-            List<RestaurantStateItem> autocompleteStateItems= new ArrayList<>();
+
             for (PlaceIdDetailsResponse placeIdDetailsResponse : predictionsDetails) {
-                autocompleteStateItems.add(mapPrediction(placeIdDetailsResponse.getResult(), userLocation));
+                restaurantStateItems.add(mapPrediction(placeIdDetailsResponse.getResult(), userLocation, workmates));
             }
-            restaurantsMediatorLiveData.setValue(autocompleteStateItems);//send StateItem
-        }
         }
 
+        restaurantsMediatorLiveData.setValue(restaurantStateItems);
+
+        }
 
     private RestaurantStateItem mapPrediction(
             DetailsResult result,
-            Location userLocation
-    ) {
-
-        //IsOpen String message handling
-        @StringRes int isOpen;
-        if (result.getOpeningHours()!=null){
-
-            if (result.getOpeningHours().getOpenNow()){
-                isOpen = R.string.hr_open;
-            }else{isOpen = R.string.hr_close;
-            }
-
-        }else{
-            isOpen = R.string.hr_unknown;
-        }
-
-        //Web url
-        String urlPreview;//TODO move this to restaurantRepo
-        if(result.getPhotos()!=null){
-            String photoRef = result.getPhotos().get(0).getPhotoReference();
-            urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
-        }else{urlPreview="https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG";}
+            Location userLocation,
+            List<User> workmates) {
 
         return new RestaurantStateItem(
                 result.getPlaceId(),
                 result.getName(),
                 result.getFormattedAddress().trim(),
                 distance(userLocation,result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng()),
-                isOpen,
+                isOpen(result.getOpeningHours().getOpenNow()),
                 3*result.getRating()/5,
-                urlPreview
-        );
-
-
+                (result.getPhotos()!=null) ?
+                        restaurantRepository.getUrlPicture(result.getPhotos().get(0).getPhotoReference()) :
+                        "https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG",
+                numberOfLunchmates(workmates, result.getPlaceId()));
     }
 
+
     @NonNull
-    private RestaurantStateItem mapRestaurant(@NonNull NearbyResult result,@NonNull Location userLocation) {
-
-//Web url
-        String urlPreview;//TODO move this to restaurantRepo
-        if(result.getPhotos()!=null){
-            String photoRef = result.getPhotos().get(0).getPhotoReference();
-            urlPreview = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
-        }else{urlPreview="https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG";}
-
-        //IsOpen String message handling
-        @StringRes int isOpen;
-        if (result.getOpeningHours()!=null){
-
-            if (result.getOpeningHours().getOpenNow()){
-                isOpen = R.string.hr_open;
-            }else{isOpen = R.string.hr_close;
-            }
-
-        }else{
-            isOpen = R.string.hr_unknown;
-        }
+    private RestaurantStateItem mapRestaurant(
+            @NonNull NearbyResult result,
+            @NonNull Location userLocation,
+            @NonNull List<User> workmates) {
 
             return new RestaurantStateItem(
                 result.getPlaceId(),
                 result.getName(),
                 result.getFormattedAddress().trim(),
                 distance(userLocation,result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng()),
-                isOpen,
+                    (result.getOpeningHours()!=null) ?isOpen(result.getOpeningHours().getOpenNow()) :
+                            R.string.hr_unknown,
                 3*result.getRating()/5,
-                urlPreview
-        );
+                    (result.getPhotos()!=null) ?
+                            restaurantRepository.getUrlPicture(result.getPhotos().get(0).getPhotoReference()) :
+                            "https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG",
+                numberOfLunchmates(workmates, result.getPlaceId()));
     }
+//IS OPEN
+    private int isOpen(Boolean openNow) {
+        //IsOpen String message handling
+        @StringRes int isOpen;
+        if (openNow){
+            isOpen = R.string.hr_open;
+        }else{isOpen = R.string.hr_close;
+        }
 
+        return isOpen;
+    }
+//NUMBER OF LUNCHMATE
+    private Integer numberOfLunchmates(List<User> workmates, String placeId) {
+        //Number of lunchmates
+        Integer numberOfLunchmates =0;
+        for (User user : workmates) {
+            if (Objects.equals(user.getRestaurant_for_today_id(), placeId))
+            {numberOfLunchmates++;}
+        }
+        return numberOfLunchmates;
+    }
+//DISTANCE
     private String distance(Location userLocation, Double lat, Double lng) {
-
         //Distance
         Location restaurantLocation = new Location("restaurant_provider");
         restaurantLocation.setLatitude(lat);
         restaurantLocation.setLongitude(lng);
-        String distance = String.format(Locale.getDefault(),"%.02f",(userLocation.distanceTo(restaurantLocation))/1000);
 
-        return distance;
+        return String.format(Locale.getDefault(),"%.02f",(userLocation.distanceTo(restaurantLocation))/1000);
 
     }
 

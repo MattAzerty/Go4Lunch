@@ -26,7 +26,7 @@ public class PermissionChecker {
         return ContextCompat.checkSelfPermission(application, ACCESS_FINE_LOCATION) == PERMISSION_GRANTED;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)//TODO check API 30 (23)
     public boolean hasNotificationPermission() {
         return ContextCompat.checkSelfPermission(application, POST_NOTIFICATIONS) == PERMISSION_GRANTED;
     }

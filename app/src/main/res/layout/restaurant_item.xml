@@ -19,6 +19,24 @@
             app:layout_constraintRight_toRightOf="parent"
             tools:src="@tools:sample/avatars"/>
 
+    <TextView
+        android:id="@+id/restaurant_item_tv_bookmarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/white"
+        android:background="#80272B2E"
+        android:drawablePadding="2dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        android:text="3"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/restaurant_item_smallThumbnail"
+        app:layout_constraintRight_toRightOf="@+id/restaurant_item_smallThumbnail"
+        app:drawableRightCompat="@drawable/ic_bookmarks_white_24dp" />
+
         <RelativeLayout
             android:id="@+id/restaurant_item_rl"
             android:layout_width="0dp"

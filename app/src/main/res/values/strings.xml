@@ -52,4 +52,5 @@
     <string name="workmates_restaurant_not_set">"hasn't decided yet"</string>
     <string name="no_phone_number">"no phone number found"</string>
     <string name="no_web_url">"no website found"</string>
+    <string name="marker_snipet">" people eat here today"</string>
 </resources>

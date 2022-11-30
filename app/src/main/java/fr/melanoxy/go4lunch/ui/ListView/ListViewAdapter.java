@@ -55,7 +55,8 @@ public class ListViewAdapter extends ListAdapter<RestaurantStateItem, ListViewAd
                     .load(item.getPlace_preview_pic_url())
                     .apply(RequestOptions.centerCropTransform())
                     .into(binding.restaurantItemSmallThumbnail);
-
+            binding.restaurantItemTvBookmarks.setText(item.getNumberOfLunchmates().toString());
+            binding.restaurantItemTvBookmarks.setVisibility(item.getNumberOfLunchmates()==0? View.INVISIBLE: View.VISIBLE);
             binding.restaurantItemStar1.setVisibility(item.getPlace_rating()>=1? View.VISIBLE : View.INVISIBLE);
             binding.restaurantItemStar2.setVisibility(item.getPlace_rating()>=1.5? View.VISIBLE : View.INVISIBLE);
             binding.restaurantItemStar3.setVisibility(item.getPlace_rating()>=2.5? View.VISIBLE : View.INVISIBLE);

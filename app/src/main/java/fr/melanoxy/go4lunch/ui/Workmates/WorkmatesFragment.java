@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import fr.melanoxy.go4lunch.MainActivity;
 import fr.melanoxy.go4lunch.R;
@@ -68,8 +67,8 @@ public class WorkmatesFragment extends Fragment {
                         "",
                         R.string.error_unknown_error,
                         1,
-                        item.getPlace_pic_url()
-                );
+                        item.getPlace_pic_url(),
+                        0);
                 startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));
                 }else{((MainActivity)getActivity()).showSnackBar(getString(R.string.workmates_restaurant_not_set));}
             }

@@ -97,11 +97,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             );
         } else if (modelClass.isAssignableFrom(MapViewViewModel.class)) {
             return (T) new MapViewViewModel(
+                    userRepository,
                     locationRepository,
+                    searchRepository,
                     restaurantRepository
             );
         } else if (modelClass.isAssignableFrom(ListViewViewModel.class)) {
             return (T) new ListViewViewModel(
+                    userRepository,
                     locationRepository,
                     searchRepository,
                     restaurantRepository

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +61,11 @@ public class ListViewFragment extends Fragment {
 //link ViewStateItem to liveDataViewStateItem
         mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), adapter::submitList
         );
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
 }//END of ListViewFragment

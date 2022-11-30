@@ -20,6 +20,9 @@ public class RestaurantStateItem implements Serializable {
     private final Double place_rating;
     @NonNull
     private final String place_preview_pic_url;
+    @NonNull
+    private final Integer numberOfLunchmates;
+
 
     public RestaurantStateItem(
             @NonNull String place_id,
@@ -27,8 +30,10 @@ public class RestaurantStateItem implements Serializable {
             @NonNull String place_address,
             @NonNull String place_distance,
             @StringRes int place_is_open,
-            @NonNull double place_rating,
-            @NonNull String place_preview_pic_url) {
+            double place_rating,
+            @NonNull String place_preview_pic_url,
+            @NonNull Integer numberOfLunchmates
+    ){
         this.place_id = place_id;
         this.place_name = place_name;
         this.place_address = place_address;
@@ -36,6 +41,7 @@ public class RestaurantStateItem implements Serializable {
         this.place_is_open = place_is_open;
         this.place_rating = place_rating;
         this.place_preview_pic_url = place_preview_pic_url;
+        this.numberOfLunchmates = numberOfLunchmates;
     }
 
     @NonNull
@@ -73,6 +79,11 @@ public class RestaurantStateItem implements Serializable {
         return place_preview_pic_url;
     }
 
+    @NonNull
+    public Integer getNumberOfLunchmates() {
+        return numberOfLunchmates;
+    }
+
     // For test units
 
     @Override
@@ -80,13 +91,12 @@ public class RestaurantStateItem implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RestaurantStateItem that = (RestaurantStateItem) o;
-        return place_is_open == that.place_is_open && Objects.equals(place_id, that.place_id) && place_name.equals(that.place_name) && place_address.equals(that.place_address) && place_rating.equals(that.place_rating) && place_preview_pic_url.equals(that.place_preview_pic_url);
+        return place_is_open == that.place_is_open && place_id.equals(that.place_id) && place_name.equals(that.place_name) && place_address.equals(that.place_address) && place_distance.equals(that.place_distance) && place_rating.equals(that.place_rating) && place_preview_pic_url.equals(that.place_preview_pic_url) && numberOfLunchmates.equals(that.numberOfLunchmates);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(place_id, place_name, place_address, place_is_open, place_rating, place_preview_pic_url);
+        return Objects.hash(place_id, place_name, place_address, place_distance, place_is_open, place_rating, place_preview_pic_url, numberOfLunchmates);
     }
-
 
 }//END of RestaurantStateItem
