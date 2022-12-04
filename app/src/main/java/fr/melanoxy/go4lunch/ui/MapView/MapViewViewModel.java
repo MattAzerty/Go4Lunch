@@ -6,10 +6,8 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
@@ -59,29 +57,33 @@ public class MapViewViewModel extends ViewModel {
         LiveData<String> queryLiveData = searchRepository.getSearchFieldLiveData();
         LiveData<List<User>> workmatesLiveData = userRepository.getWorkmates();
         LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData = restaurantRepository.getPredictionsDetailsLiveData();
-
+        LiveData<Integer> sizeAutocompleteLiveData = restaurantRepository.getRestaurantsSizeByQueryLiveData();
 
 //MEDIATOR (userLocation + lunchmates + NearbyAnswer + queryInput, predictionsAnswer)
 
         markersMediatorLiveData.addSource(userLocationLiveData, userLocation ->
                 combine(userLocation, workmatesLiveData.getValue(),
-                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), predictionsDetailsLiveData.getValue()));
+                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), sizeAutocompleteLiveData.getValue(), predictionsDetailsLiveData.getValue()));
 
         markersMediatorLiveData.addSource(workmatesLiveData, workmates ->
                 combine(userLocationLiveData.getValue(), workmates,
-                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), predictionsDetailsLiveData.getValue()));
+                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), sizeAutocompleteLiveData.getValue(), predictionsDetailsLiveData.getValue()));
 
         markersMediatorLiveData.addSource(restaurantsNearbyLiveData, restaurantsNearbyResponse ->
                 combine(userLocationLiveData.getValue(), workmatesLiveData.getValue(),
-                        restaurantsNearbyResponse, queryLiveData.getValue(), predictionsDetailsLiveData.getValue()));
+                        restaurantsNearbyResponse, queryLiveData.getValue(), sizeAutocompleteLiveData.getValue(), predictionsDetailsLiveData.getValue()));
 
         markersMediatorLiveData.addSource(queryLiveData, query ->
                 combine(userLocationLiveData.getValue(), workmatesLiveData.getValue(),
-                        restaurantsNearbyLiveData.getValue(), query, predictionsDetailsLiveData.getValue()));
+                        restaurantsNearbyLiveData.getValue(), query, sizeAutocompleteLiveData.getValue(), predictionsDetailsLiveData.getValue()));
+
+        markersMediatorLiveData.addSource(sizeAutocompleteLiveData, size ->
+                combine(userLocationLiveData.getValue(), workmatesLiveData.getValue(),
+                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), size, predictionsDetailsLiveData.getValue()));
 
         markersMediatorLiveData.addSource(predictionsDetailsLiveData, predictions ->
                 combine(userLocationLiveData.getValue(), workmatesLiveData.getValue(),
-                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), predictions));
+                        restaurantsNearbyLiveData.getValue(), queryLiveData.getValue(), sizeAutocompleteLiveData.getValue(), predictions));
     }
 
     private void combine(
@@ -89,6 +91,7 @@ public class MapViewViewModel extends ViewModel {
             List<User> workmates,
             @Nullable RestaurantsNearbyResponse restaurantsNearbyResponse,
             @Nullable String query,
+            Integer size,
             List<PlaceIdDetailsResponse> predictions) {
 
         List<MarkerInfoStateItem> markerInfoStateItems = new ArrayList<>();
@@ -107,7 +110,8 @@ public class MapViewViewModel extends ViewModel {
             restaurantRepository.searchFromQueryPlaces(query, "restaurant", coordinate, "500", MAPS_API_KEY);
         }
 
-        if(query!=null && predictions!=null){
+        if(query!=null && predictions!=null && size!=null && size==predictions.size()){
+
             for (PlaceIdDetailsResponse placeIdDetailsResponse : predictions) {
                 markerInfoStateItems.add(mapPredictions(placeIdDetailsResponse, workmates));
             }

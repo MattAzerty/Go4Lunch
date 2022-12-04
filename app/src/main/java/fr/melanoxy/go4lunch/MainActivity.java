@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -68,6 +69,7 @@ import java.util.concurrent.TimeUnit;
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.ActivityMainBinding;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
+import fr.melanoxy.go4lunch.ui.Settings.SettingsDialogFragment;
 import fr.melanoxy.go4lunch.utils.NotifyWorker;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
@@ -108,12 +110,20 @@ public class MainActivity extends AppCompatActivity {
         //configure GPS NearbyPlaceLocation button (top-right)
         setupFab();
 
+        //ShowProgressBar if in wait of API/firestore response.
+        setupProgressBar();
+
         //setup Notification
         setupNotify();
 
     }
 
-   private void setupNotify() {
+    private void setupProgressBar() {
+        mMainActivityViewModel.getProgressBarStateLiveData().observe(this, state ->
+                mMainActivityBinding.activityMainProgressbar.setVisibility(state? View.VISIBLE : View.GONE));
+    }
+
+    private void setupNotify() {
 
         //Workmanager for notification
        mWorkManager = WorkManager.getInstance(getApplicationContext());
@@ -286,8 +296,6 @@ public class MainActivity extends AppCompatActivity {
                 //Do searching
                 mMainActivityViewModel.onSearchQueryCall(query);
                 //Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
-                //searchView.setIconified(true);
-                //searchView.onActionViewCollapsed();
             }
 
         });
@@ -373,7 +381,10 @@ public class MainActivity extends AppCompatActivity {
                 mMainActivityViewModel.onYourLunchClicked();
                 break;
             case R.id.drawer_menu_item_settings:
-                //TODO launch settings details
+                //
+                SettingsDialogFragment dialog = new SettingsDialogFragment();
+                dialog.show(getSupportFragmentManager(),
+                        "AddAPeopleDialogFragment");
                 break;
             case R.id.drawer_menu_item_logout:
                 mMainActivityViewModel.onSignOut(this).addOnSuccessListener(aVoid -> {

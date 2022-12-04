@@ -61,7 +61,7 @@ public class NotifyWorker extends Worker {
                     .build();
 
             // Method to trigger an instant notification
-            sendNotification(mUser.getRestaurant_for_today_name(), names);
+            sendNotification(mUser.getRestaurant_for_today_name(),mUser.getRestaurant_for_today_address(),names);
             result = Result.success(output);
 
         }else {
@@ -73,7 +73,7 @@ public class NotifyWorker extends Worker {
         // later; FAILURE says not to try again.)
     }
 
-    public void sendNotification(String title, String message) {
+    public void sendNotification(String title, String address, String lunchmates) {
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         //If on Oreo then notification required a notification channel.
@@ -84,8 +84,10 @@ public class NotifyWorker extends Worker {
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setContentTitle(title)
-                .setContentText(message)//TextLong
-                .setSmallIcon(R.mipmap.ic_launcher);
+                .setContentText(address)//TextLong
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(address+"\n"+lunchmates))
+                .setSmallIcon(R.drawable.ic_yourlunch_white_24dp);
 
         notificationManager.notify(1, notification.build());
     }

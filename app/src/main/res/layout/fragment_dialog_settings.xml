@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#272B2E">
+
+<RelativeLayout
+    android:id="@+id/fragment_root"
+    android:background="@color/primary"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="300dp">
+
+        <TextView
+            android:id="@+id/heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:padding="4dp"
+            android:fontFamily="@font/ap_font"
+            android:background="@color/primaryDark" />
+
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleX="1.4"
+            android:scaleY="1.4"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="40dp"
+            android:buttonTint="@color/secondaryDark"
+            android:textColor="@color/secondaryDark"
+            android:textStyle="bold"
+            android:layout_below="@id/heading"
+            android:text="@string/notification" />
+
+    <ImageView
+        android:id="@+id/drawer_header_pfp"
+        android:layout_width="73dp"
+        android:layout_height="75dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="40dp"
+        android:elevation="4dp"
+        android:src="@drawable/shape_circle_profile_header"/>
+
+    <Button
+        android:id="@+id/buttonpfp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_below="@id/checkBox"
+        android:layout_alignRight="@id/username_ly"
+        android:layout_alignLeft="@id/username_ly"
+        android:backgroundTint="@color/accent"
+        android:text="@string/change_avatar" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/username_ly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonpfp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="@string/change_username_here" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:textSize="20sp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/secondaryDark"
+        android:id="@+id/action_save"/>
+
+    </RelativeLayout>
+</RelativeLayout>

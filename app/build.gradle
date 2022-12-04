@@ -76,6 +76,8 @@ dependencies {
 
 //FIRESTORE
     implementation 'com.google.firebase:firebase-firestore'
+    // FirebaseUI for Cloud Storage
+    implementation 'com.firebaseui:firebase-ui-storage:8.0.2'
 //GLIDE
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'

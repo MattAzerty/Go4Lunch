@@ -10,6 +10,7 @@
     <!-- DRAWER -->
     <string name="drawer_item_yourlunch">YOUR LUNCH</string>
     <string name="drawer_item_settings">SETTINGS</string>
+    <string name="drawer_item_chat">TALK</string>
     <string name="drawer_item_logout">LOGOUT</string>
     <string name="account">My account:</string>
     <string name="username" translatable="false">Jean BINOT</string>
@@ -53,4 +54,9 @@
     <string name="no_phone_number">"no phone number found"</string>
     <string name="no_web_url">"no website found"</string>
     <string name="marker_snipet">" people eat here today"</string>
+    <string name="settings">SETTINGS:</string>
+    <string name="notification">Notification ?</string>
+    <string name="save">SAVE</string>
+    <string name="change_username_here">CHANGE USERNAME</string>
+    <string name="change_avatar">CHANGE AVATAR</string>
 </resources>

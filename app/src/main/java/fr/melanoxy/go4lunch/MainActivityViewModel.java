@@ -1,8 +1,12 @@
 package fr.melanoxy.go4lunch;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.location.Location;
+import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,9 +15,16 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.List;
 
 import fr.melanoxy.go4lunch.data.models.User;
+import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
+import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
@@ -42,6 +53,9 @@ public class MainActivityViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isNotifyPermissionGrantedLiveData = new MutableLiveData<>();
     private final MediatorLiveData<User> notifyStateMediatorLiveData = new MediatorLiveData<>();
+
+    //private final MutableLiveData<Boolean> isProgressBarVisibleLiveData = new MutableLiveData<>();
+    private final MediatorLiveData<Boolean> progressBarMediatorLiveData = new MediatorLiveData<>();
 
     //restaurant details activity SingleLiveEvent
     // Check https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
@@ -87,11 +101,56 @@ public class MainActivityViewModel extends ViewModel {
         );
 
         //TODO settings input
+
+//PROGRESS BAR
+        LiveData<RestaurantsNearbyResponse> restaurantsNearbyLiveData = restaurantRepository.getRestaurantNearbyResponseLiveData();
+        LiveData<String> queryLiveData = searchRepository.getSearchFieldLiveData();
+        LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData = restaurantRepository.getPredictionsDetailsLiveData();
+
+        progressBarMediatorLiveData.addSource(locationLiveData, location ->
+                combineProgressBar(location, restaurantsNearbyLiveData.getValue(),
+                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue())
+        );
+
+        progressBarMediatorLiveData.addSource(restaurantsNearbyLiveData, restaurantsNearbyResponse ->
+                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyResponse,
+                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue())
+        );
+
+        progressBarMediatorLiveData.addSource(queryLiveData, query ->
+                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
+                        query, predictionsDetailsLiveData.getValue())
+        );
+
+        progressBarMediatorLiveData.addSource(predictionsDetailsLiveData, placeIdDetailsResponseList ->
+                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
+                        queryLiveData.getValue(), placeIdDetailsResponseList)
+        );
+
+
 }
+
+    private void combineProgressBar(
+            Location userLocation,
+            RestaurantsNearbyResponse restaurantsNearbyResponse,
+            String query,
+            List<PlaceIdDetailsResponse> placeIdDetailsResponseList
+    ) {
+        Boolean state = false;
+
+        if((userLocation!=null && restaurantsNearbyResponse==null) || (userLocation!=null && query!=null && placeIdDetailsResponseList==null )){
+
+            state=true;
+
+        }
+
+        progressBarMediatorLiveData.setValue(state);
+
+    }
 
     private void combineLocation(@Nullable Location location, @Nullable Boolean hasGpsPermission) {
         if (location == null) {
-            if (hasGpsPermission == null || !hasGpsPermission) {
+            if (hasGpsPermission == null || !hasGpsPermission) {//TODO handle error
                 // Never hardcode translatable Strings, always use Context.getString(R.string.my_string) instead !
                 gpsMessageLiveData.setValue("I am lost... Should I click the permission button ?!");
             }
@@ -106,11 +165,7 @@ public class MainActivityViewModel extends ViewModel {
     @SuppressLint("MissingPermission")
     public void refresh() {
 //NOTIFICATION
-        boolean hasNotifyPermission = true;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            hasNotifyPermission = permissionChecker.hasNotificationPermission();
-        }
-        isNotifyPermissionGrantedLiveData.setValue(hasNotifyPermission);
+        isNotifyPermissionGrantedLiveData.setValue(permissionChecker.hasNotificationPermission());
 //GPS
         boolean hasGpsPermission = permissionChecker.hasLocationPermission();
         isGpsPermissionGrantedLiveData.setValue(hasGpsPermission);
@@ -121,7 +176,7 @@ public class MainActivityViewModel extends ViewModel {
             locationRepository.stopLocationRequest();
         }
 //QUERY
-searchRepository.searchField(null);
+        searchRepository.searchField(null);
     }
 
     public LiveData<Boolean> getIsGpsPermissionGrantedLiveData() {
@@ -138,6 +193,10 @@ searchRepository.searchField(null);
 
     public LiveData<User> getNotifyStateLiveData() {
         return notifyStateMediatorLiveData;
+    }
+
+    public LiveData<Boolean> getProgressBarStateLiveData() {
+        return progressBarMediatorLiveData;
     }
 
 //Ask repo to check on firebase if the user instance exist
@@ -197,4 +256,34 @@ searchRepository.searchField(null);
 
         restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
     }
-}//END
+
+    public void OnSettingsSaved(Boolean notified, Uri imageUri, String username) {
+
+        if(imageUri!=null){
+        userRepository.uploadImage(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                taskSnapshot.getStorage().getDownloadUrl()
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+                                Log.e("TAG", "issue on uploads");
+                                //TODO TOAST a message
+                            }})
+                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                userRepository.updateUserSettings(notified,uri.toString(),username);
+                            }
+                        });
+            }
+        });
+        }else {
+            userRepository.updateUserSettings(
+                    notified,
+                    userRepository.getConnectedUserLiveData().getValue().getUrlPicture(),username
+            );
+        }
+    }
+}//END of MainActivityViewModel

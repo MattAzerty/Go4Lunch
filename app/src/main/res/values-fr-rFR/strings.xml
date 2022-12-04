@@ -33,4 +33,9 @@
     <string name="no_phone_number">aucun téléphone trouvé</string>
     <string name="no_web_url">aucun site web trouvé</string>
     <string name="marker_snipet">" personne(s) aujourd'hui"</string>
+    <string name="drawer_item_chat">DISCUSSIONS</string>
+    <string name="settings">PARAMÈTRES:</string>
+    <string name="change_username_here">CHANGER PSEUDO</string>
+    <string name="change_avatar">CHANGER PHOTO</string>
+    <string name="save">SAUVEGARDER</string>
 </resources>

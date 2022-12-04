@@ -1,6 +1,7 @@
 package fr.melanoxy.go4lunch.data.repositories;
 
 import android.content.Context;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +25,14 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import fr.melanoxy.go4lunch.data.FirebaseHelper;
@@ -95,7 +100,8 @@ public class UserRepository {
                                 place_name,
                                 place_address,
                                 place_pic_url,
-                                my_favorite_restaurants);
+                                my_favorite_restaurants,
+                                true);//Notification true by default
                         // Store User to Firestore
                         UserRepository.this.getUsersCollection().document(uid).set(mUser);
                         connectedUserMutableLiveData.setValue(mUser);
@@ -299,5 +305,36 @@ public class UserRepository {
         return "https://i.pravatar.cc/200?u=" + System.currentTimeMillis();
     }
 
+    public UploadTask uploadImage(Uri imageUri){
+        String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
+        StorageReference mImageRef = FirebaseStorage.getInstance().getReference("MyGo4LunchAvatar/" + uuid);
+        return mImageRef.putFile(imageUri);
+    }
+
+
+    // Update notification setting
+    public void updateUserSettings(Boolean notified, String urlPicture, String username) {
+
+        FirebaseUser user = getCurrentUser();
+        DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(user.getUid());
+        userRef
+                .update(
+                        "notified", notified,
+                        "urlPicture",urlPicture,
+                        "username",username
+
+                )
+                .addOnSuccessListener(aVoid -> {
+                    //report those modifications to connectedUserLiveData
+                    mUser.setNotified(notified);
+                    mUser.setUrlPicture(urlPicture);
+                    mUser.setUsername(username);
+                    connectedUserMutableLiveData.postValue(mUser);
+                })
+                .addOnFailureListener(e -> {
+                    //Log.w(TAG, "Error updating document", e);TODO handle error
+                });
+
+    }
 
 }// END UserRepository
