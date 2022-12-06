@@ -107,6 +107,34 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/restaurant_detail_tv_name"
                         tools:text="French restaurant - 12 Rue du Faubourg Poissonnières" />
+
+                    <ImageView
+                        android:id="@+id/restaurant_details_star1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_detail_tv_name"
+                        app:layout_constraintTop_toTopOf="@id/restaurant_detail_tv_name"
+                        android:layout_marginLeft="8dp"
+                        android:src="@drawable/ic_star_white_24dp"/>
+
+                    <ImageView
+                        android:id="@+id/restaurant_details_star2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_details_star1"
+                        app:layout_constraintTop_toTopOf="@id/restaurant_details_star1"
+                        android:src="@drawable/ic_star_white_24dp"/>
+
+                    <ImageView
+                        android:id="@+id/restaurant_details_star3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_details_star2"
+                        app:layout_constraintTop_toTopOf="@id/restaurant_details_star2"
+                        android:src="@drawable/ic_star_white_24dp" />
+
+
+
                     <!-- This is ImageButton for the expansion icon -->
                     <ImageButton
                         android:id="@+id/restaurant_detail_arrow_button"
@@ -124,7 +152,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
-                        app:layout_constraintEnd_toStartOf="@id/restaurant_details_workmates_rv"
                         app:layout_constraintTop_toBottomOf="@id/restaurant_detail_arrow_button">
 
                         <com.google.android.material.divider.MaterialDivider

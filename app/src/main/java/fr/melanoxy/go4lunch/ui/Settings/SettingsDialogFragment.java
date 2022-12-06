@@ -71,7 +71,7 @@ public class SettingsDialogFragment extends DialogFragment {
 
             }
         });
-
+//CHANGE AVATAR BUTTON
         mBinding.buttonpfp.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -79,7 +79,7 @@ public class SettingsDialogFragment extends DialogFragment {
                         selectPicture();
                     }
                 });
-        
+//SAVE BUTTON
         mBinding.actionSave.setOnClickListener(
                 new View.OnClickListener() {
                     @Override

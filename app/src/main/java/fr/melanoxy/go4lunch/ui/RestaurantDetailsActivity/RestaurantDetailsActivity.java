@@ -88,7 +88,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
             mItem = intent.getSerializableExtra("item_key",RestaurantStateItem.class);
         }else{mItem = (RestaurantStateItem) intent.getSerializableExtra("item_key");}
         //Ask for restaurant details
-        mViewModel.searchPlaceIdDetails(mItem.getPlace_id(),"opening_hours,website,formatted_phone_number",MAPS_API_KEY);
+        mViewModel.searchPlaceIdDetails(mItem.getPlace_id(),"opening_hours,website,formatted_phone_number,rating",MAPS_API_KEY);
 
         //BINDING
         bindLayout(mItem);
@@ -201,7 +201,10 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
             List<String> list = restaurantDetails.getOpeningHours().getWeekdayText();
             mRestaurantDetailsBinding.restaurantDetailOpeningHours.setText(TextUtils.join("\n",list));
 
-            //TODO Rating / Price level / Distance
+            //Rating
+            mRestaurantDetailsBinding.restaurantDetailsStar1.setVisibility(item.getPlace_rating()>=1? View.VISIBLE : View.INVISIBLE);
+            mRestaurantDetailsBinding.restaurantDetailsStar2.setVisibility(item.getPlace_rating()>=1.5? View.VISIBLE : View.INVISIBLE);
+            mRestaurantDetailsBinding.restaurantDetailsStar3.setVisibility(item.getPlace_rating()>=2.5? View.VISIBLE : View.INVISIBLE);
 
             //Phone Number of the restaurant
             phone = restaurantDetails.getFormattedPhoneNumber();

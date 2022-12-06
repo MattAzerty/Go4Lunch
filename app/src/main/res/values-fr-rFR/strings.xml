@@ -38,4 +38,5 @@
     <string name="change_username_here">CHANGER PSEUDO</string>
     <string name="change_avatar">CHANGER PHOTO</string>
     <string name="save">SAUVEGARDER</string>
+    <string name="restaurant_selected">aucun restaurant sélectionné</string>
 </resources>

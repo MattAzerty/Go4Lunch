@@ -55,8 +55,9 @@
     <string name="no_web_url">"no website found"</string>
     <string name="marker_snipet">" people eat here today"</string>
     <string name="settings">SETTINGS:</string>
-    <string name="notification">Notification ?</string>
+    <string name="notification" translatable="false">Notification ?</string>
     <string name="save">SAVE</string>
     <string name="change_username_here">CHANGE USERNAME</string>
     <string name="change_avatar">CHANGE AVATAR</string>
+    <string name="restaurant_selected">no restaurant selected</string>
 </resources>

@@ -60,6 +60,8 @@ public class MainActivityViewModel extends ViewModel {
     //restaurant details activity SingleLiveEvent
     // Check https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
     private final SingleLiveEvent<RestaurantStateItem> restaurantDetailsActivitySingleLiveEvent = new SingleLiveEvent<>();
+    //snackBar SingleLiveEvent
+    private final SingleLiveEvent<Integer> snackBarSingleLiveEvent = new SingleLiveEvent<>();
 
 //CONSTRUCTOR
     public MainActivityViewModel(
@@ -240,10 +242,15 @@ public class MainActivityViewModel extends ViewModel {
         return restaurantDetailsActivitySingleLiveEvent;
     }
 
+    public LiveData<Integer> getSnackBarSingleLiveEvent() {
+        return snackBarSingleLiveEvent;
+    }
+
     public void onYourLunchClicked() {
 
         User user = userRepository.mUser;
 
+        if(user.getRestaurant_for_today_id()!=null){//If user has selected a restaurant launch the activity
         RestaurantStateItem rItem = new RestaurantStateItem(
                 user.getRestaurant_for_today_id(),
                 user.getRestaurant_for_today_name(),
@@ -255,6 +262,9 @@ public class MainActivityViewModel extends ViewModel {
                 0);
 
         restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
+        }else {//Else send a snackBar message:
+            snackBarSingleLiveEvent.setValue(R.string.restaurant_selected);
+        }
     }
 
     public void OnSettingsSaved(Boolean notified, Uri imageUri, String username) {
@@ -286,4 +296,5 @@ public class MainActivityViewModel extends ViewModel {
             );
         }
     }
+
 }//END of MainActivityViewModel

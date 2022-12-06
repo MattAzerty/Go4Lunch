@@ -116,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
         //setup Notification
         setupNotify();
 
+        //SingleLiveEvent to launch a snackbar message from viewmodel if needed
+        mMainActivityViewModel.getSnackBarSingleLiveEvent().observe(this, message -> showSnackBar(getString(message)));
+
     }
 
     private void setupProgressBar() {
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
        mMainActivityViewModel.getNotifyStateLiveData().observe(this, user -> {
 
-           if(user.getRestaurant_for_today_name()!=null) {
+           if(user.getNotified() && user.getRestaurant_for_today_name()!=null) {
 
 //Delay in minutes for next lunch/noon time:
                LocalDateTime now = LocalDateTime.now();
@@ -176,9 +179,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        //CHECK if gps location is still granted
+        //CHECK if gps location/Notify is still granted, reset query searchbar
         mMainActivityViewModel.refresh();
-
     }
 
     private void initMainActivityViewModel() {
@@ -280,32 +282,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 callSearch(query);
-                searchView.clearFocus();
+                searchView.clearFocus();//remove keyboard
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//              if (searchView.isExpanded() && TextUtils.isEmpty(newText)) {
-                //callSearch(newText);
-//              }
                 return true;
             }
 
             public void callSearch(String query) {
                 //Do searching
                 mMainActivityViewModel.onSearchQueryCall(query);
-                //Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT).show();
             }
-
         });
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                mMainActivityViewModel.onSearchQueryCall(null);
-                return false;
-            }
+        searchView.setOnCloseListener(() -> {
+            mMainActivityViewModel.onSearchQueryCall(null);
+            return false;
         });
 
         // To show icons in the actionbar's overflow menu:
@@ -360,9 +354,9 @@ public class MainActivity extends AppCompatActivity {
             //NavigationView navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view_drawer);
             View headerContainer = navigationView.getHeaderView(0); // This returns the container layout from your navigation drawer header layout file (e.g., the parent RelativeLayout/LinearLayout in your my_nav_drawer_header.xml file)
 
-            TextView username = (TextView)headerContainer.findViewById(R.id.drawer_header_username);
+            TextView username = headerContainer.findViewById(R.id.drawer_header_username);
             username.setText(user.username);
-            TextView email = (TextView)headerContainer.findViewById(R.id.drawer_header_email);
+            TextView email = headerContainer.findViewById(R.id.drawer_header_email);
             email.setText(user.email);
 
             if (user.getUrlPicture()!=null)   {
@@ -373,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+//ITEMS MENU OF DRAWER
     public void selectDrawerItem(MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
@@ -381,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
                 mMainActivityViewModel.onYourLunchClicked();
                 break;
             case R.id.drawer_menu_item_settings:
-                //
+
                 SettingsDialogFragment dialog = new SettingsDialogFragment();
                 dialog.show(getSupportFragmentManager(),
                         "AddAPeopleDialogFragment");
