@@ -72,7 +72,7 @@ public class WorkmatesFragment extends Fragment {
                 startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));
                 }else{((MainActivity)getActivity()).showSnackBar(getString(R.string.workmates_restaurant_not_set));}
             }
-        });
+        },getContext());
 
         mBinding.workmatesRv.setAdapter(adapter);
 

@@ -1,5 +1,7 @@
 package fr.melanoxy.go4lunch.ui.Workmates;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -11,16 +13,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.Objects;
+
+import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.WorkmateItemBinding;
 
 public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesAdapter.ViewHolder> {
 
     private final OnWorkmateClickedListener listener;
+    private final Context context;
 
-    public WorkmatesAdapter(OnWorkmateClickedListener listener) {
+    public WorkmatesAdapter(OnWorkmateClickedListener listener, Context context) {
         super(new ListWorkmatesItemCallback());
 
         this.listener = listener;
+        this.context=context;
     }
 
     @NonNull
@@ -31,7 +38,7 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(getItem(position), listener);
+        holder.bind(getItem(position), listener, context );
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -44,11 +51,13 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
             this.binding = binding;
         }
 
-        public void bind(WorkmatesStateItem item, OnWorkmateClickedListener listener) {
+        public void bind(WorkmatesStateItem item, OnWorkmateClickedListener listener, Context context) {
             itemView.setOnClickListener(v -> listener.onWorkmateClicked(item));
             binding.workmateItemUsername.setText(item.getUsername());
             binding.workmateItemEmail.setText(item.getEmail());
             binding.workmateItemMainfield.setText(item.getMainField());
+            if(item.getMainField().contains(context.getResources().getString(R.string.workmates_restaurant_not_set))) {
+                binding.workmateItemMainfield.setTextColor(Color.parseColor("#3a3d40"));}
             Glide.with(binding.workmateItemAvatar)
                     .load(item.getAvatarUrl())
                     .apply(RequestOptions.circleCropTransform())
