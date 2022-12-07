@@ -1,8 +1,6 @@
 package fr.melanoxy.go4lunch;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
@@ -21,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.List;
+import java.util.Objects;
 
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
@@ -102,59 +101,61 @@ public class MainActivityViewModel extends ViewModel {
                 combineNotify(isNotifyPermissionGrantedLiveData.getValue(),user)
         );
 
-        //TODO settings input
-
-//PROGRESS BAR
+//PROGRESS BAR (userLocation + NearbyAnswer + queryInput + predictionsDetails + restaurantRepoError)
         LiveData<RestaurantsNearbyResponse> restaurantsNearbyLiveData = restaurantRepository.getRestaurantNearbyResponseLiveData();
         LiveData<String> queryLiveData = searchRepository.getSearchFieldLiveData();
         LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData = restaurantRepository.getPredictionsDetailsLiveData();
+        LiveData<String> restaurantRepositoryErrorLiveData = restaurantRepository.getRestaurantRepositoryErrorLiveData();
 
         progressBarMediatorLiveData.addSource(locationLiveData, location ->
                 combineProgressBar(location, restaurantsNearbyLiveData.getValue(),
-                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue())
+                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(restaurantsNearbyLiveData, restaurantsNearbyResponse ->
                 combineProgressBar(locationLiveData.getValue(), restaurantsNearbyResponse,
-                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue())
+                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(queryLiveData, query ->
                 combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
-                        query, predictionsDetailsLiveData.getValue())
+                        query, predictionsDetailsLiveData.getValue(), restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(predictionsDetailsLiveData, placeIdDetailsResponseList ->
                 combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
-                        queryLiveData.getValue(), placeIdDetailsResponseList)
+                        queryLiveData.getValue(), placeIdDetailsResponseList, restaurantRepositoryErrorLiveData.getValue())
         );
 
-
+        progressBarMediatorLiveData.addSource(restaurantRepositoryErrorLiveData, error ->
+                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
+                        queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), error)
+        );
 }
 
     private void combineProgressBar(
             Location userLocation,
             RestaurantsNearbyResponse restaurantsNearbyResponse,
             String query,
-            List<PlaceIdDetailsResponse> placeIdDetailsResponseList
+            List<PlaceIdDetailsResponse> placeIdDetailsResponseList,
+            String error
     ) {
         Boolean state = false;
 
         if((userLocation!=null && restaurantsNearbyResponse==null) || (userLocation!=null && query!=null && placeIdDetailsResponseList==null )){
-
             state=true;
-
         }
 
         progressBarMediatorLiveData.setValue(state);
+
+        if(Objects.equals(error, "internetError")){snackBarSingleLiveEvent.setValue(R.string.error_no_internet);}
 
     }
 
     private void combineLocation(@Nullable Location location, @Nullable Boolean hasGpsPermission) {
         if (location == null) {
-            if (hasGpsPermission == null || !hasGpsPermission) {//TODO handle error
-                // Never hardcode translatable Strings, always use Context.getString(R.string.my_string) instead !
-                gpsMessageLiveData.setValue("I am lost... Should I click the permission button ?!");
+            if (hasGpsPermission == null || !hasGpsPermission)
+                snackBarSingleLiveEvent.setValue(R.string.error_gps);
             }
         }
     }

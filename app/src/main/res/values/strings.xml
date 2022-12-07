@@ -35,6 +35,7 @@
     <string name="error_not_connected">You need to login!</string>
     <string name="error_authentication_canceled">Authentication canceled</string>
     <string name="error_no_internet">" No internet connection!"</string>
+    <string name="error_gps">gps location not allowed</string>
     <string name="error_unknown_error">" An unknown error has occurred"</string>
     <string name="connection_succeed">Authentication successful!</string>
     <string name="my_restaurant">no restaurant saved</string>

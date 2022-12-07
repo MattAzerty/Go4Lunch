@@ -28,6 +28,7 @@ public class RestaurantRepository {
 
     private RestaurantSearchService restaurantSearchService;
     private MutableLiveData<RestaurantsNearbyResponse> restaurantNearbyMutableLiveData;
+    private MutableLiveData<String> restaurantRepositoryErrorMutableLiveData= new MutableLiveData<>("noError");
     private MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseMutableLiveData;
     private MutableLiveData<Integer> autocompleteSizeResponseMutableLiveData;
 
@@ -59,11 +60,13 @@ public class RestaurantRepository {
                     public void onResponse(Call<RestaurantsNearbyResponse> call, Response<RestaurantsNearbyResponse> response) {
                         if (response.body() != null) {
                             restaurantNearbyMutableLiveData.postValue(response.body());
+                            restaurantRepositoryErrorMutableLiveData.setValue("noError");
                         }
                     }
                     @Override
                     public void onFailure(Call<RestaurantsNearbyResponse> call, Throwable t) {
                         restaurantNearbyMutableLiveData.postValue(null);
+                        restaurantRepositoryErrorMutableLiveData.setValue("internetError");
                     }
                 });
     }
@@ -126,5 +129,9 @@ public class RestaurantRepository {
 
     public String getUrlPicture(String photoRef) {
         return  "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
+    }
+
+    public LiveData<String> getRestaurantRepositoryErrorLiveData() {
+        return restaurantRepositoryErrorMutableLiveData;
     }
 }

@@ -39,4 +39,5 @@
     <string name="change_avatar">CHANGER PHOTO</string>
     <string name="save">SAUVEGARDER</string>
     <string name="restaurant_selected">aucun restaurant sélectionné</string>
+    <string name="error_gps">localisation non autorisée</string>
 </resources>

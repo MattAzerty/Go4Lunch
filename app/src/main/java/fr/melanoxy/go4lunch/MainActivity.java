@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void setupProgressBar() {
         mMainActivityViewModel.getProgressBarStateLiveData().observe(this, state ->
                 mMainActivityBinding.activityMainProgressbar.setVisibility(state? View.VISIBLE : View.GONE));
@@ -420,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Observe userLocation then ask for NearbyRestaurants if location is not null or changed
-        mMainActivityViewModel.getUserLocationLiveData().observe(this, userLocation -> {
+        mMainActivityViewModel.getUserLocationLiveData().observe(this, userLocation -> {//TODO case with internet later
             if (userLocation!=null){
                 mMainActivityViewModel.searchNearbyRestaurant(
                         userLocation,
@@ -429,8 +430,6 @@ public class MainActivity extends AppCompatActivity {
                         MAPS_API_KEY
                 );
             }});
-
-
     }
 
     // ---------------- BOTTOM NAV ---------------- //
