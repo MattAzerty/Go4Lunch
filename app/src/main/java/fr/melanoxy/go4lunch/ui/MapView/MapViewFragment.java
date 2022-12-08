@@ -28,6 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -52,6 +53,7 @@ public class MapViewFragment extends Fragment implements
     private MapViewViewModel mMapViewViewModel;
     private FragmentMapViewBinding mFragmentMapViewBinding;
     private Marker myPositionMaker;
+    private LatLngBounds mBounds = null;
     private GoogleMap mMap = null;
     private List<Marker> restaurantsMarker = new ArrayList<>();
 
@@ -175,10 +177,18 @@ public class MapViewFragment extends Fragment implements
 
     }
 // Set a listener for marker click.
-
         mMap.setOnInfoWindowClickListener(this);
+//Bound camera around all cursors
         LatLngBounds bounds = builderBounds.build();
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+        if(mBounds==null || !mBounds.equals(bounds)){
+            mBounds=bounds;
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
+
+        }else{
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
+        }
+
+        mMap.setLatLngBoundsForCameraTarget(mBounds);
 
     }
 

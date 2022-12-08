@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,7 +39,7 @@ import fr.melanoxy.go4lunch.data.models.User;
 
 public class UserRepository {
 
-    private static final String COLLECTION_NAME = "users";
+    //private static final String COLLECTION_NAME = "users";
     private static final String FIELD_NAME_FAV_RESTAURANTS = "my_favorite_restaurants";
     public User mUser;
     private ListenerRegistration mRegistration;
@@ -53,7 +52,7 @@ public class UserRepository {
 //Current user logged
     @Nullable
     public FirebaseUser getCurrentUser(){
-        return FirebaseAuth.getInstance().getCurrentUser();
+                return FirebaseHelper.getInstance().getCurrentUser();
     }
 
 //SignOut
@@ -62,8 +61,8 @@ public class UserRepository {
     }
 
 // Get the Collection Reference
-    private CollectionReference getUsersCollection(){
-        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+   private CollectionReference getUsersCollection(){
+        return FirebaseHelper.getInstance().getWorkmateCollection();
     }
 
 // Create User in Firestore
@@ -103,7 +102,7 @@ public class UserRepository {
                                 my_favorite_restaurants,
                                 true);//Notification true by default
                         // Store User to Firestore
-                        UserRepository.this.getUsersCollection().document(uid).set(mUser);
+                        getUsersCollection().document(uid).set(mUser);
                         connectedUserMutableLiveData.setValue(mUser);
                 }
             } else {
@@ -117,6 +116,7 @@ public class UserRepository {
 
     }
 
+//Update lunch for today information on user document
     public void updateTodayRestaurantUser(
             String restaurant_for_today_id,
             String restaurant_for_today_name,
@@ -126,7 +126,7 @@ public class UserRepository {
 
         FirebaseUser user = getCurrentUser();
         DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(user.getUid());
-//Case when this exact restaurant was already stored in Firestore
+        //Case when this exact restaurant was already stored in Firestore, this mean we remove the bookmark
         if (Objects.equals(restaurant_for_today_id, mUser.restaurant_for_today_id)){
             restaurant_for_today_id = null;
             restaurant_for_today_name = null;
@@ -139,14 +139,13 @@ public class UserRepository {
         String finalRestaurant_for_today_address = restaurant_for_today_address;
         String finalRestaurant_for_today_pic_url = restaurant_for_today_pic_url;
 
-//update the restaurant for today info
+        //update the restaurant for today info
         userRef
                 .update(
                         "restaurant_for_today_id", restaurant_for_today_id,
                         "restaurant_for_today_name",restaurant_for_today_name,
                         "restaurant_for_today_address",restaurant_for_today_address,
                         "restaurant_for_today_pic_url",restaurant_for_today_pic_url
-
                 )
                 .addOnSuccessListener(aVoid -> {
                     //report those modifications to connectedUserLiveData
@@ -211,7 +210,7 @@ public class UserRepository {
                     connectedUserMutableLiveData.setValue(mUser);
                 }
             } else {
-                //logErrorMessage(userTask.getException().getMessage());TODO handle error
+                //logErrorMessage(userTask.getException().getMessage());TODO handle error signout
             }
         });}
 
@@ -220,14 +219,12 @@ public class UserRepository {
         return connectedUserMutableLiveData;
     }
 
-    //--------------------------For notification
+    //--------------------------For notification (sync task!)
 
     public User getDataUser(String uid) throws ExecutionException, InterruptedException {
-
-        //getUsersCollection().document(uid).get()
         DocumentSnapshot doc = com.google.android.gms.tasks.Tasks.await(getUsersCollection().document(uid).get());
         mUser = doc.toObject(User.class);
-        return mUser;
+        return mUser;//return user document
     }
 
 
@@ -235,7 +232,6 @@ public class UserRepository {
 
         ArrayList<String> lunchmates = new ArrayList<>();
 
-        //getUsersCollection().document(uid).get()
         QuerySnapshot documents = Tasks.await(
                 FirebaseHelper.getInstance().getWorkmateCollection()
                         .whereEqualTo("restaurant_for_today_id", placeId)
@@ -244,11 +240,12 @@ public class UserRepository {
         for (DocumentSnapshot document : documents.getDocuments()) {
             lunchmates.add((document.toObject(User.class)).getUsername());}
 
-        return lunchmates;
+        return lunchmates;//return a list of lunchmates name(s)
     }
 
                                                         //---------------------------------------------
 
+//return list of User "luchmates" eating at "place_id"
     public MutableLiveData<List<User>> getLunchmatesLiveData(String place_id) {
 
         Query query = FirebaseHelper.getInstance().getWorkmateCollection()
@@ -280,12 +277,13 @@ public class UserRepository {
 
     }
 
+//return list of User "workmates" stored on Firestore
     public MutableLiveData<List<User>> getWorkmates() {
 
         FirebaseHelper.getInstance().getWorkmateCollection()
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
-                        workmatesMutableLiveData.postValue(new ArrayList<>());//TODO handle error
+                        workmatesMutableLiveData.postValue(new ArrayList<>());
                         return;
                     }
                     ArrayList<User> workmates = new ArrayList<>();
@@ -301,10 +299,11 @@ public class UserRepository {
     }
 
     @NonNull
-    private String generateAvatarUrl() {
+    private String generateAvatarUrl() {//for email login creation
         return "https://i.pravatar.cc/200?u=" + System.currentTimeMillis();
     }
 
+//Upload an image (pfp) on FireStorage
     public UploadTask uploadImage(Uri imageUri){
         String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
         StorageReference mImageRef = FirebaseStorage.getInstance().getReference("MyGo4LunchAvatar/" + uuid);
@@ -312,7 +311,7 @@ public class UserRepository {
     }
 
 
-    // Update notification setting
+    // Update user settings
     public void updateUserSettings(Boolean notified, String urlPicture, String username) {
 
         FirebaseUser user = getCurrentUser();

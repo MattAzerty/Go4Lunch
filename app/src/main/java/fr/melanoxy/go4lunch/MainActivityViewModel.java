@@ -154,7 +154,7 @@ public class MainActivityViewModel extends ViewModel {
 
     private void combineLocation(@Nullable Location location, @Nullable Boolean hasGpsPermission) {
         if (location == null) {
-            if (hasGpsPermission == null || !hasGpsPermission)
+            if (hasGpsPermission == null || !hasGpsPermission){
                 snackBarSingleLiveEvent.setValue(R.string.error_gps);
             }
         }
@@ -279,8 +279,7 @@ public class MainActivityViewModel extends ViewModel {
                             @Override
                             public void onFailure(@NonNull Exception exception) {
                                 // Handle unsuccessful uploads
-                                Log.e("TAG", "issue on uploads");
-                                //TODO TOAST a message
+                                snackBarSingleLiveEvent.setValue(R.string.error_no_internet);
                             }})
                         .addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
