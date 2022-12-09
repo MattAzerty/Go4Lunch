@@ -180,15 +180,15 @@ public class MapViewFragment extends Fragment implements
         mMap.setOnInfoWindowClickListener(this);
 //Bound camera around all cursors
         LatLngBounds bounds = builderBounds.build();
-        if(mBounds==null || !mBounds.equals(bounds)){
+        if(mBounds==null || !mBounds.equals(bounds)){//when bounds are new we animate the camera
             mBounds=bounds;
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
 
-        }else{
+        }else{//when it's a "on resume" case we don't
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
         }
 
-        mMap.setLatLngBoundsForCameraTarget(mBounds);
+        mMap.setLatLngBoundsForCameraTarget(mBounds);//This set a move camera limit
 
     }
 

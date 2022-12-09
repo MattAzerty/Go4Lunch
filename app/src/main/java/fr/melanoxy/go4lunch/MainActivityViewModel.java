@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,34 +106,34 @@ public class MainActivityViewModel extends ViewModel {
         LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData = restaurantRepository.getPredictionsDetailsLiveData();
         LiveData<String> restaurantRepositoryErrorLiveData = restaurantRepository.getRestaurantRepositoryErrorLiveData();
 
-        progressBarMediatorLiveData.addSource(locationLiveData, location ->
-                combineProgressBar(location, restaurantsNearbyLiveData.getValue(),
+        progressBarMediatorLiveData.addSource(isGpsPermissionGrantedLiveData, hasGpsPermission ->
+                combineProgressBar(hasGpsPermission, restaurantsNearbyLiveData.getValue(),
                         queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(restaurantsNearbyLiveData, restaurantsNearbyResponse ->
-                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyResponse,
+                combineProgressBar(isGpsPermissionGrantedLiveData.getValue(), restaurantsNearbyResponse,
                         queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(queryLiveData, query ->
-                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
+                combineProgressBar(isGpsPermissionGrantedLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
                         query, predictionsDetailsLiveData.getValue(), restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(predictionsDetailsLiveData, placeIdDetailsResponseList ->
-                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
+                combineProgressBar(isGpsPermissionGrantedLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
                         queryLiveData.getValue(), placeIdDetailsResponseList, restaurantRepositoryErrorLiveData.getValue())
         );
 
         progressBarMediatorLiveData.addSource(restaurantRepositoryErrorLiveData, error ->
-                combineProgressBar(locationLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
+                combineProgressBar(isGpsPermissionGrantedLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
                         queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), error)
         );
 }
 
     private void combineProgressBar(
-            Location userLocation,
+            Boolean hasGpsPermission,
             RestaurantsNearbyResponse restaurantsNearbyResponse,
             String query,
             List<PlaceIdDetailsResponse> placeIdDetailsResponseList,
@@ -142,7 +141,7 @@ public class MainActivityViewModel extends ViewModel {
     ) {
         Boolean state = false;
 
-        if((userLocation!=null && restaurantsNearbyResponse==null) || (userLocation!=null && query!=null && placeIdDetailsResponseList==null )){
+        if((hasGpsPermission!=null && hasGpsPermission && restaurantsNearbyResponse==null) || (hasGpsPermission!=null && hasGpsPermission && query!=null && placeIdDetailsResponseList==null )){
             state=true;
         }
 
@@ -161,8 +160,9 @@ public class MainActivityViewModel extends ViewModel {
     }
 
     private void combineNotify(@Nullable Boolean hasNotifyPermission,@Nullable User user) {
-        if(hasNotifyPermission && user!=null){
-        notifyStateMediatorLiveData.setValue(user);}
+        if(Boolean.TRUE.equals(hasNotifyPermission) && user!=null){
+        notifyStateMediatorLiveData.setValue(user);
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -188,10 +188,6 @@ public class MainActivityViewModel extends ViewModel {
 
     public LiveData<Boolean> getIsNotifyPermissionGrantedLiveData() {
         return isNotifyPermissionGrantedLiveData;
-    }
-
-    public LiveData<String> getGpsMessageLiveData() {
-        return gpsMessageLiveData;
     }
 
     public LiveData<User> getNotifyStateLiveData() {

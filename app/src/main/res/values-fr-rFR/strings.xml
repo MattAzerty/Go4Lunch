@@ -17,7 +17,7 @@
     <string name="connection_succeed">Authentification réussie !</string>
     <string name="nav_list">Restaurants à proximité:</string>
     <string name="my_position_marker">"Ma position: "</string>
-    <string name="search_hint">recherche...</string>
+    <string name="search_hint">rechercher…</string>
     <string name="search_title">rechercher</string>
     <string name="CALL">TELEPHONE</string>
     <string name="WEBSITE">SITE WEB</string>

@@ -99,7 +99,6 @@ public class WorkmatesViewModel extends ViewModel {
             place_name= application.getApplicationContext().getResources().getString(R.string.workmates_restaurant_not_set);
         }
 
-
         return new WorkmatesStateItem(
                 user.uid,
                 "- "+user.username,

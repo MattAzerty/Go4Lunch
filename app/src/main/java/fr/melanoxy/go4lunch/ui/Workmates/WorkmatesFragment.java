@@ -45,6 +45,8 @@ public class WorkmatesFragment extends Fragment {
         super.onDestroyView();
         //StopListener
         mBinding = null;
+        //reset query field if needed
+        ((MainActivity)getActivity()).closeSearchView();
     }
 
     @Override
@@ -54,6 +56,9 @@ public class WorkmatesFragment extends Fragment {
 //ViewModel used for this fragment
         mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
                 .get(WorkmatesViewModel.class);
+
+//reset query field if needed
+        ((MainActivity)getActivity()).closeSearchView();
 
 //Init RecyclerView
         WorkmatesAdapter adapter = new WorkmatesAdapter(new OnWorkmateClickedListener() {

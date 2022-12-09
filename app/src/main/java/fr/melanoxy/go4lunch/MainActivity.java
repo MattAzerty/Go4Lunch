@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private WorkManager mWorkManager;
     private final String mTagUniqueWork ="notifyTag";
     private Menu mOptionsMenu;
+    private Integer mDestination;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,10 +122,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+//Loading bar when fetching API places information
     private void setupProgressBar() {
-        mMainActivityViewModel.getProgressBarStateLiveData().observe(this, state ->
-                mMainActivityBinding.activityMainProgressbar.setVisibility(state? View.VISIBLE : View.GONE));
+        mMainActivityViewModel.getProgressBarStateLiveData().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean state) {
+                if(mDestination!=R.id.nav_menu_item_workmates) {
+                    mMainActivityBinding.activityMainProgressbar.setVisibility(state ? View.VISIBLE : View.GONE);
+                }else{mMainActivityBinding.activityMainProgressbar.setVisibility(View.GONE);}
+            }
+        });
     }
 
     private void setupNotify() {
@@ -154,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                        .setRequiredNetworkType(NetworkType.CONNECTED)
                        .build();
 
-//'run only one' time request
+//'run only one time' request
                OneTimeWorkRequest uploadWorkRequest =
                        new OneTimeWorkRequest.Builder(NotifyWorker.class)
                                .setInputData(data)//Restaurant for today info
@@ -276,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView =
                 (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setQueryHint(getString(R.string.search_hint));//SearchView hint
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
         //Listener for searchfield
@@ -323,13 +331,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mMainActivityBinding.activityMainDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.action_search:
-//TODO Search BAR
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            mMainActivityBinding.activityMainDrawerLayout.openDrawer(GravityCompat.START);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -349,8 +353,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mMainActivityViewModel.getConnectedUserLiveData().observe(this, user -> {
-
-            //setup: name, mail and pfp in drawer
 
             //NavigationView navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view_drawer);
             View headerContainer = navigationView.getHeaderView(0); // This returns the container layout from your navigation drawer header layout file (e.g., the parent RelativeLayout/LinearLayout in your my_nav_drawer_header.xml file)
@@ -372,16 +374,16 @@ public class MainActivity extends AppCompatActivity {
     public void selectDrawerItem(MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
-            case R.id.drawer_menu_item_yourlunch:
+            case R.id.drawer_menu_item_yourlunch://YOUR LUNCH
                 mMainActivityViewModel.onYourLunchClicked();
                 break;
-            case R.id.drawer_menu_item_settings:
+            case R.id.drawer_menu_item_settings://SETTINGS
 
                 SettingsDialogFragment dialog = new SettingsDialogFragment();
                 dialog.show(getSupportFragmentManager(),
                         "AddAPeopleDialogFragment");
                 break;
-            case R.id.drawer_menu_item_logout:
+            case R.id.drawer_menu_item_logout://LOGOUT
                 mMainActivityViewModel.onSignOut(this).addOnSuccessListener(aVoid -> {
                     mWorkManager.cancelUniqueWork(mTagUniqueWork);
                     startSignInActivity();
@@ -401,13 +403,7 @@ public class MainActivity extends AppCompatActivity {
 
         mMainActivityBinding.activityMainFabMylocation.setOnClickListener(v -> {
             setupPermissions();//Check if locationQuery allowed
-
-            //Close searchview n reset if user press the button but was in an autocomplete query
-                    mMainActivityViewModel.onSearchQueryCall(null);
-                    SearchView searchView =
-                            (SearchView) mOptionsMenu.findItem(R.id.action_search).getActionView();
-                    searchView.setIconified(true);
-                    searchView.onActionViewCollapsed();
+            closeSearchView();
         }
         );
 
@@ -432,6 +428,15 @@ public class MainActivity extends AppCompatActivity {
             }});
     }
 
+    public void closeSearchView() {
+        //Close searchview n reset if user press the button but was in an autocomplete query
+        mMainActivityViewModel.onSearchQueryCall(null);
+        SearchView searchView =
+                (SearchView) mOptionsMenu.findItem(R.id.action_search).getActionView();
+        searchView.setIconified(true);
+        searchView.onActionViewCollapsed();
+    }
+
     // ---------------- BOTTOM NAV ---------------- //
     private void setupBottomNav() {
 
@@ -445,8 +450,14 @@ public class MainActivity extends AppCompatActivity {
             //Change icon on fab according to gps access permission
             switch (destination.getId()) {
                 case R.id.nav_menu_item_mapview:
+                    mDestination=R.id.nav_menu_item_mapview;
+                    break;
                 case R.id.nav_menu_item_listview:
                     mMainActivityBinding.activityMainFabMylocation.show();
+                    mDestination=R.id.nav_menu_item_listview;
+                    break;
+                case R.id.nav_menu_item_workmates:
+                    mDestination=R.id.nav_menu_item_workmates;
                     break;
                 default: mMainActivityBinding.activityMainFabMylocation.hide();
                     break;
