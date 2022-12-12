@@ -39,7 +39,6 @@ import fr.melanoxy.go4lunch.data.models.User;
 
 public class UserRepository {
 
-    //private static final String COLLECTION_NAME = "users";
     private static final String FIELD_NAME_FAV_RESTAURANTS = "my_favorite_restaurants";
     public User mUser;
     private ListenerRegistration mRegistration;

@@ -61,4 +61,6 @@
     <string name="change_username_here">CHANGE USERNAME</string>
     <string name="change_avatar">CHANGE AVATAR</string>
     <string name="restaurant_selected">no restaurant selected</string>
+    <string name="text_input_hint_chat_activity">Type your message</string>
+    <string name="button_send_chat_activity">SEND</string>
 </resources>

@@ -149,16 +149,12 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         LunchmatesAdapter adapter = new LunchmatesAdapter(new OnLunchmateClickedListener() {
             @Override
             public void onLunchmateClicked(String uid) {
-
-                //TODO open message frag/activity
-
             }
         });
 
         mRestaurantDetailsBinding.restaurantDetailsWorkmatesRv.setAdapter(adapter);
 
-        mViewModel.getLunchmateStateItemsLiveData(item.getPlace_id()).observe(this, lunchmatesStateItems ->
-                adapter.submitList(lunchmatesStateItems)
+        mViewModel.getLunchmateStateItemsLiveData(item.getPlace_id()).observe(this, adapter::submitList
         );
     }
 

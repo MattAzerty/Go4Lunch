@@ -40,4 +40,6 @@
     <string name="save">SAUVEGARDER</string>
     <string name="restaurant_selected">aucun restaurant sélectionné</string>
     <string name="error_gps">localisation non autorisée</string>
+    <string name="button_send_chat_activity">ENVOYER</string>
+    <string name="text_input_hint_chat_activity">Composer votre message</string>
 </resources>

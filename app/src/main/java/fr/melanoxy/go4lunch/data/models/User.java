@@ -28,6 +28,7 @@ public class User implements Serializable {
     //Settings parameter
     public Boolean notified;
 
+    //no-argument constructor for deserialization
     public User() {}
 
     public User(

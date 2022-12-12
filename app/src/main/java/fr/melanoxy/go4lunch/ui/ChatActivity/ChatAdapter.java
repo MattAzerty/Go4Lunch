@@ -1,0 +1,85 @@
+package fr.melanoxy.go4lunch.ui.ChatActivity;
+
+import static java.lang.Integer.parseInt;
+
+import android.graphics.Color;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Random;
+
+import fr.melanoxy.go4lunch.databinding.ChatItemBinding;
+
+public class ChatAdapter extends ListAdapter<ChatStateItem, ChatAdapter.ViewHolder> {
+
+
+    protected ChatAdapter() {
+        super(new ChatAdapter.ListChatItemCallback());
+    }
+
+    @NonNull
+    @Override
+    public ChatAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ChatAdapter.ViewHolder(ChatItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ChatAdapter.ViewHolder holder, int position) {
+        holder.bind(getItem(position));
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        //Bind workmates item
+        private ChatItemBinding binding;
+
+        public ViewHolder(@NonNull ChatItemBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+        }
+
+
+        public void bind(ChatStateItem item) {
+            binding.chatItemTvUsername.setText(item.getUserName());
+            binding.chatItemTvUsername.setTextColor(convertStringToColor(item.getUserName()));
+            binding.chatItemTvMessage.setText(item.getMessage());
+        }
+
+        private Integer convertStringToColor(String username) {
+            // Generates a random color from a given string
+
+                // Create a random number generator
+                Random rng = new Random(username.hashCode());
+
+                // Generate random red, green, and blue values
+                int red = rng.nextInt(256);
+                int green = rng.nextInt(256);
+                int blue = rng.nextInt(256);
+
+                // Return the random color into Integer
+                return android.graphics.Color.rgb(red , green, blue);
+
+
+        }
+    }
+
+    private static class ListChatItemCallback extends DiffUtil.ItemCallback<ChatStateItem> {
+        @Override
+        public boolean areItemsTheSame(@NonNull ChatStateItem oldItem, @NonNull ChatStateItem newItem) {
+            return Objects.equals(oldItem, newItem);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ChatStateItem oldItem, @NonNull ChatStateItem newItem) {
+            return oldItem.equals(newItem);
+        }
+    }
+
+}//END of ChatAdapter

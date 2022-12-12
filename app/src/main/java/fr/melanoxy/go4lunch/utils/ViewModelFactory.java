@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.location.LocationServices;
 
 import fr.melanoxy.go4lunch.MainApplication;
+import fr.melanoxy.go4lunch.data.repositories.ChatRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
+import fr.melanoxy.go4lunch.ui.ChatActivity.ChatActivityViewModel;
 import fr.melanoxy.go4lunch.ui.ListView.ListViewViewModel;
 import fr.melanoxy.go4lunch.ui.MapView.MapViewViewModel;
 import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
@@ -34,6 +36,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final SearchRepository searchRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
+    @NonNull
+    private final ChatRepository chatRepository;
     @NonNull
     private final Application application;
 
@@ -59,6 +63,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             ),
                             new RestaurantRepository(
                             ),
+                            new ChatRepository(
+                            ),
                             application
                     );
                 }
@@ -74,12 +80,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             @NonNull LocationRepository locationRepository,
             @NonNull SearchRepository searchRepository,
             @NonNull RestaurantRepository restaurantRepository,
+            @NonNull ChatRepository chatRepository,
             @NonNull Application application) {
         this.userRepository = userRepository;
         this.permissionChecker = permissionChecker;
         this.locationRepository = locationRepository;
         this.searchRepository = searchRepository;
         this.restaurantRepository = restaurantRepository;
+        this.chatRepository = chatRepository;
         this.application = application;
     }
 
@@ -119,6 +127,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new RestaurantDetailsViewModel(
                     userRepository,
                     restaurantRepository
+            );
+        }else if (modelClass.isAssignableFrom(ChatActivityViewModel.class)) {
+            return (T) new ChatActivityViewModel(
+                    userRepository,
+                    chatRepository
             );
         }
         throw new IllegalArgumentException("Unknown ViewModel class : " + modelClass);

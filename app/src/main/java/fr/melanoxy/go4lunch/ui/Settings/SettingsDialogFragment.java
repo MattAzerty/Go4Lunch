@@ -35,7 +35,6 @@ public class SettingsDialogFragment extends DialogFragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         //binding FragmentWorkmatesBinding layout
         mBinding = FragmentDialogSettingsBinding.inflate(getLayoutInflater());
         View view = mBinding.getRoot();

@@ -68,6 +68,7 @@ import java.util.concurrent.TimeUnit;
 
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.ActivityMainBinding;
+import fr.melanoxy.go4lunch.ui.ChatActivity.ChatActivity;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
 import fr.melanoxy.go4lunch.ui.Settings.SettingsDialogFragment;
 import fr.melanoxy.go4lunch.utils.NotifyWorker;
@@ -382,6 +383,9 @@ public class MainActivity extends AppCompatActivity {
                 SettingsDialogFragment dialog = new SettingsDialogFragment();
                 dialog.show(getSupportFragmentManager(),
                         "AddAPeopleDialogFragment");
+                break;
+            case R.id.drawer_menu_item_chat://Chat
+                startActivity(ChatActivity.navigate(this));
                 break;
             case R.id.drawer_menu_item_logout://LOGOUT
                 mMainActivityViewModel.onSignOut(this).addOnSuccessListener(aVoid -> {

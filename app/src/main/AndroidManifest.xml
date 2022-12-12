@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- ACCESS GRANTED -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
-    <!-- NearbyPlaceLocation permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- NearbyPlaceLocation permission -->
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify coarse and fine
@@ -29,12 +26,18 @@
         android:theme="@style/Theme.Go4Lunch"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ChatActivity.ChatActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.RestaurantDetailsActivity.RestaurantDetailsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label=""
             android:theme="@style/Theme.Go4Lunch.Fullscreen" />
-
         <!--
            To add your Maps API key to this project:
            1. Open the root project's local.properties file

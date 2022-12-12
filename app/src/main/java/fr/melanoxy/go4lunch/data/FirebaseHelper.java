@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class FirebaseHelper {
     private static FirebaseHelper sFirebaseHelper;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final String CHAT_COLLECTION = "chats";
     public final CollectionReference workmatesRef = db.collection("users");
 
     public static FirebaseHelper getInstance() {
@@ -19,6 +20,10 @@ public class FirebaseHelper {
     //Get Users Collection
     public CollectionReference getWorkmateCollection(){
         return workmatesRef;
+    }
+    //Get Messages Collection
+    public CollectionReference getChatCollection(){
+        return FirebaseFirestore.getInstance().collection(CHAT_COLLECTION);
     }
     //Get Users Collection
     public FirebaseUser getCurrentUser(){
