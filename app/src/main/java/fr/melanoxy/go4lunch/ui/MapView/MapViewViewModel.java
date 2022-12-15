@@ -22,6 +22,7 @@ import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
+import fr.melanoxy.go4lunch.utils.WorkmatesUtils;
 
 public class MapViewViewModel extends ViewModel {
 
@@ -38,7 +39,7 @@ public class MapViewViewModel extends ViewModel {
 
     private final MediatorLiveData<List<MarkerInfoStateItem>> markersMediatorLiveData = new MediatorLiveData<>();
     LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData;
-    private String mPreviousQuery=null;
+    private String mPreviousQuery = null;
 
     //CONSTRUCTOR
     public MapViewViewModel(
@@ -96,13 +97,14 @@ public class MapViewViewModel extends ViewModel {
 
         List<MarkerInfoStateItem> markerInfoStateItems = new ArrayList<>();
 
-        if(restaurantsNearbyResponse!=null && query==null){
-            mPreviousQuery =null;
+        if (restaurantsNearbyResponse != null && query == null) {
+            mPreviousQuery = null;
             for (NearbyResult result : restaurantsNearbyResponse.getResults()) {
-            markerInfoStateItems.add(mapNearby(result,workmates));}
+                markerInfoStateItems.add(mapNearby(result, workmates));
+            }
         }
 
-        if(query!=null && userLocation!=null && !Objects.equals(query, mPreviousQuery)) {
+        if (query != null && userLocation != null && !Objects.equals(query, mPreviousQuery)) {
             markerInfoStateItems = new ArrayList<>();
             mPreviousQuery = query;
             //Ask for predictions
@@ -110,7 +112,7 @@ public class MapViewViewModel extends ViewModel {
             restaurantRepository.searchFromQueryPlaces(query, "restaurant", coordinate, "500", MAPS_API_KEY);
         }
 
-        if(query!=null && predictions!=null && size!=null && size==predictions.size()){
+        if (query != null && predictions != null && size != null && size == predictions.size()) {
 
             for (PlaceIdDetailsResponse placeIdDetailsResponse : predictions) {
                 markerInfoStateItems.add(mapPredictions(placeIdDetailsResponse, workmates));
@@ -128,10 +130,10 @@ public class MapViewViewModel extends ViewModel {
                 placeId,
                 result.getName(),
                 result.getFormattedAddress(),
-                (result.getPhotos()!=null) ?
+                (result.getPhotos() != null) ?
                         restaurantRepository.getUrlPicture(result.getPhotos().get(0).getPhotoReference()) :
                         "https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG",
-                getNumberOfLunchmates(workmates,  placeId),
+                WorkmatesUtils.getInstance().getNumberOfLunchmates(workmates, placeId),
                 result.getGeometry().getLocation().getLat(),
                 result.getGeometry().getLocation().getLng()
         );
@@ -143,33 +145,19 @@ public class MapViewViewModel extends ViewModel {
     ) {
 
 
-       String placeId = prediction.getResult().getPlaceId();
+        String placeId = prediction.getResult().getPlaceId();
 
         return new MarkerInfoStateItem(
                 placeId,
                 prediction.getResult().getName(),
                 prediction.getResult().getFormattedAddress(),
-                (prediction.getResult().getPhotos()!=null) ?
+                (prediction.getResult().getPhotos() != null) ?
                         restaurantRepository.getUrlPicture(prediction.getResult().getPhotos().get(0).getPhotoReference()) :
-                            "https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG",
-                getNumberOfLunchmates(workmates,  placeId),
+                        "https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG",
+                WorkmatesUtils.getInstance().getNumberOfLunchmates(workmates, placeId),
                 prediction.getResult().getGeometry().getLocation().getLat(),
                 prediction.getResult().getGeometry().getLocation().getLng());
     }
-
-    private Integer getNumberOfLunchmates(List<User> workmates, String placeId) {
-
-        //Number of lunchmates
-        Integer numberOfLunchmates =0;
-
-        for (User user : workmates) {
-            if (Objects.equals(user.getRestaurant_for_today_id(), placeId))
-            {numberOfLunchmates++;}
-        }
-
-        return numberOfLunchmates;
-    }
-
 
     public LiveData<Location> getUserLocationLiveData() {
         return locationRepository.getLocationLiveData();

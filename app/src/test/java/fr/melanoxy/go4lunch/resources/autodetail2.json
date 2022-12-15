@@ -1,0 +1,192 @@
+{
+   "html_attributions" : [],
+   "result" : {
+      "formatted_address" : "952 El Monte Ave, Mountain View, CA 94040, USA",
+      "geometry" : {
+         "location" : {
+            "lat" : 37.3914087,
+            "lng" : -122.0964344
+         },
+         "viewport" : {
+            "northeast" : {
+               "lat" : 37.3928119302915,
+               "lng" : -122.0950398197085
+            },
+            "southwest" : {
+               "lat" : 37.3901139697085,
+               "lng" : -122.0977377802915
+            }
+         }
+      },
+      "name" : "McDonald's",
+      "opening_hours" : {
+         "open_now" : false,
+         "periods" : [
+            {
+               "close" : {
+                  "day" : 0,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 0,
+                  "time" : "0600"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 1,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 1,
+                  "time" : "0600"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 2,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 2,
+                  "time" : "0600"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 3,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 3,
+                  "time" : "0600"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 4,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 4,
+                  "time" : "0600"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 5,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 5,
+                  "time" : "0600"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 6,
+                  "time" : "2300"
+               },
+               "open" : {
+                  "day" : 6,
+                  "time" : "0600"
+               }
+            }
+         ],
+         "weekday_text" : [
+            "Monday: 6:00 AM – 11:00 PM",
+            "Tuesday: 6:00 AM – 11:00 PM",
+            "Wednesday: 6:00 AM – 11:00 PM",
+            "Thursday: 6:00 AM – 11:00 PM",
+            "Friday: 6:00 AM – 11:00 PM",
+            "Saturday: 6:00 AM – 11:00 PM",
+            "Sunday: 6:00 AM – 11:00 PM"
+         ]
+      },
+      "photos" : [
+         {
+            "height" : 2176,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/104235809428165174892\"\u003eGanesh K\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJt45vNbdKMWGP33Z2XelotrAnMZNqYHkge5GcI5JeVzNSHJKmB-UOBazWFFBuzGMX2rAWv3ZVOLWcVmnDHnRy3wODpiJc8cDZtwPYg89NDXAcNCXc3aZTTGJ1fWStJ9_kF7eVjluJ-TXxso--5HAlLbmWqeRwgE_G9Ix_42fSsX5d6",
+            "width" : 4608
+         },
+         {
+            "height" : 768,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102420554441412639070\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJrrGBGpqkpCS4H0crlNLH17pbb55IjISxWLZAbct35h31344ZEbUcjEicSQsD_F3d7K4Kh9e71gmpcU1RVJXld4bd95eVc3POBEi3G8oi-VOVrF_OhPBSv7YRKzOC0FBssMxBFulsf58V_YPhrdKCpXj8RsZdkrFpaqpxtpda-_5hM",
+            "width" : 1025
+         },
+         {
+            "height" : 4032,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/113553163908693010553\"\u003eDuh-hh-hh\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAKGcWNNvGFarSDTlKFOJKHFE6tbSOmLXTyNIxJaL843DqlsdFxnvvNlnijZ4r8_Z5NNPaA4vqvrNphE67trtEqt7v9OgbGnPzuvttcINt1Z7LoCKEkwaxdVy5LlriGkg4Y5qrEbT_tThcjZ7KL9GWpFqXkaashTNcVIXAqxQi8fDVWW",
+            "width" : 3024
+         },
+         {
+            "height" : 768,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102420554441412639070\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAL2JshJcwI4yYNkXHgP9S5ecn_-6u1gd_DIVF-3-zU5-8zN2uJfwAHJWBEAUbQrjlfYW1LyJ_whZiXWcgIiccIYtjY8SRyqissdhw1_-d7hE9h3MNNyzC5MaF06vQ2HE_ZAT9g-4pa502Fb-lHKONOQcxUWxlf2tE2JjngVwl5BiUcG",
+            "width" : 1025
+         },
+         {
+            "height" : 3024,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/117727237101531275105\"\u003eJoseph Jaoko\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPALMSL3oTVn_l2am_gwmqXt2SGHG1Al5VJG_txt7aCf4nxrsvHJEAf46xf0h6xB3rc_rjrCUZkcvsc0Bh8LAafZeK5KkIO8vwZ4UdWBZamYxqFZvNOmnb-AgtRczg41GCnt5Y9Qq-3DdcRYCKUPq2b_5NVq9bpiMaSCBjAqgwf2QdPxD",
+            "width" : 4032
+         },
+         {
+            "height" : 4032,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102509936935617434280\"\u003eBart Locanthi\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAKexgYAhQqRiMJYNO0qEVFeWpVRbwHvHXijii9qbJNXWJbjgHSgpXcjSyhE5GEGyz_nw40y91oUvmU5FD2uDNG98UKV3L-YzX53TciMT0oAtdV95Mf-O-1IHJNmMnrhBG_6JFsC85Nhy6hBpMGzsiqpIJtr5K4zjPXoASh4fS4yXVUB",
+            "width" : 2268
+         },
+         {
+            "height" : 768,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102420554441412639070\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJAprIcxfhD7Nall8VP8MxP6cixbpfeGrZaiDegWs8Uvb5XLt49N8Aqe6i9kRp2nlRSX4TAAZsWtGQ8hzM1V71UY6Ln4U4U4DJEdpvK51md4Q9BNS-7bxqlZruxwRHVAGh8r-dUtBYZ0aD35npnpLBMM98bhiiSaRBZfDGnhKPGc9Ac",
+            "width" : 1025
+         },
+         {
+            "height" : 1500,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102420554441412639070\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAIL3Y_MDKRvLRvxsIJB-URu_xdZMf6oh7ITpy-SDAhPiQbHbv30Bex09y1aXGfWlA4e9NSblSVzH-BPshMVMlCpeEmpHZ7D-1URxowpl0Mn9Zgls0NX4UVXESZLp_kVh-YIQs0GV8WwbcPfjUHFqaFQ2z3rw4B1gL7xrqR3as2ExMg7",
+            "width" : 2000
+         },
+         {
+            "height" : 3024,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/103482017962675085112\"\u003eTiffany Peronto\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAI9EbE0kDDFUtPUI_ayY5viyiFWL4PMehUjhkgWfaANnzXRNdhM7C8Ytq_IO17felIgxrzLADyORXv930v0WXfG1hnZygCox1HUgXFgo8y82dJ3fZGpwJPtwQQjcByAHFL1aqH2A0WaQx7RH8AGM1BDVWcy0-5oDRVgQCkQY-rfNLn1",
+            "width" : 4032
+         },
+         {
+            "height" : 3024,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114686905131362297262\"\u003eSadeesh Kumar\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAIGGw6XMS9uBqsUve8KEvLCzpLrhXCnRqgEpzh9KZvZ9taW_yrnWsBU6OPgkwTekTHg7FgAIPsElHQRCKN4mNL2A394LAHrcinuRHnBB-fwXxlMUV4cxJzz_IoD6cfNcO9RHU_-YAwHCJN5FnkauNbiDkCSYt4sLmQMFJuS-Eknn3R-",
+            "width" : 4032
+         }
+      ],
+      "place_id" : "ChIJsxic68ewj4ARuDxSHWlL2Z8",
+      "rating" : 3.8
+   },
+   "status" : "OK"
+}

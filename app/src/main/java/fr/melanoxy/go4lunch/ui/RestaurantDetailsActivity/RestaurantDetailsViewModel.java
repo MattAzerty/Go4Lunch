@@ -22,21 +22,18 @@ public class RestaurantDetailsViewModel extends ViewModel {
     private final UserRepository userRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
-    private LiveData<PlaceIdDetailsResponse> placeIdDetailsResponseLiveData;
     DetailsResult restaurantDetails;
     private final MediatorLiveData<DetailsResult> restaurantDetailsMediatorLiveData = new MediatorLiveData<>();
 
     public RestaurantDetailsViewModel(
             @NonNull UserRepository userRepository,
             @NonNull RestaurantRepository restaurantRepository
-    ){
+    ) {
         this.userRepository = userRepository;
         this.restaurantRepository = restaurantRepository;
-        placeIdDetailsResponseLiveData = restaurantRepository.getPlaceIdDetailsResponseLiveData();
+        LiveData<PlaceIdDetailsResponse> placeIdDetailsResponseLiveData = restaurantRepository.getPlaceIdDetailsResponseLiveData();
 
-        restaurantDetailsMediatorLiveData.addSource(placeIdDetailsResponseLiveData, placeIdDetailsResponse ->
-                combine(placeIdDetailsResponse));
-
+        restaurantDetailsMediatorLiveData.addSource(placeIdDetailsResponseLiveData, this::combine);
     }
 
     private void combine(@Nullable final PlaceIdDetailsResponse placeIdDetailsResponse) {
@@ -45,16 +42,15 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     public void searchPlaceIdDetails(String place_id, String fields, String apiKey) {
-        restaurantRepository.searchPlaceIdDetails(place_id,fields,apiKey);
+        restaurantRepository.searchPlaceIdDetails(place_id, fields, apiKey);
     }
 
     public LiveData<DetailsResult> getRestaurantDetailsResults() {
         return restaurantDetailsMediatorLiveData;
-
     }
 
     public void onRestaurantForTodayClicked(String place_id, String place_name, String place_address, String place_pic_url) {
-        userRepository.updateTodayRestaurantUser(place_id,place_name,place_address,place_pic_url);
+        userRepository.updateTodayRestaurantUser(place_id, place_name, place_address, place_pic_url);
     }
 
     public LiveData<User> getUserLiveData() {
@@ -71,13 +67,13 @@ public class RestaurantDetailsViewModel extends ViewModel {
 
             // mapping
             for (User lunchmate : lunchmates) {
-                    lunchmateStateItems.add(
-                            new LunchmateStateItem(
-                                    lunchmate.getUid(),
-                                    lunchmate.getUsername(),
-                                    lunchmate.getUrlPicture()
-                            )
-                    );
+                lunchmateStateItems.add(
+                        new LunchmateStateItem(
+                                lunchmate.getUid(),
+                                lunchmate.getUsername(),
+                                lunchmate.getUrlPicture()
+                        )
+                );
             }
             return lunchmateStateItems;
         });
@@ -86,4 +82,5 @@ public class RestaurantDetailsViewModel extends ViewModel {
     public void onBackPressed() {
         userRepository.onEndOfDetailsActivity();
     }
+
 }//END of RestaurantDetailsViewModel

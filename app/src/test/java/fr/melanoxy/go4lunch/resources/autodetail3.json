@@ -1,0 +1,192 @@
+{
+   "html_attributions" : [],
+   "result" : {
+      "formatted_address" : "696 N Mathilda Ave, Sunnyvale, CA 94085, USA",
+      "geometry" : {
+         "location" : {
+            "lat" : 37.3934387,
+            "lng" : -122.0289637
+         },
+         "viewport" : {
+            "northeast" : {
+               "lat" : 37.39483473029149,
+               "lng" : -122.0276395197085
+            },
+            "southwest" : {
+               "lat" : 37.39213676970849,
+               "lng" : -122.0303374802915
+            }
+         }
+      },
+      "name" : "McDonald's",
+      "opening_hours" : {
+         "open_now" : false,
+         "periods" : [
+            {
+               "close" : {
+                  "day" : 0,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 0,
+                  "time" : "0500"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 1,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 1,
+                  "time" : "0500"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 2,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 2,
+                  "time" : "0500"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 3,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 3,
+                  "time" : "0500"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 4,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 4,
+                  "time" : "0500"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 5,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 5,
+                  "time" : "0500"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 6,
+                  "time" : "2200"
+               },
+               "open" : {
+                  "day" : 6,
+                  "time" : "0500"
+               }
+            }
+         ],
+         "weekday_text" : [
+            "Monday: 5:00 AM – 10:00 PM",
+            "Tuesday: 5:00 AM – 10:00 PM",
+            "Wednesday: 5:00 AM – 10:00 PM",
+            "Thursday: 5:00 AM – 10:00 PM",
+            "Friday: 5:00 AM – 10:00 PM",
+            "Saturday: 5:00 AM – 10:00 PM",
+            "Sunday: 5:00 AM – 10:00 PM"
+         ]
+      },
+      "photos" : [
+         {
+            "height" : 3456,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/112764900341199047418\"\u003eCesar Salgado\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAKKlbKN4C59X1jPkgnI4iL_k3qEfd8-jw20yFdxU8ddOhG2NoA6rH8iCi0DuC-3lGRV_eEHtf-32VUug1Q8hoMiSusmOdJvVoiISiEgqPC5pV7maYKfD_IBmH6ABwBWzO-crXVcKq2X_TgD1SmjqYrGXM1YL36NIifrF6aaP65nB1LS",
+            "width" : 4608
+         },
+         {
+            "height" : 768,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/117767367099578986009\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPALeHnFME_RmigBRxe0mXjtg5o8AkrNkETwsQ8ixruhGITOD8Nm9a6Jf0Zf79Rb3je8sSCKnB6_1OEzPyJY8lZ_CLUWDxDMOivubc38VYimivOnvP7gS_ECg7rHWkpMhi5KANc2NGVgGSGwubxrl5_UQzUe6P0JdKhpJAnwsA2HpNiNi",
+            "width" : 1025
+         },
+         {
+            "height" : 4032,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/117084197550553092168\"\u003eJaime Garcia\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJqT6oOOpvdqx6i-J7nx7y7D7MFa77HBGUhxTMZ07TBgsyzFttrW2w8813ajnlABGzonJzFkR-Tuc6nE0sO_jW1WB2nOOSfVMIYssTiWoUu84FsutBJrnqXttQTtcE5slCg4MBkFmJl-Qrj8CmX7S72z4u08uoYjeQ9wmbT8AcJ1rHo",
+            "width" : 3024
+         },
+         {
+            "height" : 2268,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102513738296946305892\"\u003eDr. Manuel Kuehner\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAIcVOstUDbAHAGF4AgUrr-P8ZREBYfJ6pvJUD9gVm5S107VF7bZ6UyemCTVbU96dG-fP2oDWSL3Bsi_WGZF5IoNK6JMMJ8seOZ65KsDhrZ-5IHa1Cxhj3dpGR_woxV_JQhnRv4_lW1diOQs5v5AyT62Ss2nhc0wqICSJ8JxzJPxajI2",
+            "width" : 4032
+         },
+         {
+            "height" : 4032,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102513738296946305892\"\u003eDr. Manuel Kuehner\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAL48oUSqCN3oamekbWWpJWDTGPdNGsfpDSTkFNw7fegbdOXoiF4QicwS8wcR2X-CMCKw2GWBrIGxYEhBw6IhQ8d83gobB6Af0PkRzLaSqx69kMywHCGI3OyS_vZEhGTw5mae4xzZHswTw-iwU_hFQBwGAF9jEm_aiGBLr41niahwMo1",
+            "width" : 2268
+         },
+         {
+            "height" : 1500,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/117767367099578986009\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAIyNCg_cKhilNEiaF-yNdzOLsIqR_zoDQyqPNNh_LQ61FgwMshuyjvcf5cZ5Zvf8U1dBsejjPcL4RnGsOueVcIm89iJfvWWPGqGCV24YI5N5VM-hpwwFdaG2BTzbYL_bpT4D5cy2RAW_djUJVIi3nouUJeD9_cMF_CblrA8QzeXay2Y",
+            "width" : 2000
+         },
+         {
+            "height" : 768,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/117767367099578986009\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPALvr88FpB1Co78b_iH_CV1OL-pXjB7PRvKZYandSBYsWS6QVOcvmCBVVvzbSU4zJv5dngMvBUbx36ZVu0QaV_QbQUey7ThHy2XFUpZnqoNEB4DVf0MnEgaL1RfBAcIIYW3yuLSBTBSinNT-aLLY7OvSDeq9DXqxmjihEC0yPWOmEXyZ",
+            "width" : 1025
+         },
+         {
+            "height" : 2268,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102513738296946305892\"\u003eDr. Manuel Kuehner\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAKJr0WVeNA7dVPCfJNeWjn_mSzahOLPwGDeGFpG1nc0Ou2gQkBsdWXdqYpiyRqT-zVmHZUK_G0oIha4e3c9fpAc77Y21jAWzM6m5_vN8BHVh0zppXuW970laxfa7ii9cGrVJCWuivWnMIo8ux03tUmY5oLplEHOZADguWQYR9SdMOB2",
+            "width" : 4032
+         },
+         {
+            "height" : 2160,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/111954496916031456271\"\u003eBoredom NeverOver\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAI6yhM-Hs48-en2XAL_dzbLwDzhvT8FHod5Et01PTQFeT1Cqws3O3R2ZNMGRyil9LdN4WsFlbYwo1qx0PNG__a8gw8lt9pTdYZnQv3uwmEt3nLN1smX4MVnKmNH0QR0o4v2zILv3zfY1JNq1dJFHv-Zf2v5iPv-Md5qLpS9J_HsgDJw",
+            "width" : 3840
+         },
+         {
+            "height" : 3024,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/115469879923030529065\"\u003eHazlitt Krog\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJnRnclMuVj9So80sP-nQcDjwp98zJ_HKpBqEs0GCPqivfCmNli-PSVxiP7JzucoVs-s4en6fILK1B9j7UN6LQkJex-3aVXdAoKhp6oIrXdg5mb0h0Dfvc0HVqcvyKhcGTYSX-sl8DgSQ9QusrWOWTKqX5dzSKvFAVfCkDZXn7dRAc",
+            "width" : 4032
+         }
+      ],
+      "place_id" : "ChIJj_nG5qO3j4AR3lTElE7lROE",
+      "rating" : 3.8
+   },
+   "status" : "OK"
+}

@@ -1,0 +1,128 @@
+{
+   "html_attributions" : [],
+   "result" : {
+      "formatted_address" : "1060 Rengstorff Ave, Mountain View, CA 94043, USA",
+      "geometry" : {
+         "location" : {
+            "lat" : 37.4194009,
+            "lng" : -122.0936501
+         },
+         "viewport" : {
+            "northeast" : {
+               "lat" : 37.4207828302915,
+               "lng" : -122.0923814197085
+            },
+            "southwest" : {
+               "lat" : 37.4180848697085,
+               "lng" : -122.0950793802915
+            }
+         }
+      },
+      "name" : "McDonald's",
+      "opening_hours" : {
+         "open_now" : true,
+         "periods" : [
+            {
+               "open" : {
+                  "day" : 0,
+                  "time" : "0000"
+               }
+            }
+         ],
+         "weekday_text" : [
+            "Monday: Open 24 hours",
+            "Tuesday: Open 24 hours",
+            "Wednesday: Open 24 hours",
+            "Thursday: Open 24 hours",
+            "Friday: Open 24 hours",
+            "Saturday: Open 24 hours",
+            "Sunday: Open 24 hours"
+         ]
+      },
+      "photos" : [
+         {
+            "height" : 3024,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/116249450764579814191\"\u003eSrivathsa Reddy\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAIkd0HRWCNLe2YV1sgfCr-Gb3MeFAa4TV-pR_nvLEYEdrYZ2eMoNRLoapdEHBRfmHnK-5n550seIPxCZixe-eTTSiSQFT4Z3YLEw9yRcME5VaMTnkyk6Ardps6aFK0my7xBsQn6zJ8SDQ1T6lmEguzvMjaFbgl7g-GNiF-yzSs7-pz0",
+            "width" : 4032
+         },
+         {
+            "height" : 1500,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114224231657266085017\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJYA1i5TI8yA_e8x4BjVIEU1Py6zdnhZWp26ZXEpmggxeB-ipp_IyG3IpvjrfliUCdRthZHfYM1lLurkxdhQi_nDbcTahk-L4CEth1ZK_5ZO04xLwkRmx0XVWF6wjhFC1j-RC5yOashKwAILyBgte0yQPQimOby_ZcxACDhVOleBdKP",
+            "width" : 2000
+         },
+         {
+            "height" : 1499,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114224231657266085017\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJVKb6GQ-s630ChT06a6e2zi5GWX_WWhUSqqLW-Z2Ipq3Srd62OgBU8qtXkA5W_pDY1RfFB61o7kKKkaGf7VxgRZCqTLTNMUCQvNNLMPEGuFsyr1rk136nF4R7okhOzgGaPl29DOL3XCiyPp8Smo1QKr8P5dermrW_8dKAtqFe4YCTd",
+            "width" : 1499
+         },
+         {
+            "height" : 768,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114224231657266085017\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAILuMkN8G4Bric72kRFw5dZ4yOyOn3SBU4QSeYHxCKfmbcLm1nVOu3mqhDuPznX9euFo9Z4DO7Svw5aw-Ct91_1Yh4jKR_WQQqYl5ZieNb5JI6UmdOlxi5UrDZL43Xxfdl91dKcE6GuY_ykMkmdZLOCH4B9I-rk7aQkWnBedRKWN2k5",
+            "width" : 1025
+         },
+         {
+            "height" : 458,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114224231657266085017\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAIriJKQG28BhBvqMIIM0OvbrYncVdzxl-brNAH5N5d_yb5M_44hAwY_6pED6EUhgFUatdXgVfOefEq0hsyHizuboSKq9I0mj54pDS2emMP52YFwGY_cwPRibLBFZxDWtdEXeNMgKiVf9TAigktD35Al6nmcQz5IC4EzzUrIQI5WNjii",
+            "width" : 960
+         },
+         {
+            "height" : 458,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114224231657266085017\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPALFATBkBwNYRfmxnuzVguxFBy4SKaKedfQI2u9DIFq9m50LHcFzeaf-n_hpdhS0akRBjCW46lsf4eGCpZyW68qmCulpCFBuUrWygVjWfe0WUi7jpBDa5KV27hI50jjjFQfrGrOI6kp5r9aiIUdmQkwvLi4bBZPCmQ0KVAAtDziEfM2-",
+            "width" : 960
+         },
+         {
+            "height" : 2739,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102106617906117817899\"\u003eMark Loftin\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAL_RPZIxiTuxdHdJmT-NH6ZD0o3IHHpWOUoFGxOZtALN7wHnnzu5hoM6VhMasnRFAjHTVxvUgmcbQOPgtpeHYHE7wcWRRZIhACKZQ5w6ci10r_003TSFqwlBwgy1JzSD4GNnLWb9UwmGEOG8fjjYSib7h0upNh0s_WGbhoxCWIcSMu9",
+            "width" : 4030
+         },
+         {
+            "height" : 458,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/114224231657266085017\"\u003eMcDonald&#39;s\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPALvua86WEmVPzyUpHBVfCJtmG9ZuOqdzqnnSJg_a70V5kMO_wpV7aataofSzBsLCg5MBN-e34-1em-Y63I2F4vgSRhNLjVODcafXiDlbsZaXVW2i822GRhW_dRInsqoQB9Xj3Igzcin39plLk-U6AD3ys4bhzE3QncJrnr2QrAe5o3I",
+            "width" : 960
+         },
+         {
+            "height" : 4032,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/116249450764579814191\"\u003eSrivathsa Reddy\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPAJtHmc46gyEtSc9X0TVJNlbEG8rIRuNAnDD225mNG_4Uk2OhdslB1akbDXTvpt9zeV3x_S-wdBOfqanHkOhainlrgJc6CFfY4rTpFKf1PaUDo_ZhejY0jVewvNKYoEO0z_8OEi4Xv9Ypx2xYI3-QTe9GRFsJtI-H0iPLeGYQ9Zj91NF",
+            "width" : 3024
+         },
+         {
+            "height" : 4032,
+            "html_attributions" : [
+               "\u003ca href=\"https://maps.google.com/maps/contrib/102235039151715809410\"\u003eDiana Olivares\u003c/a\u003e"
+            ],
+            "photo_reference" : "ARywPALq9s0NkGt4OxbNx8Vrewi8-cZD2C5KIwwn327vO6S64hA5_EY-2EeLgP-iRU5w0q6D5HJEIjhJYuiys-d3lp5KJ4p3JdnJQv162fW7oXTi17ZD0z4Kc3d3k4pZSN2JyfXbNzSoRsyrU2_XwzsOGLqcXIP-apZIIttms-PM5tO1NoVU",
+            "width" : 3024
+         }
+      ],
+      "place_id" : "ChIJExCjcwW6j4ARUQSvgDSrlJs",
+      "rating" : 3.8
+   },
+   "status" : "OK"
+}

@@ -66,7 +66,6 @@ public class ChatAdapter extends ListAdapter<ChatStateItem, ChatAdapter.ViewHold
                 // Return the random color into Integer
                 return android.graphics.Color.rgb(red , green, blue);
 
-
         }
     }
 

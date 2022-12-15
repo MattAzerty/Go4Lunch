@@ -21,12 +21,6 @@ import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 
 public class WorkmatesViewModel extends ViewModel {
-    //INIT
-    //Injected with the ViewModelFactory
-    @NonNull
-    private final UserRepository userRepository;
-    @NonNull
-    private final SearchRepository searchRepository;
 
     private final Application application;
 
@@ -38,8 +32,8 @@ public class WorkmatesViewModel extends ViewModel {
             @NonNull SearchRepository searchRepository,
             Application application) {
 
-        this.userRepository = userRepository;
-        this.searchRepository = searchRepository;
+        //INIT
+        //Injected with the ViewModelFactory
         this.application = application;
 
         LiveData<List<User>> workmatesLiveData = userRepository.getWorkmates();
@@ -76,14 +70,18 @@ public class WorkmatesViewModel extends ViewModel {
     ) {
         List<User> filteredWorkmates = new ArrayList<>();
 
-        if (workmates == null) {return filteredWorkmates;}
-        if (query == null) {return workmates;}
+        if (workmates == null) {
+            return filteredWorkmates;
+        }
+        if (query == null) {
+            return workmates;
+        }
 
         for (User user : workmates) {
             if (user.getUsername().toLowerCase(Locale.ROOT).contains(query.toLowerCase(Locale.ROOT))) {
                 filteredWorkmates.add(user);
-        }
             }
+        }
 
         return filteredWorkmates;
     }
@@ -93,18 +91,18 @@ public class WorkmatesViewModel extends ViewModel {
     private WorkmatesStateItem mapWorkmate(@NonNull User user) {
 
         String place_name;
-        if(user.restaurant_for_today_name!=null){
-            place_name=application.getApplicationContext().getResources().getString(R.string.workmates_eating_at)+user.restaurant_for_today_name;
-        }else{
-            place_name= application.getApplicationContext().getResources().getString(R.string.workmates_restaurant_not_set);
+        if (user.restaurant_for_today_name != null) {
+            place_name = application.getApplicationContext().getResources().getString(R.string.workmates_eating_at) + user.restaurant_for_today_name;
+        } else {
+            place_name = application.getApplicationContext().getResources().getString(R.string.workmates_restaurant_not_set);
         }
 
         return new WorkmatesStateItem(
                 user.uid,
-                "- "+user.username,
-                "."+user.email,
+                "- " + user.username,
+                "." + user.email,
                 user.getUrlPicture(),
-                place_name+".",
+                place_name + ".",
                 user.getRestaurant_for_today_id(),
                 user.restaurant_for_today_name,
                 user.getRestaurant_for_today_address(),
