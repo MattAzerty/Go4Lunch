@@ -26,19 +26,12 @@ import fr.melanoxy.go4lunch.utils.WorkmatesUtils;
 
 public class MapViewViewModel extends ViewModel {
 
-    //INIT
-    //Injected with the ViewModelFactory
-    @NonNull
-    private final UserRepository userRepository;
     @NonNull
     private final LocationRepository locationRepository;
-    @NonNull
-    private final SearchRepository searchRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
 
     private final MediatorLiveData<List<MarkerInfoStateItem>> markersMediatorLiveData = new MediatorLiveData<>();
-    LiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData;
     private String mPreviousQuery = null;
 
     //CONSTRUCTOR
@@ -48,9 +41,9 @@ public class MapViewViewModel extends ViewModel {
             @NonNull SearchRepository searchRepository,
             @NonNull RestaurantRepository restaurantRepository
     ) {
-        this.userRepository = userRepository;
+        //INIT
+        //Injected with the ViewModelFactory
         this.locationRepository = locationRepository;
-        this.searchRepository = searchRepository;
         this.restaurantRepository = restaurantRepository;
 
         LiveData<Location> userLocationLiveData = locationRepository.getLocationLiveData();
