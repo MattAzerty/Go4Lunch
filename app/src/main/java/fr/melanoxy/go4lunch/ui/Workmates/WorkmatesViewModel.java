@@ -92,9 +92,9 @@ public class WorkmatesViewModel extends ViewModel {
 
         String place_name;
         if (user.restaurant_for_today_name != null) {
-            place_name = application.getApplicationContext().getResources().getString(R.string.workmates_eating_at) + user.restaurant_for_today_name;
+            place_name = application.getString(R.string.workmates_eating_at) + user.restaurant_for_today_name;
         } else {
-            place_name = application.getApplicationContext().getResources().getString(R.string.workmates_restaurant_not_set);
+            place_name = application.getString(R.string.workmates_restaurant_not_set);
         }
 
         return new WorkmatesStateItem(
