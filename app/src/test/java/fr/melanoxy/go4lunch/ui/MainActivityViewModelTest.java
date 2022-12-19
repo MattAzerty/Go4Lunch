@@ -1,8 +1,16 @@
 package fr.melanoxy.go4lunch.ui;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import static fr.melanoxy.go4lunch.UnitTestUtils.getOrAwaitValue;
 
 import android.location.Location;
+import android.net.Uri;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
@@ -12,14 +20,18 @@ import com.google.gson.GsonBuilder;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Optional;
 
+import fr.melanoxy.go4lunch.LiveDataTestUtils;
 import fr.melanoxy.go4lunch.MainActivityViewModel;
+import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.ReadJsonAsString;
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
@@ -28,6 +40,7 @@ import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
+import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
 import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,8 +63,8 @@ public class MainActivityViewModelTest {
     private MainActivityViewModel viewModel;
 
     private MutableLiveData<Location> locationLiveData;
-    private MutableLiveData<Boolean> isGpsPermissionGrantedLiveData;
     private MutableLiveData<User> userLiveData;
+    private MutableLiveData<Boolean> isGpsPermissionGrantedLiveData;
     private MutableLiveData<Boolean> isNotifyPermissionGrantedLiveData;
     private RestaurantsNearbyResponse nearbyResponse;
     private MutableLiveData<RestaurantsNearbyResponse> restaurantsNearbyLiveData;
@@ -64,13 +77,13 @@ public class MainActivityViewModelTest {
         // Given
         // MutableLiveData used by the mediator to build for the recyclerview the list of StateItem
         locationLiveData = new MutableLiveData<>();//from LocationRepository
-        isGpsPermissionGrantedLiveData = new MutableLiveData<>();//from PermissionChecker
         userLiveData = new MutableLiveData<>();//from UserRepository
-        isNotifyPermissionGrantedLiveData = new MutableLiveData<>();//from PermissionChecker
         restaurantsNearbyLiveData = new MutableLiveData<>();//from RestaurantRepository
         predictionsDetailsLiveData = new MutableLiveData<>();//from RestaurantRepository
         queryLiveData = new MutableLiveData<>();//from SearchRepository
         restaurantRepositoryErrorLiveData = new MutableLiveData<>();//from RestaurantRepository
+        isGpsPermissionGrantedLiveData = new MutableLiveData<>();//from PermissionChecker
+        isNotifyPermissionGrantedLiveData = new MutableLiveData<>();//from PermissionChecker
 
         //mock for userLocation
         Location userLocation = mock(Location.class);
@@ -82,9 +95,7 @@ public class MainActivityViewModelTest {
 
         //the livedata value are set here instead of repository
         locationLiveData.setValue(userLocation);
-        isGpsPermissionGrantedLiveData.setValue(false);
         userLiveData.setValue(getDefaultUser(0));
-        isNotifyPermissionGrantedLiveData.setValue(false);
         restaurantsNearbyLiveData.setValue(nearbyResponse);
         predictionsDetailsLiveData.setValue(null);
         queryLiveData.setValue(null);
@@ -99,14 +110,20 @@ public class MainActivityViewModelTest {
 
         // given behavior for some methods called
         Mockito.doReturn(locationLiveData).when(locationRepository).getLocationLiveData();
-        Mockito.doReturn(isGpsPermissionGrantedLiveData).when(permissionChecker).hasLocationPermission();
         Mockito.doReturn(userLiveData).when(userRepository).getConnectedUserLiveData();
-        Mockito.doReturn(isNotifyPermissionGrantedLiveData).when(permissionChecker).hasNotificationPermission();
-        Mockito.doReturn(queryLiveData).when(searchRepository).getSearchFieldLiveData();
+        //Mockito.doReturn(queryLiveData).when(searchRepository).getSearchFieldLiveData();
         Mockito.doReturn(restaurantsNearbyLiveData).when(restaurantRepository).getRestaurantNearbyResponseLiveData();
         Mockito.doReturn(queryLiveData).when(searchRepository).getSearchFieldLiveData();
         Mockito.doReturn(predictionsDetailsLiveData).when(restaurantRepository).getPredictionsDetailsLiveData();
         Mockito.doReturn(restaurantRepositoryErrorLiveData).when(restaurantRepository).getRestaurantRepositoryErrorLiveData();
+        Mockito.doReturn(true).when(permissionChecker).hasLocationPermission();
+        Mockito.doReturn(true).when(permissionChecker).hasNotificationPermission();
+
+
+    }
+
+    @Test
+    public void get_Connected_User_return_DefaultUser() throws InterruptedException {
 
         // mock injected in viewModel
         viewModel = new MainActivityViewModel(
@@ -116,6 +133,179 @@ public class MainActivityViewModelTest {
                 searchRepository,
                 restaurantRepository);
 
+        // When
+        User result = getOrAwaitValue(viewModel.getConnectedUserLiveData());
+//should contain a User
+        assertEquals(getDefaultUser(0),
+                result);
+
+    }
+
+    @Test
+    public void get_NotifyState_return_User_when_notify_permission_is_true() throws InterruptedException {
+
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.refresh();
+        User result = getOrAwaitValue(viewModel.getNotifyStateLiveData());
+//should contain a User
+        assertEquals(getDefaultUser(0),
+                result);
+
+    }
+
+    @Test
+    public void progressBar_should_be_on_if_GpsPermission_granted_but_nearbyResults_are_null() throws InterruptedException {
+
+        restaurantsNearbyLiveData.setValue(null);
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.refresh();
+        Boolean result = getOrAwaitValue(viewModel.getProgressBarStateLiveData());
+//StateItems should contain 20 restaurants
+        assertEquals(true,
+                result);
+
+    }
+
+    @Test//TODO here why nearby not null
+    public void on_searchNearbyRestaurant_triggered() {
+        // Given
+        Location userLocation = mock(Location.class);
+        userLocation.setLatitude(-48.876667);
+        userLocation.setLongitude(-123.393333);
+
+        restaurantsNearbyLiveData.setValue(null);
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.searchNearbyRestaurant(userLocation,"2000","restaurant","apikey");
+        // Then
+        verify(restaurantRepository).searchNearbyRestaurants("-48.876667,-123.393333","2000","restaurant","apikey");
+    }
+
+    @Test
+    public void verify_on_searchQuery_call() {
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+        // Given
+        String query = "my query";
+
+        // When
+        viewModel.onSearchQueryCall(query);
+        // Then
+        verify(searchRepository).searchField(query);
+    }
+
+    @Test
+    public void verify_on_your_lunch_clicked_case_no_lunch_for_today() {
+
+        given(userRepository.getUser()).willReturn(getDefaultUser(0));//user "0" has no lunch for today
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.onYourLunchClicked();
+        // Then
+        LiveDataTestUtils.observeForTesting(viewModel.getSnackBarSingleLiveEvent(), value -> {
+            // Then
+            assertEquals(Integer.valueOf(R.string.restaurant_selected),// no restaurant selected integer
+                    value);
+        });
+    }
+
+    @Test
+    public void verify_on_your_lunch_clicked_case_lunch_for_today() {
+
+        given(userRepository.getUser()).willReturn(getDefaultUser(1));//user "1" as a lunch for today
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.onYourLunchClicked();
+        // Then
+        LiveDataTestUtils.observeForTesting(viewModel.getRestaurantDetailsActivitySingleLiveEvent(), value -> {
+            // Then
+            assertEquals("placeid1",
+                    value.getPlace_id());
+        });
+    }
+
+    @Test
+    public void verify_on_username_from_settings_change_save_clicked() {
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.OnSettingsSaved(true,null,"newusername");
+        // Then
+        verify(userRepository).updateUserSettings(true,"urlpicture0","newusername");
+        //verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
+    public void verify_on_uri_from_settings_change_save_clicked() {
+
+        // mock injected in viewModel
+        viewModel = new MainActivityViewModel(
+                userRepository,
+                permissionChecker,
+                locationRepository,
+                searchRepository,
+                restaurantRepository);
+
+        // When
+        viewModel.OnSettingsSaved(true, Uri.parse("uri"),"newusername");
+        // Then
+        verify(userRepository).updateUserSettings(true,"urlpicture0","newusername");
+        //verifyNoMoreInteractions(userRepository);
     }
 
     private User getDefaultUser(int index) {
@@ -125,7 +315,7 @@ public class MainActivityViewModelTest {
                 "username" + index,
                 "urlpicture" + index,
                 "email" + index,
-                "placeId" + index,
+                index==0?null:"placeid"+index,
                 "restaurant_for_today_name" + index,
                 "restaurant_for_today_address" + index,
                 "restaurant_for_today_pic_url" + index,
