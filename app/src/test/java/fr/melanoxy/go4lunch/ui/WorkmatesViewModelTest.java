@@ -46,16 +46,15 @@ public class WorkmatesViewModelTest {
 
     private WorkmatesViewModel viewModel;
     private static final String EATING_AT = "EATING_AT";
-    private static final String RESTAURANT_NOT_SET = "RESTAURANT_NOT_SET";
+    //private static final String RESTAURANT_NOT_SET = "RESTAURANT_NOT_SET";
     private static final String DEFAULT_WORKMATE_NAME = "DEFAULT_WORKMATE_NAME";
     private static final String DEFAULT_RESTAURANT_NAME = "DEFAULT_RESTAURANT_NAME";
-    private MutableLiveData<List<User>> workmatesLiveData;
     private MutableLiveData<String> queryLiveData;
 
     @Before
     public void setUp() {
         // Reinitialize LiveData every test
-        workmatesLiveData = new MutableLiveData<>();//from UserRepository
+        MutableLiveData<List<User>> workmatesLiveData = new MutableLiveData<>();//from UserRepository
         queryLiveData = new MutableLiveData<>();//from SearchRepository
         // Mock resources
         given(application.getString(R.string.workmates_eating_at)).willReturn(EATING_AT);

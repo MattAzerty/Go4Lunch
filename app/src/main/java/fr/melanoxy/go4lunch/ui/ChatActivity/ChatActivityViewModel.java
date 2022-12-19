@@ -50,6 +50,6 @@ public class ChatActivityViewModel extends ViewModel {
 
 
     public void onSendMessageClicked(String message) {
-        chatRepository.createMessageForChat(message, userRepository.mUser.getUsername());
+        chatRepository.createMessageForChat(message, userRepository.getUser().getUsername());
     }
 }//END of ChatActivityViewModel

@@ -32,7 +32,7 @@ import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.SingleLiveEvent;
 
 public class MainActivityViewModel extends ViewModel {
-//INIT
+    //INIT
     //Injected with the ViewModelFactory
     @NonNull
     private final UserRepository userRepository;
@@ -47,12 +47,9 @@ public class MainActivityViewModel extends ViewModel {
 
     private Location previousLocation = new Location("point_nemo_provider");
     private final MutableLiveData<Boolean> isGpsPermissionGrantedLiveData = new MutableLiveData<>();
-    private final MediatorLiveData<String> gpsMessageLiveData = new MediatorLiveData<>();
 
     private final MutableLiveData<Boolean> isNotifyPermissionGrantedLiveData = new MutableLiveData<>();
     private final MediatorLiveData<User> notifyStateMediatorLiveData = new MediatorLiveData<>();
-
-    //private final MutableLiveData<Boolean> isProgressBarVisibleLiveData = new MutableLiveData<>();
     private final MediatorLiveData<Boolean> progressBarMediatorLiveData = new MediatorLiveData<>();
 
     //restaurant details activity SingleLiveEvent
@@ -61,13 +58,13 @@ public class MainActivityViewModel extends ViewModel {
     //snackBar SingleLiveEvent
     private final SingleLiveEvent<Integer> snackBarSingleLiveEvent = new SingleLiveEvent<>();
 
-//CONSTRUCTOR
+    //CONSTRUCTOR
     public MainActivityViewModel(
-        @NonNull UserRepository userRepository,
-        @NonNull PermissionChecker permissionChecker,
-        @NonNull LocationRepository locationRepository,
-        @NonNull SearchRepository searchRepository,
-        @NonNull RestaurantRepository restaurantRepository
+            @NonNull UserRepository userRepository,
+            @NonNull PermissionChecker permissionChecker,
+            @NonNull LocationRepository locationRepository,
+            @NonNull SearchRepository searchRepository,
+            @NonNull RestaurantRepository restaurantRepository
     ) {
         this.userRepository = userRepository;
         this.permissionChecker = permissionChecker;
@@ -81,6 +78,7 @@ public class MainActivityViewModel extends ViewModel {
         previousLocation.setLongitude(-123.393333);
 
         LiveData<Location> locationLiveData = locationRepository.getLocationLiveData();
+        MediatorLiveData<String> gpsMessageLiveData = new MediatorLiveData<>();
 
         gpsMessageLiveData.addSource(locationLiveData, location ->
                 combineLocation(location, isGpsPermissionGrantedLiveData.getValue())
@@ -93,11 +91,11 @@ public class MainActivityViewModel extends ViewModel {
 
 //NOTIFICATION
         notifyStateMediatorLiveData.addSource(isNotifyPermissionGrantedLiveData, hasNotifyPermission ->
-                combineNotify(hasNotifyPermission,userLiveData.getValue())
+                combineNotify(hasNotifyPermission, userLiveData.getValue())
         );
 
         notifyStateMediatorLiveData.addSource(userLiveData, user ->
-                combineNotify(isNotifyPermissionGrantedLiveData.getValue(),user)
+                combineNotify(isNotifyPermissionGrantedLiveData.getValue(), user)
         );
 
 //PROGRESS BAR (userLocation + NearbyAnswer + queryInput + predictionsDetails + restaurantRepoError)
@@ -130,7 +128,7 @@ public class MainActivityViewModel extends ViewModel {
                 combineProgressBar(isGpsPermissionGrantedLiveData.getValue(), restaurantsNearbyLiveData.getValue(),
                         queryLiveData.getValue(), predictionsDetailsLiveData.getValue(), error)
         );
-}
+    }
 
     private void combineProgressBar(
             Boolean hasGpsPermission,
@@ -139,29 +137,27 @@ public class MainActivityViewModel extends ViewModel {
             List<PlaceIdDetailsResponse> placeIdDetailsResponseList,
             String error
     ) {
-        Boolean state = false;
-
-        if((hasGpsPermission!=null && hasGpsPermission && restaurantsNearbyResponse==null) || (hasGpsPermission!=null && hasGpsPermission && query!=null && placeIdDetailsResponseList==null )){
-            state=true;
-        }
+        boolean state = (hasGpsPermission != null && hasGpsPermission && restaurantsNearbyResponse == null) || (hasGpsPermission != null && hasGpsPermission && query != null && placeIdDetailsResponseList == null);
 
         progressBarMediatorLiveData.setValue(state);
 
-        if(Objects.equals(error, "internetError")){snackBarSingleLiveEvent.setValue(R.string.error_no_internet);}
+        if (Objects.equals(error, "internetError")) {
+            snackBarSingleLiveEvent.setValue(R.string.error_no_internet);
+        }
 
     }
 
     private void combineLocation(@Nullable Location location, @Nullable Boolean hasGpsPermission) {
         if (location == null) {
-            if (hasGpsPermission == null || !hasGpsPermission){
+            if (hasGpsPermission == null || !hasGpsPermission) {
                 snackBarSingleLiveEvent.setValue(R.string.error_gps);
             }
         }
     }
 
-    private void combineNotify(@Nullable Boolean hasNotifyPermission,@Nullable User user) {
-        if(Boolean.TRUE.equals(hasNotifyPermission) && user!=null){
-        notifyStateMediatorLiveData.setValue(user);
+    private void combineNotify(@Nullable Boolean hasNotifyPermission, @Nullable User user) {
+        if (Boolean.TRUE.equals(hasNotifyPermission) && user != null) {
+            notifyStateMediatorLiveData.setValue(user);
         }
     }
 
@@ -198,17 +194,18 @@ public class MainActivityViewModel extends ViewModel {
         return progressBarMediatorLiveData;
     }
 
-//Ask repo to check on firebase if the user instance exist
+    //Ask repo to check on firebase if the user instance exist
     public Boolean isUserAuthenticated() {
         return userRepository.isUserAuthenticatedInFirebase();
     }
-//On User authentication success create him on firestore base
+
+    //On User authentication success create him on firestore base
     public void onUserLoggedSuccess() {
         userRepository.getWorkmates();
         userRepository.createUser();
     }
 
-    public Task<Void> onSignOut(Context context){
+    public Task<Void> onSignOut(Context context) {
         return userRepository.signOut(context);
     }
 
@@ -245,50 +242,51 @@ public class MainActivityViewModel extends ViewModel {
 
     public void onYourLunchClicked() {
 
-        User user = userRepository.mUser;
+        User user = userRepository.getUser();
 
-        if(user.getRestaurant_for_today_id()!=null){//If user has selected a restaurant launch the activity
-        RestaurantStateItem rItem = new RestaurantStateItem(
-                user.getRestaurant_for_today_id(),
-                user.getRestaurant_for_today_name(),
-                user.getRestaurant_for_today_address(),
-                "",
-                R.string.error_unknown_error,
-                1,
-                user.getRestaurant_for_today_pic_url(),
-                0);
+        if (user.getRestaurant_for_today_id() != null) {//If user has selected a restaurant launch the activity
+            RestaurantStateItem rItem = new RestaurantStateItem(
+                    user.getRestaurant_for_today_id(),
+                    user.getRestaurant_for_today_name(),
+                    user.getRestaurant_for_today_address(),
+                    "",
+                    R.string.error_unknown_error,
+                    1,
+                    user.getRestaurant_for_today_pic_url(),
+                    0);
 
-        restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
-        }else {//Else send a snackBar message:
+            restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
+        } else {//Else send a snackBar message:
             snackBarSingleLiveEvent.setValue(R.string.restaurant_selected);
         }
     }
 
     public void OnSettingsSaved(Boolean notified, Uri imageUri, String username) {
 
-        if(imageUri!=null){
-        userRepository.uploadImage(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                taskSnapshot.getStorage().getDownloadUrl()
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle unsuccessful uploads
-                                snackBarSingleLiveEvent.setValue(R.string.error_no_internet);
-                            }})
-                        .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                userRepository.updateUserSettings(notified,uri.toString(),username);
-                            }
-                        });
-            }
-        });
-        }else {
+        if (imageUri != null) {
+            userRepository.uploadImage(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    taskSnapshot.getStorage().getDownloadUrl()
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle unsuccessful uploads
+                                    snackBarSingleLiveEvent.setValue(R.string.error_no_internet);
+                                }
+                            })
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    userRepository.updateUserSettings(notified, uri.toString(), username);
+                                }
+                            });
+                }
+            });
+        } else {
             userRepository.updateUserSettings(
                     notified,
-                    userRepository.getConnectedUserLiveData().getValue().getUrlPicture(),username
+                    userRepository.getConnectedUserLiveData().getValue().getUrlPicture(), username
             );
         }
     }

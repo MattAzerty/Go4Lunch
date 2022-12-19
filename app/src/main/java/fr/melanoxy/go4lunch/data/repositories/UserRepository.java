@@ -40,7 +40,7 @@ import fr.melanoxy.go4lunch.data.models.User;
 public class UserRepository {
 
     private static final String FIELD_NAME_FAV_RESTAURANTS = "my_favorite_restaurants";
-    public User mUser;
+    private User mUser;
     private ListenerRegistration mRegistration;
     private final MutableLiveData<User> connectedUserMutableLiveData = new MutableLiveData<>();
     private final MutableLiveData<List<User>> workmatesMutableLiveData = new MutableLiveData<>();
@@ -52,6 +52,10 @@ public class UserRepository {
     @Nullable
     public FirebaseUser getCurrentUser(){
                 return FirebaseHelper.getInstance().getCurrentUser();
+    }
+    @Nullable
+    public User getUser(){
+        return mUser;
     }
 
 //SignOut
