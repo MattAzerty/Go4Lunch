@@ -8,6 +8,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.location.LocationCallback;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,6 +35,8 @@ public class ChatRepositoryTest {
 
     @Mock
     private FirebaseHelper firebaseHelper;
+    @Mock
+    private LocationCallback callback;
 
     private ChatRepository chatRepository;
     private MutableLiveData<List<Message>> messagesLiveData;
@@ -43,13 +47,12 @@ public class ChatRepositoryTest {
         chatRepository = new ChatRepository();
 
         // Given
-        // MutableLiveData used by the mediator to build for the recyclerview the list of StateItem
         messagesLiveData = new MutableLiveData<>();
 
-        //the livedata value are set here instead of repository
+        //the livedata value are set
         messagesLiveData.setValue(getDefaultMessages());
 
-        // Mock repositories for needed methods:
+        // Mock firebaseHelper for needed methods:
         firebaseHelper = mock(FirebaseHelper.class);
         setMock(firebaseHelper);//instance singleton handled
         // given behavior for some methods called
@@ -63,7 +66,7 @@ public class ChatRepositoryTest {
         instance.setAccessible(true);
         instance.set(null, null);
     }
-
+    //Use reflection to set a Value of a Non-Public Field
     private void setMock(FirebaseHelper mock) {
         try {
             Field instance = FirebaseHelper.class.getDeclaredField("sFirebaseHelper");
@@ -80,7 +83,6 @@ public class ChatRepositoryTest {
             messages.add(getDefaultMessage(i));
         }
         return messages;
-
     }
 
     private Message getDefaultMessage(int i) {
@@ -89,7 +91,6 @@ public class ChatRepositoryTest {
                 "Hello world"+i,
                 "myUsername"+i
         );
-
     }
 
     @Test

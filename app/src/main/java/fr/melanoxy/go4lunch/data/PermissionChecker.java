@@ -1,4 +1,4 @@
-package fr.melanoxy.go4lunch.ui.MapView;
+package fr.melanoxy.go4lunch.data;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.POST_NOTIFICATIONS;

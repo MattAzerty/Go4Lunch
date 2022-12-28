@@ -5,8 +5,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import static fr.melanoxy.go4lunch.UnitTestUtils.getOrAwaitValue;
 
@@ -29,7 +27,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
-import java.util.Optional;
 
 import fr.melanoxy.go4lunch.LiveDataTestUtils;
 import fr.melanoxy.go4lunch.MainActivityViewModel;
@@ -42,8 +39,7 @@ import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
-import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
-import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
+import fr.melanoxy.go4lunch.data.PermissionChecker;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainActivityViewModelTest {

@@ -15,7 +15,7 @@ import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.ui.ChatActivity.ChatActivityViewModel;
 import fr.melanoxy.go4lunch.ui.ListView.ListViewViewModel;
 import fr.melanoxy.go4lunch.ui.MapView.MapViewViewModel;
-import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
+import fr.melanoxy.go4lunch.data.PermissionChecker;
 import fr.melanoxy.go4lunch.data.repositories.LocationRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 import fr.melanoxy.go4lunch.MainActivityViewModel;

@@ -28,7 +28,7 @@ import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
-import fr.melanoxy.go4lunch.ui.MapView.PermissionChecker;
+import fr.melanoxy.go4lunch.data.PermissionChecker;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.SingleLiveEvent;
 
 public class MainActivityViewModel extends ViewModel {
