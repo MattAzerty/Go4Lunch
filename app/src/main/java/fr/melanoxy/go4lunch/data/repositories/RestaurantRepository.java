@@ -26,19 +26,29 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RestaurantRepository {
     private static final String PLACES_SEARCH_SERVICE_BASE_URL = "https://maps.googleapis.com/";
 
-    private RestaurantSearchService restaurantSearchService;
-    private MutableLiveData<RestaurantsNearbyResponse> restaurantNearbyMutableLiveData;
+    private RestaurantSearchService restaurantSearchService;//google places API
+    private MutableLiveData<RestaurantsNearbyResponse> restaurantNearbyMutableLiveData= new MutableLiveData<>();
     private MutableLiveData<String> restaurantRepositoryErrorMutableLiveData= new MutableLiveData<>("noError");
-    private MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseMutableLiveData;
-    private MutableLiveData<Integer> autocompleteSizeResponseMutableLiveData;
+    private MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<Integer> autocompleteSizeResponseMutableLiveData= new MutableLiveData<>();
 
-    private MutableLiveData<List<PlaceIdDetailsResponse>> predictionsDetailstMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<PlaceIdDetailsResponse>> predictionsDetailsMutableLiveData = new MutableLiveData<>();
     private List<PlaceIdDetailsResponse> mListDetails = new ArrayList<>();
 
+    //TODO: for unit testing ok?
+    private String apiKey;
+
+    public RestaurantRepository(
+            RestaurantSearchService restaurantSearchService,
+            String apiKey) {
+        this.restaurantSearchService = restaurantSearchService;
+        this.apiKey = apiKey;
+    }
+
     public RestaurantRepository() {
-        restaurantNearbyMutableLiveData = new MutableLiveData<>();
-        placeIdDetailsResponseMutableLiveData = new MutableLiveData<>();
-        autocompleteSizeResponseMutableLiveData= new MutableLiveData<>();
+
+        apiKey = MAPS_API_KEY;
+
 //for easier retrofit debug
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
@@ -50,7 +60,6 @@ public class RestaurantRepository {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(RestaurantSearchService.class);
-
     }
 //Nearby
     public void searchNearbyRestaurants(String location, String radius, String type, String apiKey) {
@@ -59,7 +68,7 @@ public class RestaurantRepository {
                     @Override
                     public void onResponse(Call<RestaurantsNearbyResponse> call, Response<RestaurantsNearbyResponse> response) {
                         if (response.body() != null) {
-                            restaurantNearbyMutableLiveData.postValue(response.body());
+                            restaurantNearbyMutableLiveData.setValue(response.body());
                             restaurantRepositoryErrorMutableLiveData.setValue("noError");
                         }
                     }
@@ -79,7 +88,7 @@ public class RestaurantRepository {
                         if (response.body() != null) {
                             placeIdDetailsResponseMutableLiveData.setValue(response.body());
                             mListDetails.add(response.body());
-                            predictionsDetailstMutableLiveData.setValue(mListDetails);
+                            predictionsDetailsMutableLiveData.setValue(mListDetails);
                         }
                     }
                     @Override
@@ -96,10 +105,10 @@ public class RestaurantRepository {
                     public void onResponse(Call<PlaceAutocompleteResponse> call, Response<PlaceAutocompleteResponse> response) {
                         if (response.body() != null) {
                             mListDetails = new ArrayList<>();//erase previous list of details
-                            predictionsDetailstMutableLiveData.setValue(mListDetails);
+                            predictionsDetailsMutableLiveData.setValue(mListDetails);
                             autocompleteSizeResponseMutableLiveData.postValue(response.body().getPredictions().size());
                             for (Prediction prediction : response.body().getPredictions()) {
-                                searchPlaceIdDetails(prediction.getPlaceId(), "opening_hours,place_id,geometry,name,formatted_address,rating,photo", MAPS_API_KEY);
+                                searchPlaceIdDetails(prediction.getPlaceId(), "opening_hours,place_id,geometry,name,formatted_address,rating,photo", apiKey);
                             }
                         }
                     }
@@ -120,7 +129,7 @@ public class RestaurantRepository {
     }
 
     public LiveData<List<PlaceIdDetailsResponse>> getPredictionsDetailsLiveData() {
-        return predictionsDetailstMutableLiveData;
+        return predictionsDetailsMutableLiveData;
     }
 
     public LiveData<Integer> getRestaurantsSizeByQueryLiveData() {
@@ -128,7 +137,7 @@ public class RestaurantRepository {
     }
 
     public String getUrlPicture(String photoRef) {
-        return  "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + MAPS_API_KEY;
+        return  "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + apiKey;
     }
 
     public LiveData<String> getRestaurantRepositoryErrorLiveData() {

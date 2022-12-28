@@ -64,6 +64,10 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     // Helps mocking objects (Mockito.mock() or Mockito.spy())
     testImplementation 'org.mockito:mockito-core:4.0.0'
+    testImplementation 'org.mockito:mockito-inline:3.8.0'//mock final classes
+    //powermockito
+    //testImplementation 'org.powermock:powermock-module-junit4:2.0.7'
+    //testImplementation 'org.powermock:powermock-api-mockito2:2.0.7'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
