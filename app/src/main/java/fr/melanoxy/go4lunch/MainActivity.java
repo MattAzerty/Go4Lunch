@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mMainActivityBinding;
     private MainActivityViewModel mMainActivityViewModel;
     private WorkManager mWorkManager;
-    private final String mTagUniqueWork ="notifyTag";
+    private final String mTagUniqueWork = "notifyTag";
     private Menu mOptionsMenu;
     private Integer mDestination;
 
@@ -123,14 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//Loading bar when fetching API places information
+    //Loading bar when fetching API places information
     private void setupProgressBar() {
         mMainActivityViewModel.getProgressBarStateLiveData().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean state) {
-                if(mDestination!=R.id.nav_menu_item_workmates) {
+                if (mDestination != R.id.nav_menu_item_workmates) {//ProgressBar only for REST API use
                     mMainActivityBinding.activityMainProgressbar.setVisibility(state ? View.VISIBLE : View.GONE);
-                }else{mMainActivityBinding.activityMainProgressbar.setVisibility(View.GONE);}
+                } else {
+                    mMainActivityBinding.activityMainProgressbar.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -138,57 +140,57 @@ public class MainActivity extends AppCompatActivity {
     private void setupNotify() {
 
         //Workmanager for notification
-       mWorkManager = WorkManager.getInstance(getApplicationContext());
+        mWorkManager = WorkManager.getInstance(getApplicationContext());
 
-       mMainActivityViewModel.getNotifyStateLiveData().observe(this, user -> {
+        mMainActivityViewModel.getNotifyStateLiveData().observe(this, user -> {
 
-           if(user.getNotified() && user.getRestaurant_for_today_name()!=null) {
+            if (user.getNotified() && user.getRestaurant_for_today_name() != null) {
 
 //Delay in minutes for next lunch/noon time:
-               LocalDateTime now = LocalDateTime.now();
-               LocalDateTime lunchDateTimeForToday = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime lunchDateTimeForToday = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
 
-               Duration duration = Duration.between(now,//and next lunchtime.
-                       (now.isAfter(lunchDateTimeForToday)) ? LocalDateTime.of(LocalDate.from(now.plusDays(1)), LocalTime.NOON) : lunchDateTimeForToday);
-               long delay = Math.abs(duration.toMinutes());
+                Duration duration = Duration.between(now,//and next lunchtime.
+                        (now.isAfter(lunchDateTimeForToday)) ? LocalDateTime.of(LocalDate.from(now.plusDays(1)), LocalTime.NOON) : lunchDateTimeForToday);
+                long delay = Math.abs(duration.toMinutes());
 
 
-               Data data = new Data.Builder()
-                       .putString(NotifyWorker.EXTRA_USER_ID, user.getUid())
-                       .build();
+                Data data = new Data.Builder()
+                        .putString(NotifyWorker.EXTRA_USER_ID, user.getUid())
+                        .build();
 
 //need internet
-               Constraints constraints = new Constraints.Builder()
-                       .setRequiredNetworkType(NetworkType.CONNECTED)
-                       .build();
+                Constraints constraints = new Constraints.Builder()
+                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                        .build();
 
 //'run only one time' request
-               OneTimeWorkRequest uploadWorkRequest =
-                       new OneTimeWorkRequest.Builder(NotifyWorker.class)
-                               .setInputData(data)//Restaurant for today info
-                               .setConstraints(constraints)//Internet required
-                               .setInitialDelay(delay, TimeUnit.MINUTES)
-                               .addTag(mTagUniqueWork)//tag for canceling a simple work request
-                               .build();
+                OneTimeWorkRequest uploadWorkRequest =
+                        new OneTimeWorkRequest.Builder(NotifyWorker.class)
+                                .setInputData(data)//Restaurant for today info
+                                .setConstraints(constraints)//Internet required
+                                .setInitialDelay(delay, TimeUnit.MINUTES)
+                                .addTag(mTagUniqueWork)//tag for canceling a simple work request
+                                .build();
 
             /*with 'ExistingPeriodicWorkPolicy.KEEP'.
                 It will run the new PeriodicWorkRequest only
                 if there is no pending work labelled with uniqueWorkName*/
 
-               mWorkManager.enqueueUniqueWork(mTagUniqueWork, ExistingWorkPolicy.KEEP, uploadWorkRequest);
+                mWorkManager.enqueueUniqueWork(mTagUniqueWork, ExistingWorkPolicy.KEEP, uploadWorkRequest);
 
-           }else{//No restaurant for today set or notify not allowed or notify disabled
-               //CANCEL uniqueWork if one exist.
-               mWorkManager.cancelUniqueWork(mTagUniqueWork);
-                }
-       });
-       }
+            } else {//No restaurant for today set or notify not allowed or notify disabled
+                //CANCEL uniqueWork if one exist.
+                mWorkManager.cancelUniqueWork(mTagUniqueWork);
+            }
+        });
+    }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        //CHECK if gps location/Notify is still granted, reset query searchbar
+        //CHECK if gps location/Notify is still granted
         mMainActivityViewModel.refresh();
     }
 
@@ -197,11 +199,13 @@ public class MainActivity extends AppCompatActivity {
                 .get(MainActivityViewModel.class);
     }
 
-    private void  checkIfUserIsAuthenticated(){
-        if (!mMainActivityViewModel.isUserAuthenticated()){startSignInActivity();}
+    private void checkIfUserIsAuthenticated() {
+        if (!mMainActivityViewModel.isUserAuthenticated()) {
+            startSignInActivity();
+        }
     }
 
-    private void startSignInActivity(){
+    private void startSignInActivity() {
 
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -221,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         signInLauncher.launch(signInIntent);
 
     }
+
     //Create an ActivityResultLauncher which registers a callback for the FirebaseUI Activity result contract
     //See: https://developer.android.com/training/basics/intents/result
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
@@ -240,15 +245,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // ERRORS (Toast because we will leave this activity after)
             if (response == null) {
-                Toast.makeText(getApplicationContext(),R.string.error_authentication_canceled,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.error_authentication_canceled, Toast.LENGTH_SHORT).show();
                 //showSnackBar(getString(R.string.error_authentication_canceled));
                 finish();
-            } else if (response.getError()!= null) {
-                if(response.getError().getErrorCode() == ErrorCodes.NO_NETWORK){
-                    Toast.makeText(getApplicationContext(),R.string.error_no_internet,Toast.LENGTH_SHORT).show();
+            } else if (response.getError() != null) {
+                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    Toast.makeText(getApplicationContext(), R.string.error_no_internet, Toast.LENGTH_SHORT).show();
                     startSignInActivity();
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    Toast.makeText(getApplicationContext(),R.string.error_unknown_error,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.error_unknown_error, Toast.LENGTH_SHORT).show();
                     startSignInActivity();
                 }
             }
@@ -265,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Show Snack Bar with a message (bg/text color custom)
-    public void showSnackBar(String message){
+    public void showSnackBar(String message) {
         ContextThemeWrapper ctw = new ContextThemeWrapper(this, R.style.CustomSnackbarTheme);
         Snackbar.make(ctw, mMainActivityBinding.activityMainDrawerLayout, message, Snackbar.LENGTH_LONG)
                 .setTextColor(Color.WHITE)
@@ -352,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityViewModel.getRestaurantDetailsActivitySingleLiveEvent().observe(this, item -> {
             startActivity(RestaurantDetailsActivity.navigate(this, item));
         });
-
+        //Fill drawer with user info
         mMainActivityViewModel.getConnectedUserLiveData().observe(this, user -> {
 
             //NavigationView navigationView = (NavigationView) findViewById(R.id.activity_main_nav_view_drawer);
@@ -363,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
             TextView email = headerContainer.findViewById(R.id.drawer_header_email);
             email.setText(user.email);
 
-            if (user.getUrlPicture()!=null)   {
+            if (user.getUrlPicture() != null) {
                 Glide.with(navigationView.getContext())
                         .load(user.getUrlPicture())
                         .apply(RequestOptions.circleCropTransform())
@@ -371,7 +376,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-//ITEMS MENU OF DRAWER
+
+    //ITEMS MENU OF DRAWER
     public void selectDrawerItem(MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
@@ -384,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                 dialog.show(getSupportFragmentManager(),
                         "AddAPeopleDialogFragment");
                 break;
-            case R.id.drawer_menu_item_chat://Chat
+            case R.id.drawer_menu_item_chat://CHAT
                 startActivity(ChatActivity.navigate(this));
                 break;
             case R.id.drawer_menu_item_logout://LOGOUT
@@ -406,11 +412,11 @@ public class MainActivity extends AppCompatActivity {
     private void setupFab() {
 
         mMainActivityBinding.activityMainFabMylocation.setOnClickListener(v -> {
-            setupPermissions();//Check if locationQuery allowed
-            closeSearchView();
-        }
+                    setupPermissions();//Check if locationQuery allowed
+                    closeSearchView();
+                }
         );
-
+//Set the correct visual information for fab userLocation request
         mMainActivityViewModel.getIsGpsPermissionGrantedLiveData().observe(this, permission -> {
             if (permission) {
                 mMainActivityBinding.activityMainFabMylocation.setImageResource(R.drawable.ic_gps_fixed_24dp);
@@ -421,19 +427,20 @@ public class MainActivity extends AppCompatActivity {
 
 
         //Observe userLocation then ask for NearbyRestaurants if location is not null or changed
-        mMainActivityViewModel.getUserLocationLiveData().observe(this, userLocation -> {//TODO case with internet later
-            if (userLocation!=null){
+        mMainActivityViewModel.getUserLocationLiveData().observe(this, userLocation -> {
+            if (userLocation != null) {
                 mMainActivityViewModel.searchNearbyRestaurant(
                         userLocation,
                         "2000",//in meters
                         "restaurant",//keyword see list here https://developers.google.com/maps/documentation/places/web-service/supported_types
                         MAPS_API_KEY
                 );
-            }});
+            }
+        });
     }
 
     public void closeSearchView() {
-        //Close searchview n reset if user press the button but was in an autocomplete query
+        //Close SearchView and reset SearchRepository
         mMainActivityViewModel.onSearchQueryCall(null);
         SearchView searchView =
                 (SearchView) mOptionsMenu.findItem(R.id.action_search).getActionView();
@@ -448,22 +455,23 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(mMainActivityBinding.activityMainBottomNavigationView, mNavController);
         //fab remove when not in mapview
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-
+        //set title bar according to destination name
             MainActivity.this.getSupportActionBar().setTitle(destination.getLabel());
 
             //Change icon on fab according to gps access permission
             switch (destination.getId()) {
                 case R.id.nav_menu_item_mapview:
-                    mDestination=R.id.nav_menu_item_mapview;
+                    mDestination = R.id.nav_menu_item_mapview;
                     break;
                 case R.id.nav_menu_item_listview:
                     mMainActivityBinding.activityMainFabMylocation.show();
-                    mDestination=R.id.nav_menu_item_listview;
+                    mDestination = R.id.nav_menu_item_listview;
                     break;
                 case R.id.nav_menu_item_workmates:
-                    mDestination=R.id.nav_menu_item_workmates;
+                    mDestination = R.id.nav_menu_item_workmates;
                     break;
-                default: mMainActivityBinding.activityMainFabMylocation.hide();
+                default:
+                    mMainActivityBinding.activityMainFabMylocation.hide();
                     break;
             }
         });
@@ -472,7 +480,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    mMainActivityViewModel.refresh();
+        mMainActivityViewModel.refresh();
     }
 
 }//END MainActivity

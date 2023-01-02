@@ -145,7 +145,7 @@ public class MainActivityViewModel extends ViewModel {
         }
 
         if (userLocation == null) {
-            if (hasGpsPermission == null || !hasGpsPermission) {
+            if (Boolean.FALSE.equals(hasGpsPermission)) {
                 snackBarSingleLiveEvent.setValue(R.string.error_gps);
             }
         }
@@ -170,17 +170,11 @@ public class MainActivityViewModel extends ViewModel {
         } else {
             locationRepository.stopLocationRequest();
         }
-//QUERY
-        searchRepository.searchField(null);
     }
 
     public LiveData<Boolean> getIsGpsPermissionGrantedLiveData() {
         return isGpsPermissionGrantedLiveData;
     }
-
-    /*public LiveData<Boolean> getIsNotifyPermissionGrantedLiveData() {
-        return isNotifyPermissionGrantedLiveData;
-    }*/
 
     public LiveData<User> getNotifyStateLiveData() {
         return notifyStateMediatorLiveData;

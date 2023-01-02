@@ -105,7 +105,7 @@ public class MapViewViewModel extends ViewModel {
             restaurantRepository.searchFromQueryPlaces(query, "restaurant", coordinate, "500", MAPS_API_KEY);
         }
 
-        if (query != null && predictions != null && size != null && size == predictions.size()) {
+        if (query != null && predictions != null && size != null && size <= predictions.size()) {
 
             for (PlaceIdDetailsResponse placeIdDetailsResponse : predictions) {
                 markerInfoStateItems.add(mapPredictions(placeIdDetailsResponse, workmates));

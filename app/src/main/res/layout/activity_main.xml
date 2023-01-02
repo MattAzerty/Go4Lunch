@@ -11,9 +11,6 @@
         <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/activity_main_body"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".MainActivity">
@@ -54,6 +51,8 @@
                 android:visibility="gone"
                 android:layout_marginTop="40dp"
                 android:indeterminateTint="@color/white"
+                android:indeterminateTintMode="src_atop"
+                android:progressTint="@color/white"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:indeterminateOnly="true"/>

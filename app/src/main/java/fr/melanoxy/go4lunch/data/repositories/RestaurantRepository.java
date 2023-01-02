@@ -87,8 +87,9 @@ public class RestaurantRepository {
                     public void onResponse(Call<PlaceIdDetailsResponse> call, Response<PlaceIdDetailsResponse> response) {
                         if (response.body() != null) {
                             placeIdDetailsResponseMutableLiveData.setValue(response.body());
-                            mListDetails.add(response.body());
-                            predictionsDetailsMutableLiveData.setValue(mListDetails);
+                            if(response.body().getResult().getGeometry()!=null){
+                                mListDetails.add(response.body());
+                                predictionsDetailsMutableLiveData.setValue(mListDetails);}
                         }
                     }
                     @Override

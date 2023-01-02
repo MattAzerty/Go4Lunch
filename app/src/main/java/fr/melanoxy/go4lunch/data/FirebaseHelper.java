@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -12,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.data.models.Message;
+import fr.melanoxy.go4lunch.data.models.User;
 
 public class FirebaseHelper {
     private static FirebaseHelper sFirebaseHelper;
+    private User mUser;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String MESSAGE_COLLECTION = "messages";
     private static final String CHAT_COLLECTION = "chats";//if later individual chats needed
@@ -39,6 +43,7 @@ public class FirebaseHelper {
         return FirebaseFirestore.getInstance().collection(CHAT_COLLECTION);
     }
 
+    //create message on Firestore
     public void createMessageOnFirestore(String message, String username) {
         // Create the Message object
         Message userMessage = new Message(message, username);
@@ -79,4 +84,13 @@ public class FirebaseHelper {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-}
+    //Get User DocumentReference for Firestore
+    public DocumentReference getUserDocumentReferenceOnFirestore(String userUid) {
+        return FirebaseHelper.getInstance().getWorkmateCollection().document(userUid);
+    }
+
+
+    public void storeUserOnFirestore(User user) {
+        getWorkmateCollection().document(user.getUid()).set(user);
+    }
+}//END of FirebaseHelper

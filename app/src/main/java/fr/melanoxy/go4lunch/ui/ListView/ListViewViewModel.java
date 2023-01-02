@@ -114,7 +114,7 @@ public class ListViewViewModel extends ViewModel {
             restaurantRepository.searchFromQueryPlaces(query, "restaurant", coordinate, "500", MAPS_API_KEY);
             restaurantStateItems = new ArrayList<>();
 
-        } else if (query != null && predictionsDetails != null && size != null && predictionsDetails.size() == size) {
+        } else if (query != null && predictionsDetails != null && size != null && predictionsDetails.size() <= size) {
 
             for (PlaceIdDetailsResponse placeIdDetailsResponse : predictionsDetails) {
                 restaurantStateItems.add(mapPrediction(placeIdDetailsResponse.getResult(), userLocation, workmates));

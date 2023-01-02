@@ -21,21 +21,16 @@ public class SearchRepositoryTest {
 
     private SearchRepository searchRepository;
 
-
     @Before
     public void setUp() {
-
         searchRepository = new SearchRepository();
-
     }
 
     @Test
     public void nominal_case_searchField() {
-
         //Given
     String query = "MyQuery";
     searchRepository.searchField(query);
-
         // When
         LiveDataTestUtils.observeForTesting(searchRepository.getSearchFieldLiveData(), value -> {
             // Then

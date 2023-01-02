@@ -49,7 +49,7 @@ public class LocationRepository {
 
         fusedLocationProviderClient.removeLocationUpdates(callback);
 
-        fusedLocationProviderClient.requestLocationUpdates(//when position change update will be send
+        fusedLocationProviderClient.requestLocationUpdates(//when position change updates will be send
                 LocationRequest.create()
                         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                         .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
