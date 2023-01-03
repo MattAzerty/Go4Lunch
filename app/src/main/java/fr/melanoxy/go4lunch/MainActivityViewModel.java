@@ -247,7 +247,7 @@ public class MainActivityViewModel extends ViewModel {
 
             restaurantDetailsActivitySingleLiveEvent.setValue(rItem);
         } else {//Else send a snackBar message:
-            snackBarSingleLiveEvent.setValue(R.string.restaurant_selected);
+            snackBarSingleLiveEvent.setValue(R.string.my_restaurant);
         }
     }
 

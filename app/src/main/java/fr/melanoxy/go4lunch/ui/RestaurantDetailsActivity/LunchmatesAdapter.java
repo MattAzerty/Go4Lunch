@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.Objects;
+
 import fr.melanoxy.go4lunch.databinding.WorkmateRestaurantDetailsItemBinding;
 
 
@@ -40,7 +42,7 @@ public class LunchmatesAdapter extends ListAdapter<LunchmateStateItem, Lunchmate
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         //Bind workmates item
-        private WorkmateRestaurantDetailsItemBinding binding;
+        private final WorkmateRestaurantDetailsItemBinding binding;
 
         public ViewHolder(@NonNull WorkmateRestaurantDetailsItemBinding binding) {
             super(binding.getRoot());
@@ -61,7 +63,7 @@ public class LunchmatesAdapter extends ListAdapter<LunchmateStateItem, Lunchmate
     private static class ListLunchmatesItemCallback extends DiffUtil.ItemCallback<LunchmateStateItem> {
         @Override
         public boolean areItemsTheSame(@NonNull LunchmateStateItem oldItem, @NonNull LunchmateStateItem newItem) {
-            return oldItem.getUid() == newItem.getUid();
+            return Objects.equals(oldItem.getUid(), newItem.getUid());
         }
 
         @Override

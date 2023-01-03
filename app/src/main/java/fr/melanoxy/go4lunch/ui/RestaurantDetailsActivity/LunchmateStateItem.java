@@ -1,8 +1,5 @@
 package fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-
 import java.util.Objects;
 
 public class LunchmateStateItem {

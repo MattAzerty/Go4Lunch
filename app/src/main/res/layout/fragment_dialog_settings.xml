@@ -45,8 +45,9 @@
         android:id="@+id/drawer_header_pfp"
         android:layout_width="73dp"
         android:layout_height="75dp"
+        android:layout_below="@id/heading"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="4dp"
         android:elevation="4dp"
         android:src="@drawable/shape_circle_profile_header"/>
 

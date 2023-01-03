@@ -4,35 +4,29 @@ import static android.content.ContentValues.TAG;
 
 import static fr.melanoxy.go4lunch.BuildConfig.MAPS_API_KEY;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -40,7 +34,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +47,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.common.util.concurrent.ListenableFuture;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -63,10 +55,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.databinding.ActivityMainBinding;
 import fr.melanoxy.go4lunch.ui.ChatActivity.ChatActivity;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsActivity;
@@ -125,14 +116,11 @@ public class MainActivity extends AppCompatActivity {
 
     //Loading bar when fetching API places information
     private void setupProgressBar() {
-        mMainActivityViewModel.getProgressBarStateLiveData().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean state) {
-                if (mDestination != R.id.nav_menu_item_workmates) {//ProgressBar only for REST API use
-                    mMainActivityBinding.activityMainProgressbar.setVisibility(state ? View.VISIBLE : View.GONE);
-                } else {
-                    mMainActivityBinding.activityMainProgressbar.setVisibility(View.GONE);
-                }
+        mMainActivityViewModel.getProgressBarStateLiveData().observe(this, state -> {
+            if (mDestination != R.id.nav_menu_item_workmates) {//ProgressBar only for REST API use
+                mMainActivityBinding.activityMainProgressbar.setVisibility(state ? View.VISIBLE : View.GONE);
+            } else {
+                mMainActivityBinding.activityMainProgressbar.setVisibility(View.GONE);
             }
         });
     }
@@ -378,6 +366,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //ITEMS MENU OF DRAWER
+    @SuppressLint("NonConstantResourceId")
     public void selectDrawerItem(MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
@@ -449,14 +438,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ---------------- BOTTOM NAV ---------------- //
+    @SuppressLint("NonConstantResourceId")
     private void setupBottomNav() {
 
-        NavController mNavController = Navigation.findNavController(this, R.id.activity_main_nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.activity_main_nav_host_fragment);
+        NavController mNavController = Objects.requireNonNull(navHostFragment).getNavController();
         NavigationUI.setupWithNavController(mMainActivityBinding.activityMainBottomNavigationView, mNavController);
+
         //fab remove when not in mapview
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
         //set title bar according to destination name
-            MainActivity.this.getSupportActionBar().setTitle(destination.getLabel());
+            Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(destination.getLabel());
 
             //Change icon on fab according to gps access permission
             switch (destination.getId()) {

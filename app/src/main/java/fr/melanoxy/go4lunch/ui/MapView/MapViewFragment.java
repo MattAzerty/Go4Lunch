@@ -28,7 +28,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -37,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding;
@@ -51,11 +51,10 @@ public class MapViewFragment extends Fragment implements
         OnMapReadyCallback {
 
     private MapViewViewModel mMapViewViewModel;
-    private FragmentMapViewBinding mFragmentMapViewBinding;
     private Marker myPositionMaker;
     private LatLngBounds mBounds = null;
     private GoogleMap mMap = null;
-    private List<Marker> restaurantsMarker = new ArrayList<>();
+    private final List<Marker> restaurantsMarker = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +66,7 @@ public class MapViewFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 //BINDING --> FragmentWorkmates layout
-        mFragmentMapViewBinding = FragmentMapViewBinding.inflate(getLayoutInflater());
+        fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding mFragmentMapViewBinding = FragmentMapViewBinding.inflate(getLayoutInflater());
         View view = mFragmentMapViewBinding.getRoot();
 
 //GOOGLE MAP INIT
@@ -75,7 +74,7 @@ public class MapViewFragment extends Fragment implements
        SupportMapFragment mMapFragment =
                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
     // Then use getMapAsync() to register for the map callback:
-    mMapFragment.getMapAsync(this);
+    Objects.requireNonNull(mMapFragment).getMapAsync(this);
 
         return view;
     }

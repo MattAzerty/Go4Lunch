@@ -1,9 +1,6 @@
 package fr.melanoxy.go4lunch.ui.ChatActivity;
 
-import java.util.Date;
 import java.util.Objects;
-
-import fr.melanoxy.go4lunch.data.models.User;
 
 public class ChatStateItem {
 

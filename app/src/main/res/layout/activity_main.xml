@@ -33,7 +33,7 @@
                 app:titleTextAppearance="@style/ToolBarStyle"/>
 
             <ImageView
-                android:id="@+id/curve"
+                android:id="@+id/activity_main_curve"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="600dp"
@@ -58,7 +58,7 @@
                 android:indeterminateOnly="true"/>
 
             <!--NavHostFragment (for bottom nav)-->
-            <fragment
+            <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/activity_main_nav_host_fragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
@@ -97,7 +97,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_anchor="@+id/activity_main_body"
                 app:layout_anchorGravity="top|right|end"
-                app:srcCompat="@drawable/ic_gps_fixed_24dp" />
+                app:srcCompat="@drawable/ic_gps_fixed_24dp"
+                android:focusable="true" />
 
 
 
@@ -131,7 +132,7 @@
                 app:headerLayout="@layout/activity_main_drawer_header"
                 app:menu="@menu/drawer_menu"
                 android:fitsSystemWindows="true"
-                android:background="#00FFA04D"
+                android:background="@color/primary"
                 android:elevation="0dp"
                 android:outlineProvider="none"
                 app:itemIconTint="@color/white"

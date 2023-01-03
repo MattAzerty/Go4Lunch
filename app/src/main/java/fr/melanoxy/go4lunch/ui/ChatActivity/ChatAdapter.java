@@ -1,8 +1,5 @@
 package fr.melanoxy.go4lunch.ui.ChatActivity;
 
-import static java.lang.Integer.parseInt;
-
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -11,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 
@@ -38,7 +34,7 @@ public class ChatAdapter extends ListAdapter<ChatStateItem, ChatAdapter.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         //Bind workmates item
-        private ChatItemBinding binding;
+        private final ChatItemBinding binding;
 
         public ViewHolder(@NonNull ChatItemBinding binding) {
             super(binding.getRoot());

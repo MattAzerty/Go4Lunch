@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 public class ListViewFragment extends Fragment {
 
     private FragmentListViewBinding mBinding;
-    private ListViewViewModel mViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,10 +31,9 @@ public class ListViewFragment extends Fragment {
 
         //binding FragmentListViewBinding layout
         mBinding = FragmentListViewBinding.inflate(getLayoutInflater());
-        View view = mBinding.getRoot();
 
         // Inflate the layout for this fragment
-        return view;
+        return mBinding.getRoot();//return view
     }
 
     @Override
@@ -49,7 +46,7 @@ public class ListViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
 //ViewModel used for this fragment
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
+        ListViewViewModel mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
                 .get(ListViewViewModel.class);
 
 //Init RecyclerView

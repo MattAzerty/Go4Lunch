@@ -26,13 +26,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RestaurantRepository {
     private static final String PLACES_SEARCH_SERVICE_BASE_URL = "https://maps.googleapis.com/";
 
-    private RestaurantSearchService restaurantSearchService;//google places API
-    private MutableLiveData<RestaurantsNearbyResponse> restaurantNearbyMutableLiveData= new MutableLiveData<>();
-    private MutableLiveData<String> restaurantRepositoryErrorMutableLiveData= new MutableLiveData<>("noError");
-    private MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Integer> autocompleteSizeResponseMutableLiveData= new MutableLiveData<>();
+    private final RestaurantSearchService restaurantSearchService;//google places API
+    private final MutableLiveData<RestaurantsNearbyResponse> restaurantNearbyMutableLiveData= new MutableLiveData<>();
+    private final MutableLiveData<String> restaurantRepositoryErrorMutableLiveData= new MutableLiveData<>("noError");
+    private final MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Integer> autocompleteSizeResponseMutableLiveData= new MutableLiveData<>();
 
-    private MutableLiveData<List<PlaceIdDetailsResponse>> predictionsDetailsMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<PlaceIdDetailsResponse>> predictionsDetailsMutableLiveData = new MutableLiveData<>();
     private List<PlaceIdDetailsResponse> mListDetails = new ArrayList<>();
 
     //TODO: for unit testing ok?

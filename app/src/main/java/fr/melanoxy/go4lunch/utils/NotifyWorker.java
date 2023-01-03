@@ -47,9 +47,7 @@ public class NotifyWorker extends Worker {
         try {
             mUser = userRepository.getDataUser(getInputData().getString(EXTRA_USER_ID));
             lunchmates = userRepository.getLunchmates(mUser.getRestaurant_for_today_id());
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 

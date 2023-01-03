@@ -32,7 +32,6 @@
 
     <string name="option_retry" translatable="false">RETRY</string>
     <string name="option_exit" translatable="false">EXIT</string>
-    <string name="error_not_connected">You need to login!</string>
     <string name="error_authentication_canceled">Authentication canceled</string>
     <string name="error_no_internet">" No internet connection!"</string>
     <string name="error_gps">gps location not allowed</string>

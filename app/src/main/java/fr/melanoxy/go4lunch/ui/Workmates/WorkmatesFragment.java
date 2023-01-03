@@ -21,7 +21,6 @@ import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding mBinding;
-    private WorkmatesViewModel mViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,10 +33,9 @@ public class WorkmatesFragment extends Fragment {
 
         //binding FragmentWorkmatesBinding layout
         mBinding = FragmentWorkmatesBinding.inflate(getLayoutInflater());
-        View view = mBinding.getRoot();
 
         // Inflate the layout for this fragment
-        return view;
+        return mBinding.getRoot();//return view
     }
 
     @Override
@@ -54,37 +52,33 @@ public class WorkmatesFragment extends Fragment {
 
 
 //ViewModel used for this fragment
-        mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
+        WorkmatesViewModel mViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
                 .get(WorkmatesViewModel.class);
 
 //reset query field if needed
         ((MainActivity)getActivity()).closeSearchView();
 
 //Init RecyclerView
-        WorkmatesAdapter adapter = new WorkmatesAdapter(new OnWorkmateClickedListener() {
-            @Override
-            public void onWorkmateClicked(WorkmatesStateItem item) {
-                if(item.getPlace_id()!=null){
-                RestaurantStateItem rItem = new RestaurantStateItem(
-                        item.getPlace_id(),
-                        item.getPlace_name(),
-                        item.getPlace_address(),
-                        "",
-                        R.string.error_unknown_error,
-                        1,
-                        item.getPlace_pic_url(),
-                        0);
-                startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));
-                }else{((MainActivity)getActivity()).showSnackBar(getString(R.string.workmates_restaurant_not_set));}
-            }
+        WorkmatesAdapter adapter = new WorkmatesAdapter(item -> {
+            if(item.getPlace_id()!=null){
+            RestaurantStateItem rItem = new RestaurantStateItem(
+                    item.getPlace_id(),
+                    item.getPlace_name(),
+                    item.getPlace_address(),
+                    "",
+                    R.string.error_unknown_error,
+                    1,
+                    item.getPlace_pic_url(),
+                    0);
+            startActivity(RestaurantDetailsActivity.navigate(requireContext(), rItem));
+            }else{((MainActivity)getActivity()).showSnackBar(getString(R.string.workmates_restaurant_not_set));}
         },getContext());
 
         mBinding.workmatesRv.setAdapter(adapter);
 
 
 //link ViewStateItem to liveDataViewStateItem
-        mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), workmatesViewStateItems ->
-                adapter.submitList(workmatesViewStateItems)
+        mViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), adapter::submitList
         );
     }
 

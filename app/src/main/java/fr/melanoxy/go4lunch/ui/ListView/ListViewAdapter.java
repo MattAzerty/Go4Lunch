@@ -38,7 +38,7 @@ public class ListViewAdapter extends ListAdapter<RestaurantStateItem, ListViewAd
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         //Bind workmates item
-        private RestaurantItemBinding binding;
+        private final RestaurantItemBinding binding;
 
         public ViewHolder(@NonNull RestaurantItemBinding binding) {
             super(binding.getRoot());

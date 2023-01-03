@@ -1,10 +1,11 @@
 package fr.melanoxy.go4lunch.ui;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import static fr.melanoxy.go4lunch.UnitTestUtils.getOrAwaitValue;
 
@@ -62,33 +63,29 @@ public class MainActivityViewModelTest {
     private Location userLocation;
 
     private MutableLiveData<Location> locationLiveData;
-    private MutableLiveData<User> userLiveData;
-    private RestaurantsNearbyResponse nearbyResponse;
     private MutableLiveData<RestaurantsNearbyResponse> restaurantsNearbyLiveData;
-    private MutableLiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData;
     private MutableLiveData<String> queryLiveData;
-    private MutableLiveData<String> restaurantRepositoryErrorLiveData;
 
     @Before
     public void setUp() throws Exception {
         // Given
         // MutableLiveData used by the mediator to build for the recyclerview the list of StateItem
         locationLiveData = new MutableLiveData<>();//from LocationRepository
-        userLiveData = new MutableLiveData<>();//from UserRepository
+        MutableLiveData<User> userLiveData = new MutableLiveData<>();//from UserRepository
         restaurantsNearbyLiveData = new MutableLiveData<>();//from RestaurantRepository
-        predictionsDetailsLiveData = new MutableLiveData<>();//from RestaurantRepository
+        MutableLiveData<List<PlaceIdDetailsResponse>> predictionsDetailsLiveData = new MutableLiveData<>();//from RestaurantRepository
         queryLiveData = new MutableLiveData<>();//from SearchRepository
-        restaurantRepositoryErrorLiveData = new MutableLiveData<>();//from RestaurantRepository
+        MutableLiveData<String> restaurantRepositoryErrorLiveData = new MutableLiveData<>();//from RestaurantRepository
 
         //mock for userLocation
         userLocation = mock(Location.class);
         given(userLocation.getLatitude()).willReturn(-48.876667);
-        //given(userLocation.getLongitude()).willReturn(-123.393333);
+        given(userLocation.getLongitude()).willReturn(-123.393333);
 
         //NearbyResponse from a json file (from default emulator coordinates)
         Gson gson = new GsonBuilder().create();
         String nearbyJson = ReadJsonAsString.readFileAsString("src/test/java/fr/melanoxy/go4lunch/resources/nearby.json");
-        nearbyResponse = gson.fromJson(nearbyJson, RestaurantsNearbyResponse.class);
+        RestaurantsNearbyResponse nearbyResponse = gson.fromJson(nearbyJson, RestaurantsNearbyResponse.class);
 
         //the livedata value are set here instead of repository
         locationLiveData.setValue(userLocation);
@@ -133,7 +130,7 @@ public class MainActivityViewModelTest {
                 restaurantRepository);
 
         // When
-        viewModel.refresh();//TODO why
+        viewModel.refresh();
         Boolean result = getOrAwaitValue(viewModel.getProgressBarStateLiveData());
 
         assertEquals(false,
@@ -236,7 +233,7 @@ public class MainActivityViewModelTest {
         // When
         viewModel.refresh();
         Boolean result = getOrAwaitValue(viewModel.getProgressBarStateLiveData());
-//StateItems should contain 20 restaurants
+//progressBar state should be on
         assertEquals(true,
                 result);
 
@@ -258,18 +255,18 @@ public class MainActivityViewModelTest {
         // When
         viewModel.refresh();
         Boolean result = getOrAwaitValue(viewModel.getProgressBarStateLiveData());
-//StateItems should contain 20 restaurants
+//progressBar state should be on
         assertEquals(true,
                 result);
 
     }
 
-    /*@Test//TODO here why nearby not null
+    @Test
     public void on_searchNearbyRestaurant_triggered() {
 
         restaurantsNearbyLiveData.setValue(null);
-        Location previousLocation = Mockito.mock(Location.class);
-        when(userLocation.distanceTo(previousLocation)).thenReturn(100.0f);
+        //Location previousLocation = Mockito.mock(Location.class);
+        when(userLocation.distanceTo(any())).thenReturn(600.0f);
         // mock injected in viewModel
         viewModel = new MainActivityViewModel(
                 userRepository,
@@ -282,7 +279,7 @@ public class MainActivityViewModelTest {
         viewModel.searchNearbyRestaurant(userLocation,"2000","restaurant","apikey");
         // Then
         verify(restaurantRepository).searchNearbyRestaurants("-48.876667,-123.393333","2000","restaurant","apikey");
-    }*/
+    }
 
     @Test
     public void verify_on_searchQuery_call() {

@@ -35,11 +35,8 @@ public class ChatRepositoryTest {
 
     @Mock
     private FirebaseHelper firebaseHelper;
-    @Mock
-    private LocationCallback callback;
 
     private ChatRepository chatRepository;
-    private MutableLiveData<List<Message>> messagesLiveData;
 
     @Before
     public void setUp() {
@@ -47,7 +44,7 @@ public class ChatRepositoryTest {
         chatRepository = new ChatRepository();
 
         // Given
-        messagesLiveData = new MutableLiveData<>();
+        MutableLiveData<List<Message>> messagesLiveData = new MutableLiveData<>();
 
         //the livedata value are set
         messagesLiveData.setValue(getDefaultMessages());

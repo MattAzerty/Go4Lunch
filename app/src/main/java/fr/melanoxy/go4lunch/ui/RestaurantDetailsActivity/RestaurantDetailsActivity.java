@@ -6,16 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.app.ActivityCompat;
-import androidx.hilt.work.HiltWorkerFactory;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.Configuration;
-import androidx.work.Constraints;
-import androidx.work.Data;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import android.Manifest;
 import android.content.Context;
@@ -36,13 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
-import dagger.hilt.android.AndroidEntryPoint;
-import dagger.hilt.android.HiltAndroidApp;
 import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.databinding.ActivityRestaurantDetailsBinding;
 import fr.melanoxy.go4lunch.ui.ListView.RestaurantStateItem;
@@ -146,10 +133,7 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
 
     private void bindRecyclerview(RestaurantStateItem item) {
         //Init RecyclerView
-        LunchmatesAdapter adapter = new LunchmatesAdapter(new OnLunchmateClickedListener() {
-            @Override
-            public void onLunchmateClicked(String uid) {
-            }
+        LunchmatesAdapter adapter = new LunchmatesAdapter(uid -> {
         });
 
         mRestaurantDetailsBinding.restaurantDetailsWorkmatesRv.setAdapter(adapter);
@@ -179,14 +163,14 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
                     }
 
             //thumb icon
-            if (user.my_favorite_restaurants.contains(item.getPlace_id())) {
+            if (Objects.requireNonNull(user.my_favorite_restaurants).contains(item.getPlace_id())) {
                 mRestaurantDetailsBinding.restaurantDetailLike
                         .setCompoundDrawablesWithIntrinsicBounds(
-                                null, getDrawable(R.drawable.ic_favorite_primary_24dp), null, null) ;
+                                null, AppCompatResources.getDrawable(this,R.drawable.ic_favorite_primary_24dp), null, null) ;
             } else {
                 mRestaurantDetailsBinding.restaurantDetailLike
                         .setCompoundDrawablesWithIntrinsicBounds(
-                                null, getDrawable(R.drawable.ic_favorite_border_primary_24dp), null, null) ;
+                                null, AppCompatResources.getDrawable(this,R.drawable.ic_favorite_border_primary_24dp), null, null) ;
             }
                 }
         );

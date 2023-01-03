@@ -10,7 +10,6 @@
     <string name="account">Mon compte:</string>
     <string name="nav_map">Ma position:</string>
     <string name="nav_workmates">Mes collègues:</string>
-    <string name="error_not_connected">Vous devez vous connecter !</string>
     <string name="error_authentication_canceled">Authentification annulée</string>
     <string name="error_no_internet">Aucune connexion internet !</string>
     <string name="error_unknown_error">Une erreur inconnue s\'est produite</string>

@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import fr.melanoxy.go4lunch.databinding.ActivityChatBinding;
-import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.LunchmatesAdapter;
-import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.OnLunchmateClickedListener;
 import fr.melanoxy.go4lunch.utils.ViewModelFactory;
 
 public class ChatActivity extends AppCompatActivity {
@@ -19,8 +17,7 @@ public class ChatActivity extends AppCompatActivity {
     private ChatActivityViewModel mChatViewModel;
 
     public static Intent navigate(Context context) {
-        Intent intent = new Intent(context, ChatActivity.class);
-        return intent;
+        return new Intent(context, ChatActivity.class);//return intent
     }
 
     @Override
@@ -42,13 +39,10 @@ public class ChatActivity extends AppCompatActivity {
         //TODO liveData "gone/visible" send button
 
         //LISTENER for Send message button
-        mChatBinding.sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mChatViewModel.onSendMessageClicked(mChatBinding.chatEditText.getText().toString().trim());
-                // Reset text field
-                mChatBinding.chatEditText.setText("");
-            }
+        mChatBinding.sendButton.setOnClickListener(v -> {
+            mChatViewModel.onSendMessageClicked(mChatBinding.chatEditText.getText().toString().trim());
+            // Reset text field
+            mChatBinding.chatEditText.setText("");
         });
 
     }

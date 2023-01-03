@@ -2,8 +2,6 @@ package fr.melanoxy.go4lunch.ui;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static fr.melanoxy.go4lunch.UnitTestUtils.getOrAwaitValue;
 
 import android.location.Location;
@@ -180,19 +178,6 @@ public class MapViewViewModelTest {
         assertEquals(3,
                 result.size());//the list get filled with predictionsResults
     }
-
-/*
-    // For every public method in the ViewModel, we should verify that data passed to the ViewModel
-    // is correctly dispatched to the underlying components (the repository, in this instance)
-    @Test
-    public void verify_get_userLocation() {
-
-        // When
-        viewModel.getUserLocationLiveData();
-        // Then
-        verify(locationRepository).getLocationLiveData();
-        verifyNoMoreInteractions(locationRepository);
-    }*/
 
 
 

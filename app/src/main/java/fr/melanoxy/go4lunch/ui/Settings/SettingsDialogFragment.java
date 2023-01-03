@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.Objects;
+
 import fr.melanoxy.go4lunch.MainActivity;
 import fr.melanoxy.go4lunch.MainActivityViewModel;
 import fr.melanoxy.go4lunch.data.models.User;
@@ -26,7 +28,6 @@ import fr.melanoxy.go4lunch.databinding.FragmentDialogSettingsBinding;
 
 public class SettingsDialogFragment extends DialogFragment {
 
-    private MainActivity mMainActivity;
     private FragmentDialogSettingsBinding mBinding;
     private Uri selectedImageUri=null;
 
@@ -40,7 +41,7 @@ public class SettingsDialogFragment extends DialogFragment {
         View view = mBinding.getRoot();
 
         //DialogFragment on the top
-        getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
+        Objects.requireNonNull(getDialog()).getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         WindowManager.LayoutParams param = getDialog().getWindow().getAttributes();
         param.width = ViewGroup.LayoutParams.MATCH_PARENT;
         param.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE;
@@ -51,46 +52,34 @@ public class SettingsDialogFragment extends DialogFragment {
 
 
         //ViewModel of MainActivity associated here
-        mMainActivity = (MainActivity) getActivity();
+        MainActivity mMainActivity = (MainActivity) getActivity();
         MainActivityViewModel viewModel = new ViewModelProvider(mMainActivity).get(MainActivityViewModel.class);
 
         //Set existing values
-        viewModel.getConnectedUserLiveData().observe(mMainActivity, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
+        viewModel.getConnectedUserLiveData().observe(mMainActivity, user -> {
 
-                mBinding.checkBox.setChecked(user.getNotified());
+            mBinding.checkBox.setChecked(user.getNotified());
 
-                Glide.with(mBinding.drawerHeaderPfp)
-                        .load(user.getUrlPicture())
-                        .apply(RequestOptions.circleCropTransform())
-                        .into(mBinding.drawerHeaderPfp);
+            Glide.with(mBinding.drawerHeaderPfp)
+                    .load(user.getUrlPicture())
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(mBinding.drawerHeaderPfp);
 
-                mBinding.username.setText(user.getUsername());
+            mBinding.username.setText(user.getUsername());
 
-            }
         });
 //CHANGE AVATAR BUTTON
         mBinding.buttonpfp.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        selectPicture();
-                    }
-                });
+                v -> selectPicture());
 //SAVE BUTTON
         mBinding.actionSave.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Close dialog
-                        viewModel.OnSettingsSaved(
-                                mBinding.checkBox.isChecked(),
-                                selectedImageUri,
-                                mBinding.username.getText().toString().trim());
-                        getDialog().dismiss();
-                    }
-
+                v -> {
+                    //Close dialog
+                    viewModel.OnSettingsSaved(
+                            mBinding.checkBox.isChecked(),
+                            selectedImageUri,
+                            mBinding.username.getText().toString().trim());
+                    getDialog().dismiss();
                 });
 
         return view;

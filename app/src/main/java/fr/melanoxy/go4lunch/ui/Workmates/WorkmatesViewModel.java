@@ -14,9 +14,6 @@ import java.util.Locale;
 
 import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.data.models.User;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.NearbyResult;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
-import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.SearchRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 

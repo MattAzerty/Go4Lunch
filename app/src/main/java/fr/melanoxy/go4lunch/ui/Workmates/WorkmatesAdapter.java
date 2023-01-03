@@ -44,7 +44,7 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         //Bind workmates item
-        private WorkmateItemBinding binding;
+        private final WorkmateItemBinding binding;
 
         public ViewHolder(@NonNull WorkmateItemBinding binding) {
             super(binding.getRoot());
@@ -68,7 +68,7 @@ public class WorkmatesAdapter extends ListAdapter<WorkmatesStateItem, WorkmatesA
     private static class ListWorkmatesItemCallback extends DiffUtil.ItemCallback<WorkmatesStateItem> {
         @Override
         public boolean areItemsTheSame(@NonNull WorkmatesStateItem oldItem, @NonNull WorkmatesStateItem newItem) {
-            return oldItem.getUid() == newItem.getUid();
+            return Objects.equals(oldItem.getUid(), newItem.getUid());
         }
 
         @Override

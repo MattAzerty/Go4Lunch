@@ -12,14 +12,11 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
@@ -49,75 +46,76 @@ public class UserRepository {
 
     public UserRepository() {
     }
-//Current user logged
-    public FirebaseUser getCurrentUser(){
-                return FirebaseHelper.getInstance().getCurrentUser();
+
+    //Current user logged
+    public FirebaseUser getCurrentUser() {
+        return FirebaseHelper.getInstance().getCurrentUser();
     }
 
     @Nullable
-    public User getUser(){
+    public User getUser() {
         return mUser;
     }
 
-//SignOut
-    public Task<Void> signOut(Context context){
+    //SignOut
+    public Task<Void> signOut(Context context) {
         return AuthUI.getInstance().signOut(context);
     }
 
 
 // Create User in Firestore
 
-public void createUser() {
-    //Current user logged
-    FirebaseUser user = getCurrentUser();
+    public void createUser() {
+        //Current user logged
+        FirebaseUser user = getCurrentUser();
 
-    FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(getCurrentUser().getUid())
-            .get()
-            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot userDocument = task.getResult();
-                        if (userDocument.exists()) {
-                            mUser = userDocument.toObject(User.class);
-                            connectedUserMutableLiveData.setValue(mUser);
-                        } else {//if no document in firestore we create it
-                            String urlPicture;
-                            if (user.getPhotoUrl() != null)
-                                urlPicture = user.getPhotoUrl().toString();
-                            else urlPicture = UserRepository.this.generateAvatarUrl();
-                            String username = user.getDisplayName();
-                            String uid = user.getUid();
-                            String email = user.getEmail();
-                            String place_id = null;
-                            String place_name = null;
-                            String place_address = null;
-                            String place_pic_url = null;
-                            List<String> my_favorite_restaurants = new ArrayList<>();
-                            // Create the User object
-                            mUser = new User(
-                                    uid,
-                                    username,
-                                    urlPicture,
-                                    email,
-                                    place_id,
-                                    place_name,
-                                    place_address,
-                                    place_pic_url,
-                                    my_favorite_restaurants,
-                                    true);//Notification true by default
-                            // Store User to Firestore
-                            FirebaseHelper.getInstance().storeUserOnFirestore(mUser);
-                            connectedUserMutableLiveData.setValue(mUser);
+        FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(getCurrentUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot userDocument = task.getResult();
+                            if (userDocument.exists()) {
+                                mUser = userDocument.toObject(User.class);
+                                connectedUserMutableLiveData.setValue(mUser);
+                            } else {//if no document in firestore we create it
+                                String urlPicture;
+                                if (user.getPhotoUrl() != null)
+                                    urlPicture = user.getPhotoUrl().toString();
+                                else urlPicture = UserRepository.this.generateAvatarUrl();
+                                String username = user.getDisplayName();
+                                String uid = user.getUid();
+                                String email = user.getEmail();
+                                String place_id = null;
+                                String place_name = null;
+                                String place_address = null;
+                                String place_pic_url = null;
+                                List<String> my_favorite_restaurants = new ArrayList<>();
+                                // Create the User object
+                                mUser = new User(
+                                        uid,
+                                        username,
+                                        urlPicture,
+                                        email,
+                                        place_id,
+                                        place_name,
+                                        place_address,
+                                        place_pic_url,
+                                        my_favorite_restaurants,
+                                        true);//Notification true by default
+                                // Store User to Firestore
+                                FirebaseHelper.getInstance().storeUserOnFirestore(mUser);
+                                connectedUserMutableLiveData.setValue(mUser);
+                            }
+                        } else {
+                            connectedUserMutableLiveData.setValue(null);//In case of Error
                         }
-                    } else {
-                        connectedUserMutableLiveData.setValue(null);//In case of Error
                     }
-                }
-            });
-}
+                });
+    }
 
-//Update lunch for today information on user document
+    //Update lunch for today information on user document
     public void updateTodayRestaurantUser(
             String restaurant_for_today_id,
             String restaurant_for_today_name,
@@ -128,7 +126,7 @@ public void createUser() {
         FirebaseUser user = getCurrentUser();
 
         //Case when this exact restaurant was already stored in Firestore, this mean we remove the bookmark
-        if (Objects.equals(restaurant_for_today_id, mUser.restaurant_for_today_id)){
+        if (Objects.equals(restaurant_for_today_id, mUser.restaurant_for_today_id)) {
             restaurant_for_today_id = null;
             restaurant_for_today_name = null;
             restaurant_for_today_address = null;
@@ -144,9 +142,9 @@ public void createUser() {
         FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(user.getUid())
                 .update(
                         "restaurant_for_today_id", restaurant_for_today_id,
-                        "restaurant_for_today_name",restaurant_for_today_name,
-                        "restaurant_for_today_address",restaurant_for_today_address,
-                        "restaurant_for_today_pic_url",restaurant_for_today_pic_url
+                        "restaurant_for_today_name", restaurant_for_today_name,
+                        "restaurant_for_today_address", restaurant_for_today_address,
+                        "restaurant_for_today_pic_url", restaurant_for_today_pic_url
                 )
                 .addOnSuccessListener(aVoid -> {
                     //report those modifications to connectedUserLiveData
@@ -167,21 +165,18 @@ public void createUser() {
 
         List<String> updatedList = mUser.my_favorite_restaurants;
 
-        if(mUser.my_favorite_restaurants.contains(place_id)){
+        if (mUser.my_favorite_restaurants.contains(place_id)) {
             // Atomically remove a region from the "regions" array field.
             userRef.update(FIELD_NAME_FAV_RESTAURANTS, FieldValue.arrayRemove(place_id));
 
             updatedList.remove(place_id);
-            mUser.setMy_favorite_restaurants(updatedList);
-            connectedUserMutableLiveData.setValue(mUser);
-        }else{
+        } else {
             // Atomically add a new region to the "regions" array field.
             userRef.update(FIELD_NAME_FAV_RESTAURANTS, FieldValue.arrayUnion(place_id));
-
             updatedList.add(place_id);
-            mUser.setMy_favorite_restaurants(updatedList);
-            connectedUserMutableLiveData.setValue(mUser);
-}
+        }
+        mUser.setMy_favorite_restaurants(updatedList);
+        connectedUserMutableLiveData.setValue(mUser);
     }
 
     // Check if user is logged on Firebase
@@ -191,10 +186,9 @@ public void createUser() {
         FirebaseUser user = getCurrentUser();
 
         if (user != null) {
-           userLogged = true;
-           addConnectedUserToLiveData(user.getUid());
-        }
-        else {
+            userLogged = true;
+            addConnectedUserToLiveData(user.getUid());
+        } else {
             userLogged = false;
         }
         return userLogged;
@@ -205,16 +199,17 @@ public void createUser() {
         FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(uid)
                 .get()
                 .addOnCompleteListener(userTask -> {
-            if (userTask.isSuccessful()) {
-                DocumentSnapshot document = userTask.getResult();
-                if(document.exists()) {
-                    mUser = document.toObject(User.class);
-                    connectedUserMutableLiveData.setValue(mUser);
-                }
-            } else {
-                //logErrorMessage(userTask.getException().getMessage());TODO handle error signout
-            }
-        });}
+                    if (userTask.isSuccessful()) {
+                        DocumentSnapshot document = userTask.getResult();
+                        if (document.exists()) {
+                            mUser = document.toObject(User.class);
+                            connectedUserMutableLiveData.setValue(mUser);
+                        }
+                    } else {
+                        //logErrorMessage(userTask.getException().getMessage());TODO handle error signout
+                    }
+                });
+    }
 
     public LiveData<User> getConnectedUserLiveData() {
         return connectedUserMutableLiveData;
@@ -239,14 +234,15 @@ public void createUser() {
                         .get());
 
         for (DocumentSnapshot document : documents.getDocuments()) {
-            lunchmates.add((document.toObject(User.class)).getUsername());}
+            lunchmates.add((document.toObject(User.class)).getUsername());
+        }
 
         return lunchmates;//return a list of lunchmates name(s)
     }
-                                                        //---------------------------------------------
+    //---------------------------------------------
 
 
-//return list of User "luchmates" eating at "place_id"
+    //return list of User "luchmates" eating at "place_id"
     public MutableLiveData<List<User>> getLunchmatesLiveData(String place_id) {
 
         Query query = FirebaseHelper.getInstance().getWorkmateCollection()
@@ -262,7 +258,7 @@ public void createUser() {
                 }
                 ArrayList<User> lunchmates = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : value) {
-                        lunchmates.add(doc.toObject(User.class));
+                    lunchmates.add(doc.toObject(User.class));
                 }
                 lunchmatesMutableLiveData.postValue(lunchmates);
             }
@@ -277,7 +273,7 @@ public void createUser() {
         lunchmatesMutableLiveData.setValue(new ArrayList<>());
     }
 
-//return list of User "workmates" stored on Firestore
+    //return list of User "workmates" stored on Firestore
     public MutableLiveData<List<User>> getWorkmates() {
 
         FirebaseHelper.getInstance().getWorkmateCollection()
@@ -303,8 +299,8 @@ public void createUser() {
         return "https://i.pravatar.cc/200?u=" + System.currentTimeMillis();
     }
 
-//Upload an image (pfp) on FireStorage
-    public UploadTask uploadImage(Uri imageUri){
+    //Upload an image (pfp) on FireStorage
+    public UploadTask uploadImage(Uri imageUri) {
         String uuid = UUID.randomUUID().toString(); // GENERATE UNIQUE STRING
         StorageReference mImageRef = FirebaseStorage.getInstance().getReference("MyGo4LunchAvatar/" + uuid);
         return mImageRef.putFile(imageUri);
@@ -317,8 +313,8 @@ public void createUser() {
         userRef
                 .update(
                         "notified", notified,
-                        "urlPicture",urlPicture,
-                        "username",username
+                        "urlPicture", urlPicture,
+                        "username", username
 
                 )
                 .addOnSuccessListener(aVoid -> {

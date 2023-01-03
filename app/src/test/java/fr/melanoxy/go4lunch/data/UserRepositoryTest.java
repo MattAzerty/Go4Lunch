@@ -1,6 +1,5 @@
 package fr.melanoxy.go4lunch.data;
 
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,7 +7,6 @@ import static org.mockito.Mockito.when;
 import android.net.Uri;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,20 +23,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
-import fr.melanoxy.go4lunch.data.models.Message;
-import fr.melanoxy.go4lunch.data.models.User;
-import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserRepositoryTest {
@@ -54,7 +43,6 @@ public class UserRepositoryTest {
     private DocumentReference userDocumentReference;
 
     private UserRepository userRepository;
-    private final String userUid="USER_UID";
 
     @Before
     public void setUp() {
@@ -65,6 +53,7 @@ public class UserRepositoryTest {
 
         // Mock FirebaseUser
         FirebaseUser firebaseUser = mock(FirebaseUser.class);
+        String userUid = "USER_UID";
         when(firebaseUser.getUid()).thenReturn(userUid);
         when(firebaseUser.getDisplayName()).thenReturn("fake-name");
         when(firebaseUser.getEmail()).thenReturn("fake@email.com");

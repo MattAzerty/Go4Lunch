@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
@@ -18,15 +19,14 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.lang.reflect.Field;
-
-import fr.melanoxy.go4lunch.BuildConfig;
 import fr.melanoxy.go4lunch.LiveDataTestUtils;
 import fr.melanoxy.go4lunch.ReadJsonAsString;
 import fr.melanoxy.go4lunch.data.models.places_api_web.nearby_search.RestaurantsNearbyResponse;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_autocomplete.PlaceAutocompleteResponse;
+import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.DetailsResult;
 import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDetailsResponse;
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import retrofit2.Call;
@@ -43,45 +43,50 @@ public class RestaurantRepositoryTest {
     private RestaurantSearchService restaurantSearchService;
 
     private RestaurantRepository restaurantRepository;
+    private PlaceIdDetailsResponse placeIdDetailsResponse;
+    private final String location = "-48.876667,-123.393333";
+    private final String radius = "2000";
+    private final String type = "restaurant";
 
-    private final String location="-48.876667,-123.393333";
-    private final String radius="2000";
-    private final String type="restaurant";
+    private final String placeId = "PLACE_ID";
+    private final String fields1 = "opening_hours,website,formatted_phone_number,rating";//asked from restaurantActivity
 
-    private final String placeId="PLACE_ID";
-    private final String fields1="opening_hours,website,formatted_phone_number,rating";//asked from restaurantActivity
+    private final String input = "MY_INPUT";
 
-    private final String input="MY_INPUT";
-    private final String fields2="opening_hours,place_id,geometry,name,formatted_address,rating,photo";//asked from RestaurantRepository
-    private PlaceAutocompleteResponse predictionsResponse;
-
-    private final String apikey="API_KEY";
+    private final String apikey = "API_KEY";
 
     @Before
     public void setUp() throws Exception {
 
 //mock restaurantSearchService with special constructor
         restaurantSearchService = mock(RestaurantSearchService.class);
-        restaurantRepository = new RestaurantRepository(restaurantSearchService,apikey);
+        restaurantRepository = new RestaurantRepository(restaurantSearchService, apikey);
 //nearby
-        given(restaurantSearchService.searchNearbyRestaurants(location,radius,type,apikey))
+        given(restaurantSearchService.searchNearbyRestaurants(location, radius, type, apikey))
                 .willReturn(mockedNearbyResponseCall);
         given(mockedNearbyApiResponse.body()).willReturn(mockedRestaurantNearbyResponse);
 //placeIdDetails
-        given(restaurantSearchService.searchPlaceIdDetails(placeId,fields1,"fr",apikey))
+        given(restaurantSearchService.searchPlaceIdDetails(placeId, fields1, "fr", apikey))
                 .willReturn(mockedDetailsResponseCall);
-        given(mockedDetailsApiResponse.body()).willReturn(mockedPlaceIdDetailsResponse);
+        //PlaceIdDetailsResponse from a json file (from default emulator coordinates)
+        Gson gson = new GsonBuilder().create();
+        String detailsJson = ReadJsonAsString.readFileAsString("src/test/java/fr/melanoxy/go4lunch/resources/placeiddetails.json");
+        placeIdDetailsResponse = gson.fromJson(detailsJson, PlaceIdDetailsResponse.class);
+
+        given(mockedDetailsApiResponse.body()).willReturn(placeIdDetailsResponse);
+
 //autocomplete
         //from a json file (from default emulator coordinates) and all placeId replaced by "PLACE_ID"
-        Gson gson = new GsonBuilder().create();
         String predictionsJson = ReadJsonAsString.readFileAsString("src/test/java/fr/melanoxy/go4lunch/resources/autocomplete.json");
-        predictionsResponse = gson.fromJson(predictionsJson, PlaceAutocompleteResponse.class);
+        PlaceAutocompleteResponse predictionsResponse = gson.fromJson(predictionsJson, PlaceAutocompleteResponse.class);
 
-        given(restaurantSearchService.searchFromQueryPlaces(input,type,location,radius,apikey))
+        given(restaurantSearchService.searchFromQueryPlaces(input, type, location, radius, apikey))
                 .willReturn(mockedAutocompleteResponseCall);
         given(mockedAutocompleteApiResponse.body()).willReturn(predictionsResponse);
 
-        given(restaurantSearchService.searchPlaceIdDetails(placeId,fields2,"fr",apikey))
+        //asked from RestaurantRepository
+        String fields2 = "opening_hours,place_id,geometry,name,formatted_address,rating,photo";
+        given(restaurantSearchService.searchPlaceIdDetails(placeId, fields2, "fr", apikey))
                 .willReturn(mockedDetailsResponseCall);
 
     }
@@ -90,9 +95,9 @@ public class RestaurantRepositoryTest {
     public void nominal_case_searchNearbyRestaurants() {
         // Given
         // Let's call the repository method
-        restaurantRepository.searchNearbyRestaurants(location,radius,type,apikey);
+        restaurantRepository.searchNearbyRestaurants(location, radius, type, apikey);
         // Capture the callback waiting for data
-        verify(restaurantSearchService.searchNearbyRestaurants(location,radius,type,apikey))
+        verify(restaurantSearchService.searchNearbyRestaurants(location, radius, type, apikey))
                 .enqueue(callbackNearbyResponseArgumentCaptor.capture());
         // When
         // Trigger the response ourselves
@@ -116,9 +121,9 @@ public class RestaurantRepositoryTest {
 
         // Given
         // Let's call the repository method
-        restaurantRepository.searchPlaceIdDetails(placeId,fields1,apikey);
+        restaurantRepository.searchPlaceIdDetails(placeId, fields1, apikey);
         // Capture the callback waiting for data
-        verify(restaurantSearchService.searchPlaceIdDetails(placeId,fields1,"fr",apikey))
+        verify(restaurantSearchService.searchPlaceIdDetails(placeId, fields1, "fr", apikey))
                 .enqueue(callbackPlaceIdResponseArgumentCaptor.capture());
         // When
         // Trigger the response ourselves
@@ -128,7 +133,7 @@ public class RestaurantRepositoryTest {
         // Then
         // Assert the result is posted to the LiveData
         LiveDataTestUtils.observeForTesting(result, liveData -> {
-            assertEquals(mockedPlaceIdDetailsResponse, liveData);
+            assertEquals(placeIdDetailsResponse, liveData);
         });
     }
 
@@ -137,9 +142,9 @@ public class RestaurantRepositoryTest {
 
         // Given
         // Let's call the repository method
-        restaurantRepository.searchFromQueryPlaces(input,type,location,radius,apikey);
+        restaurantRepository.searchFromQueryPlaces(input, type, location, radius, apikey);
         // Capture the callback waiting for data
-        verify(restaurantSearchService.searchFromQueryPlaces(input,type,location,radius,apikey))
+        verify(restaurantSearchService.searchFromQueryPlaces(input, type, location, radius, apikey))
                 .enqueue(callbackAutocompleteResponseArgumentCaptor.capture());
         // When
         // Trigger the response ourselves
@@ -157,7 +162,7 @@ public class RestaurantRepositoryTest {
     public void on_getUrlPicture() {
         String photoRef = "photoRef";
         String result = restaurantRepository.getUrlPicture(photoRef);
-        String expectedResult = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="+ photoRef + "&key=" + apikey;
+        String expectedResult = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + photoRef + "&key=" + apikey;
         assertEquals(expectedResult, result);
     }
 
@@ -188,8 +193,6 @@ public class RestaurantRepositoryTest {
 
     @Mock
     private RestaurantsNearbyResponse mockedRestaurantNearbyResponse;
-    @Mock
-    private PlaceIdDetailsResponse mockedPlaceIdDetailsResponse;
     // endregion OUT
 
 }//END of RestaurantRepositoryTest

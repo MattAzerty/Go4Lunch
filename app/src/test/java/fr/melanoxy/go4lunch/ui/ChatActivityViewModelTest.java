@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.LiveDataTestUtils;
-import fr.melanoxy.go4lunch.R;
 import fr.melanoxy.go4lunch.data.models.Message;
 import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.repositories.ChatRepository;
@@ -39,14 +38,13 @@ public class ChatActivityViewModelTest {
     @Mock
     private ChatRepository chatRepository;
 
-    private MutableLiveData<List<Message>> messagesMutableLiveData;
     private ChatActivityViewModel viewModel;
     private static final String DEFAULT_USERNAME = "DEFAULT_USERNAME";
 
     @Before
     public void setUp() {
         // Reinitialize LiveData every test
-        messagesMutableLiveData = new MutableLiveData<>();
+        MutableLiveData<List<Message>> messagesMutableLiveData = new MutableLiveData<>();
         // Mock LiveData returned from Repository
         given(userRepository.getUser()).willReturn(new User(
                 "uid",

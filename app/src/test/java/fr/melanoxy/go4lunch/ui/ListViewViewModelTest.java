@@ -2,7 +2,6 @@ package fr.melanoxy.go4lunch.ui;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import static fr.melanoxy.go4lunch.UnitTestUtils.getOrAwaitValue;
 
@@ -22,7 +21,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

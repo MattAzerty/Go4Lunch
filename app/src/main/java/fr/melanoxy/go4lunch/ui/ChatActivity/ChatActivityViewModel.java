@@ -9,11 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.melanoxy.go4lunch.data.models.Message;
-import fr.melanoxy.go4lunch.data.models.User;
 import fr.melanoxy.go4lunch.data.repositories.ChatRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
-import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.LunchmateStateItem;
-import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.SingleLiveEvent;
 
 public class ChatActivityViewModel extends ViewModel {
 

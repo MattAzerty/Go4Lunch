@@ -46,10 +46,9 @@ public class RestaurantDetailsViewModelTest {
     private UserRepository userRepository;
 
     private MutableLiveData<PlaceIdDetailsResponse> placeIdDetailsResponseLiveData;
-    private MutableLiveData<List<User>> lunchmatesLiveData;
     PlaceIdDetailsResponse placeIdDetailsResponse;
     private RestaurantDetailsViewModel viewModel;
-    private String PLACE_ID="ChIJc8T8eAO6j4ARR1AWdP3Iyi8";
+    private final String PLACE_ID="ChIJc8T8eAO6j4ARR1AWdP3Iyi8";
 
     @Before
     public void setUp() throws Exception {
@@ -94,7 +93,7 @@ public class RestaurantDetailsViewModelTest {
 
         // Given
         // MutableLiveData for RestaurantRepository Mock
-        lunchmatesLiveData = new MutableLiveData<>();//from UserRepository
+        MutableLiveData<List<User>> lunchmatesLiveData = new MutableLiveData<>();//from UserRepository
         placeIdDetailsResponseLiveData = new MutableLiveData<>();//from RestaurantRepository
 
         //Value for MutableLiveData
