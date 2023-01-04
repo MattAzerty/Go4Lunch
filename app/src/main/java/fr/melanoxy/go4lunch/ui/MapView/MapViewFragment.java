@@ -65,25 +65,25 @@ public class MapViewFragment extends Fragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-//BINDING --> FragmentWorkmates layout
-        fr.melanoxy.go4lunch.databinding.FragmentMapViewBinding mFragmentMapViewBinding = FragmentMapViewBinding.inflate(getLayoutInflater());
-        View view = mFragmentMapViewBinding.getRoot();
+        //BINDING --> FragmentWorkmates layout
+        FragmentMapViewBinding mFragmentMapViewBinding = FragmentMapViewBinding.inflate(getLayoutInflater());
 
-//GOOGLE MAP INIT
-    //Get a handle to the map fragment by calling FragmentManager.findFragmentById().
-       SupportMapFragment mMapFragment =
-               (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-    // Then use getMapAsync() to register for the map callback:
-    Objects.requireNonNull(mMapFragment).getMapAsync(this);
-
-        return view;
+        return mFragmentMapViewBinding.getRoot();//return view
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//VIEW MODEL used for this fragment
+
+        //VIEW MODEL used for this fragment
         mMapViewViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance())
                 .get(MapViewViewModel.class);
+
+        //GOOGLE MAP INIT
+        //Get a handle to the map fragment by calling FragmentManager.findFragmentById().
+        SupportMapFragment mMapFragment =
+                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        // Then use getMapAsync() to register for the map callback:
+        Objects.requireNonNull(mMapFragment).getMapAsync(this);
     }
 
     @Override
@@ -92,44 +92,42 @@ public class MapViewFragment extends Fragment implements
         mMap = googleMap;
         //Adapt google map style to the application
         setSelectedStyle();
+
         //When userLocation is available, the map is centered on userLocation coordinates
         mMapViewViewModel.getUserLocationLiveData().observe(this, userLocation -> {
-
             if (userLocation == null) {
-                mMap.setMapType(MAP_TYPE_NONE);//map is hidden on no location permission provided
+                mMap.setMapType(MAP_TYPE_NONE);//map is hidden if no location permission provided
             } else {
                 mMap.setMapType(MAP_TYPE_NORMAL);//unveil the map
                 LatLng latLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
-                MapViewFragment.this.addMyLocationMarker(mMap,latLng);//Place userCurrentLocation
+                addMyLocationMarker(mMap, latLng);//place on the map the userCurrentLocation
             }
         });
 
         //Observe MarkerInfos for any change
         mMapViewViewModel.getMarkerInfosLiveData().observe(getViewLifecycleOwner(), markerInfos -> {
-
-            if(!markerInfos.isEmpty()) {
-                MapViewFragment.this.addNearbyRestaurants(mMap, markerInfos);
-            }
-        }
+                    if (!markerInfos.isEmpty()) {
+                        addRestaurantsMarker(mMap, markerInfos);//place on the map the restaurant markers
+                    }
+                }
         );
-
-        //TODO observe singleLiveEvent for center camera
     }
 
     private void setSelectedStyle() {
         MapStyleOptions style;
-        style = MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.mapstyle_retro);
+        style = MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.mapstyle_retro);
         mMap.setMapStyle(style);
     }
 
     private void addMyLocationMarker(@NonNull GoogleMap googleMap, LatLng latLng) {
 
-        if (myPositionMaker!=null){
-            myPositionMaker.remove();
+        if (myPositionMaker != null) {
+            myPositionMaker.remove();//To avoid duplicate marker
         }
+
         myPositionMaker = googleMap.addMarker(new MarkerOptions()
                 .position(latLng).icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        .defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 .snippet("(lat:" + latLng.latitude + ", long:" + latLng.longitude + ")")
                 .title(getString(R.string.my_position_marker)));
 
@@ -137,58 +135,67 @@ public class MapViewFragment extends Fragment implements
         if (restaurantsMarker.isEmpty()) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
-}
+    }
 
-    private void addNearbyRestaurants(GoogleMap mMap, List<MarkerInfoStateItem> markerInfoStateItems) {
+    private void addRestaurantsMarker(GoogleMap mMap, List<MarkerInfoStateItem> markerInfoStateItems) {
 
-        if (!restaurantsMarker.isEmpty()){
+        if (!restaurantsMarker.isEmpty()) {//If previous markers exist, we clear the map before adding updated markers
             restaurantsMarker.clear();
             mMap.clear();
-            addMyLocationMarker(mMap,myPositionMaker.getPosition());
+            addMyLocationMarker(mMap, myPositionMaker.getPosition());
         }
-
 
         LatLngBounds.Builder builderBounds = new LatLngBounds.Builder();
 
         for (MarkerInfoStateItem markerInfos : markerInfoStateItems) {
 
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(markerInfos.getLatitude(),markerInfos.getLongitude()))
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(markerInfos.getLatitude(), markerInfos.getLongitude()))
                     .title(markerInfos.getPlaceName())
-                    .snippet(markerInfos.getNumberOfLunchmates()+getResources().getString(R.string.marker_snipet))
+                    .snippet(markerInfos.getNumberOfLunchmates() + getResources().getString(R.string.marker_snipet))
                     .icon(vectorToBitmap(R.drawable.ic_restaurant_menu_white_24dp,
-                            (markerInfos.getNumberOfLunchmates()==0)?getResources().getColor(R.color.secondary):getResources().getColor(R.color.primary)))
+                            (markerInfos.getNumberOfLunchmates() == 0) ? getResources().getColor(R.color.secondary) : getResources().getColor(R.color.primary)))
                     .infoWindowAnchor(0.5f, 0.5f));
 
-        builderBounds.include(marker.getPosition());
+            builderBounds.include(marker.getPosition());
 
-        RestaurantStateItem item = new RestaurantStateItem(
-        markerInfos.getPlaceId(),
-        markerInfos.getPlaceName(),
-        markerInfos.getPlaceAddress().trim(),
-        "2",
-        R.string.error_unknown_error,
-        3,
-        markerInfos.getPlacePreviewPicUrl(),
-        0);
-        marker.setTag(item);
-        restaurantsMarker.add(marker);
+            marker.setTag(transformMarkerInfosToRestaurantItem(markerInfos));
+            restaurantsMarker.add(marker);
+        }
+
+        // Set a listener for marker click.
+        mMap.setOnInfoWindowClickListener(this);
+
+        //Bound camera around all cursors
+        boundsCameraAroundMarkers(builderBounds);
 
     }
-// Set a listener for marker click.
-        mMap.setOnInfoWindowClickListener(this);
-//Bound camera around all cursors
+
+    private void boundsCameraAroundMarkers(LatLngBounds.Builder builderBounds) {
+
         LatLngBounds bounds = builderBounds.build();
-        if(mBounds==null || !mBounds.equals(bounds)){//when bounds are new we animate the camera
-            mBounds=bounds;
+        if (mBounds == null || !mBounds.equals(bounds)) {//when bounds are new we animate the camera
+            mBounds = bounds;
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
 
-        }else{//when it's a "on resume" case we don't
+        } else {//when it's a "on resume" case we don't
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 50));
         }
 
         mMap.setLatLngBoundsForCameraTarget(mBounds);//This set a move camera limit
+    }
 
+    private RestaurantStateItem transformMarkerInfosToRestaurantItem(MarkerInfoStateItem markerInfos) {
+
+        return new RestaurantStateItem(
+                markerInfos.getPlaceId(),
+                markerInfos.getPlaceName(),
+                markerInfos.getPlaceAddress().trim(),
+                "2",
+                R.string.error_unknown_error,
+                3,
+                markerInfos.getPlacePreviewPicUrl(),
+                0);
     }
 
     /**
@@ -212,10 +219,10 @@ public class MapViewFragment extends Fragment implements
         return false;
     }
 
-
     @Override
     public void onInfoWindowClick(Marker marker) {
         RestaurantStateItem item = (RestaurantStateItem) marker.getTag();
         startActivity(RestaurantDetailsActivity.navigate(requireContext(), item));
     }
+
 }//END of MapViewFragment

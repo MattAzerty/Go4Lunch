@@ -127,27 +127,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNotify() {
 
-        //Workmanager for notification
+        //WorkManager for notification
         mWorkManager = WorkManager.getInstance(getApplicationContext());
 
         mMainActivityViewModel.getNotifyStateLiveData().observe(this, user -> {
 
             if (user.getNotified() && user.getRestaurant_for_today_name() != null) {
 
-//Delay in minutes for next lunch/noon time:
-                LocalDateTime now = LocalDateTime.now();
-                LocalDateTime lunchDateTimeForToday = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
-
-                Duration duration = Duration.between(now,//and next lunchtime.
-                        (now.isAfter(lunchDateTimeForToday)) ? LocalDateTime.of(LocalDate.from(now.plusDays(1)), LocalTime.NOON) : lunchDateTimeForToday);
-                long delay = Math.abs(duration.toMinutes());
-
-
+//Send Data (userUid) to NotifyWorker
                 Data data = new Data.Builder()
                         .putString(NotifyWorker.EXTRA_USER_ID, user.getUid())
                         .build();
 
-//need internet
+//need internet as constrain because Firebase call needed
                 Constraints constraints = new Constraints.Builder()
                         .setRequiredNetworkType(NetworkType.CONNECTED)
                         .build();
@@ -157,13 +149,9 @@ public class MainActivity extends AppCompatActivity {
                         new OneTimeWorkRequest.Builder(NotifyWorker.class)
                                 .setInputData(data)//Restaurant for today info
                                 .setConstraints(constraints)//Internet required
-                                .setInitialDelay(delay, TimeUnit.MINUTES)
+                                .setInitialDelay(getDelayFromNowToNoonInMinutes(), TimeUnit.MINUTES)
                                 .addTag(mTagUniqueWork)//tag for canceling a simple work request
                                 .build();
-
-            /*with 'ExistingPeriodicWorkPolicy.KEEP'.
-                It will run the new PeriodicWorkRequest only
-                if there is no pending work labelled with uniqueWorkName*/
 
                 mWorkManager.enqueueUniqueWork(mTagUniqueWork, ExistingWorkPolicy.KEEP, uploadWorkRequest);
 
@@ -172,6 +160,18 @@ public class MainActivity extends AppCompatActivity {
                 mWorkManager.cancelUniqueWork(mTagUniqueWork);
             }
         });
+    }
+
+    private long getDelayFromNowToNoonInMinutes() {
+//Delay in minutes for next lunch/noon time:
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime lunchDateTimeForToday = LocalDateTime.of(LocalDate.now(), LocalTime.NOON);
+
+        Duration duration = Duration.between(now,//and next lunchtime.
+                (now.isAfter(lunchDateTimeForToday)) ? LocalDateTime.of(LocalDate.from(now.plusDays(1)), LocalTime.NOON) : lunchDateTimeForToday);
+        long delay = Math.abs(duration.toMinutes());
+
+        return delay;
     }
 
 
@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
 
         //fab remove when not in mapview
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-        //set title bar according to destination name
+            //set title bar according to destination name
             Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(destination.getLabel());
 
             //Change icon on fab according to gps access permission
