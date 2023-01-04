@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import fr.melanoxy.go4lunch.databinding.ChatItemBinding;
+import fr.melanoxy.go4lunch.utils.WorkmatesUtils;
 
 public class ChatAdapter extends ListAdapter<ChatStateItem, ChatAdapter.ViewHolder> {
 
@@ -44,25 +45,12 @@ public class ChatAdapter extends ListAdapter<ChatStateItem, ChatAdapter.ViewHold
 
         public void bind(ChatStateItem item) {
             binding.chatItemTvUsername.setText(item.getUserName());
-            binding.chatItemTvUsername.setTextColor(convertStringToColor(item.getUserName()));
+            binding.chatItemTvUsername.setTextColor(
+                    WorkmatesUtils.getInstance().convertStringToAssignedRandomColor(item.getUserName()));
             binding.chatItemTvMessage.setText(item.getMessage());
         }
 
-        private Integer convertStringToColor(String username) {
-            // Generates a random color from a given string
 
-                // Create a random number generator
-                Random rng = new Random(username.hashCode());
-
-                // Generate random red, green, and blue values
-                int red = rng.nextInt(256);
-                int green = rng.nextInt(256);
-                int blue = rng.nextInt(256);
-
-                // Return the random color into Integer
-                return android.graphics.Color.rgb(red , green, blue);
-
-        }
     }
 
     private static class ListChatItemCallback extends DiffUtil.ItemCallback<ChatStateItem> {
