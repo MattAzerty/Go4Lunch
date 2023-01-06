@@ -155,13 +155,13 @@ public class UserRepository {
                     connectedUserMutableLiveData.postValue(mUser);
                 })
                 .addOnFailureListener(e -> {
-                    //Log.w(TAG, "Error updating document", e);TODO handle error
+                    //Log.w(TAG, "Error updating document", e);
                 });
     }
 
     public void updateFavList(String place_id) {
 
-        DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(getCurrentUser().getUid());
+        DocumentReference userRef = FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(getCurrentUser().getUid());
 
         List<String> updatedList = mUser.my_favorite_restaurants;
 
@@ -206,7 +206,7 @@ public class UserRepository {
                             connectedUserMutableLiveData.setValue(mUser);
                         }
                     } else {
-                        //logErrorMessage(userTask.getException().getMessage());TODO handle error signout
+                        connectedUserMutableLiveData.setValue(null);
                     }
                 });
     }
@@ -218,7 +218,7 @@ public class UserRepository {
     //--------------------------For notification (sync task!)
 
     public User getDataUser(String uid) throws ExecutionException, InterruptedException {
-        DocumentSnapshot doc = com.google.android.gms.tasks.Tasks.await(FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(uid).get());
+        DocumentSnapshot doc = Tasks.await(FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(uid).get());
         mUser = doc.toObject(User.class);
         return mUser;//return user document
     }
@@ -257,8 +257,10 @@ public class UserRepository {
                     return;
                 }
                 ArrayList<User> lunchmates = new ArrayList<>();
-                for (QueryDocumentSnapshot doc : value) {
-                    lunchmates.add(doc.toObject(User.class));
+                if (value != null) {
+                    for (QueryDocumentSnapshot doc : value) {
+                        lunchmates.add(doc.toObject(User.class));
+                    }
                 }
                 lunchmatesMutableLiveData.postValue(lunchmates);
             }
@@ -283,9 +285,11 @@ public class UserRepository {
                         return;
                     }
                     ArrayList<User> workmates = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : value) {
-                        if (doc.get("username") != null) {
-                            workmates.add(doc.toObject(User.class));
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            if (doc.get("username") != null) {
+                                workmates.add(doc.toObject(User.class));
+                            }
                         }
                     }
                     workmatesMutableLiveData.postValue(workmates);
@@ -309,8 +313,7 @@ public class UserRepository {
     // Update user settings
     public void updateUserSettings(Boolean notified, String urlPicture, String username) {
 
-        DocumentReference userRef = FirebaseHelper.getInstance().getWorkmateCollection().document(getCurrentUser().getUid());
-        userRef
+        FirebaseHelper.getInstance().getUserDocumentReferenceOnFirestore(getCurrentUser().getUid())
                 .update(
                         "notified", notified,
                         "urlPicture", urlPicture,

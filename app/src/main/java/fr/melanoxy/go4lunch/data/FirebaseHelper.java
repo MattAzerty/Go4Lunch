@@ -17,7 +17,6 @@ import fr.melanoxy.go4lunch.data.models.User;
 
 public class FirebaseHelper {
     private static FirebaseHelper sFirebaseHelper;
-    private User mUser;
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private static final String MESSAGE_COLLECTION = "messages";
     private static final String CHAT_COLLECTION = "chats";//if later individual chats needed
@@ -67,9 +66,11 @@ public class FirebaseHelper {
                         return;
                     }
                     ArrayList<Message> messages = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : value) {
-                        if (doc.get("message") != null) {
-                            messages.add(doc.toObject(Message.class));
+                    if (value != null) {
+                        for (QueryDocumentSnapshot doc : value) {
+                            if (doc.get("message") != null) {
+                                messages.add(doc.toObject(Message.class));
+                            }
                         }
                     }
                     messagesMutableLiveData.postValue(messages);
