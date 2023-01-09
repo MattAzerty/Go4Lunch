@@ -267,58 +267,61 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        mOptionsMenu = menu;
-        // Inflate the menu items for use in the action bar
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.top_app_bar, menu);
 
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setQueryHint(getString(R.string.search_hint));//SearchView hint
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-        //Listener for searchfield
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                callSearch(query);
-                searchView.clearFocus();//remove keyboard
-                return true;
+            mOptionsMenu = menu;
+            // Inflate the menu items for use in the action bar
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.top_app_bar, menu);
+
+            // Associate searchable configuration with the SearchView
+            SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView =
+                    (SearchView) menu.findItem(R.id.action_search).getActionView();
+            searchView.setQueryHint(getString(R.string.search_hint));//SearchView hint
+            searchView.setSearchableInfo(
+                    searchManager.getSearchableInfo(getComponentName()));
+            //searchView.setQuery("test",false);TODO searchView Bug
+
+            //Listener for searchfield
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    callSearch(query);
+                    searchView.clearFocus();//remove keyboard
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return true;
+                }
+
+                public void callSearch(String query) {
+                    //Do searching
+                    mMainActivityViewModel.onSearchQueryCall(query);
+                }
+            });
+
+            searchView.setOnCloseListener(() -> {
+                mMainActivityViewModel.onSearchQueryCall(null);
+                return false;
+            });
+
+            // To show icons in the actionbar's overflow menu:
+            //if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (NoSuchMethodException e) {
+                    Log.e(TAG, "onMenuOpened", e);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return true;
-            }
-
-            public void callSearch(String query) {
-                //Do searching
-                mMainActivityViewModel.onSearchQueryCall(query);
-            }
-        });
-
-        searchView.setOnCloseListener(() -> {
-            mMainActivityViewModel.onSearchQueryCall(null);
-            return false;
-        });
-
-        // To show icons in the actionbar's overflow menu:
-        //if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
-        if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-            try {
-                Method m = menu.getClass().getDeclaredMethod(
-                        "setOptionalIconsVisible", Boolean.TYPE);
-                m.setAccessible(true);
-                m.invoke(menu, true);
-            } catch (NoSuchMethodException e) {
-                Log.e(TAG, "onMenuOpened", e);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
         return super.onCreateOptionsMenu(menu);
     }
 

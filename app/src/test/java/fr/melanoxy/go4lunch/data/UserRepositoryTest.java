@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,14 +18,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.junit.After;
@@ -39,8 +41,9 @@ import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import fr.melanoxy.go4lunch.LiveDataTestUtils;
 import fr.melanoxy.go4lunch.data.models.User;
@@ -231,7 +234,7 @@ public class UserRepositoryTest {
 
         LiveDataTestUtils.observeForTesting(userRepository.getConnectedUserLiveData(), value -> {
             // Then
-            assertEquals(0, value.my_favorite_restaurants.size());//TODO: Why get not working?
+            assertEquals(0, value.my_favorite_restaurants.size());
         });
 
     }
@@ -255,7 +258,7 @@ public class UserRepositoryTest {
 
         LiveDataTestUtils.observeForTesting(userRepository.getConnectedUserLiveData(), value -> {
             // Then
-            assertEquals(2, value.my_favorite_restaurants.size());//TODO: Why get not working?
+            assertEquals(2, value.my_favorite_restaurants.size());
         });
 
     }
@@ -294,24 +297,51 @@ public class UserRepositoryTest {
 
     }
 
-    @Test//TODO not working "Must not be called on the main application thread"
-    public void testGetDataUser_SyncTask() throws ExecutionException, InterruptedException {
+    @Test
+    public void testGetLunchmatesLiveData() {
 
-        DocumentReference documentReference = mock(DocumentReference.class);
-        when(firebaseHelper.getUserDocumentReferenceOnFirestore("USER_UID")).thenReturn(documentReference);
+        String placeId = "PLACE_ID";
 
-        DocumentSnapshot userDocument = mock(DocumentSnapshot.class);
-        when(userDocument.toObject(any())).thenReturn(user);
+        CollectionReference collectionReference = mock(CollectionReference.class);
+        when(firebaseHelper.getWorkmateCollection()).thenReturn(collectionReference);
 
-        when(documentReference.get()).thenReturn(Tasks.forResult(userDocument));
+        Query mockedQuery = mock(Query.class);
+        when(collectionReference.whereEqualTo("restaurant_for_today_id", placeId)).thenReturn(mockedQuery);
+
+        QuerySnapshot mockedQuerySnapshot = mock(QuerySnapshot.class);
+
+        ListenerRegistration mockedRegistration = mock(ListenerRegistration.class);
+        when(mockedQuery.addSnapshotListener(any())).thenAnswer(new Answer<ListenerRegistration>() {
+            @Override
+            public ListenerRegistration answer(InvocationOnMock invocation) throws Throwable {
+                eventListener = invocation.getArgument(0);
+                return mockedRegistration;
+            }
+        });
+        //How to mock forEach behavior with Mockito
+        //https://stackoverflow.com/questions/49406075/how-to-mock-foreach-behavior-with-mockito
+        doCallRealMethod().when(mockedQuerySnapshot).forEach(any(Consumer.class));
+        Iterator mockIterator = mock(Iterator.class);
+        when((mockedQuerySnapshot).iterator()).thenReturn(mockIterator);
+        when(mockIterator.hasNext()).thenReturn(true, false);
+        QueryDocumentSnapshot queryDocumentSnapshot = mock(QueryDocumentSnapshot.class);
+        when(mockIterator.next()).thenReturn(queryDocumentSnapshot);
 
         user.uid = "USER_UID";
-        assertEquals(user, userRepository.getDataUser("USER_UID"));
+        when(queryDocumentSnapshot.toObject(any())).thenReturn(user);
+
+        userRepository.getLunchmatesLiveData(placeId);
+        eventListener.onEvent(mockedQuerySnapshot,null);//the Task is triggered manually
+        LiveDataTestUtils.observeForTesting(userRepository.getLunchmatesLiveData(placeId), value -> {
+            // Then
+            assertEquals(user, value.get(0));
+        });
 
     }
 
-    @Test//TODO error QuerySnapshot cannot be cast to class ListenerRegistration
-    public void testGetLunchmatesLiveData() {
+
+    @Test
+    public void testGetLunchmatesLiveData_withError() {
 
         String placeId = "PLACE_ID";
 
@@ -324,23 +354,22 @@ public class UserRepositoryTest {
         QuerySnapshot mockedQuerySnapshot = mock(QuerySnapshot.class);
         FirebaseFirestoreException mockedException = mock(FirebaseFirestoreException.class);
 
-        //ListenerRegistration mockedRegistration = mock(ListenerRegistration.class);
-        when(mockedQuery.addSnapshotListener(any())).thenAnswer(new Answer<QuerySnapshot>() {
+        ListenerRegistration mockedRegistration = mock(ListenerRegistration.class);
+        when(mockedQuery.addSnapshotListener(any())).thenAnswer(new Answer<ListenerRegistration>() {
             @Override
-            public QuerySnapshot answer(InvocationOnMock invocation) throws Throwable {
+            public ListenerRegistration answer(InvocationOnMock invocation) throws Throwable {
                 eventListener = invocation.getArgument(0);
-                return mockedQuerySnapshot;
+                return mockedRegistration;
             }
         });
 
-        DocumentSnapshot userDocument = mock(DocumentSnapshot.class);
-        user.uid = "USER_UID";
-        when(userDocument.toObject(any())).thenReturn(user);
-
         userRepository.getLunchmatesLiveData(placeId);
         eventListener.onEvent(mockedQuerySnapshot,mockedException);//the Task is triggered manually
+        LiveDataTestUtils.observeForTesting(userRepository.getLunchmatesLiveData(placeId), value -> {
+            // Then
+            assertTrue(value.isEmpty());
+        });
 
-        //assertEquals(user, userRepository.getConnectedUserLiveData().getValue());
     }
 
     @Test
@@ -384,6 +413,18 @@ public class UserRepositoryTest {
 
         verify(mockConnectedUserObserver, times(2)).onChanged(user);
         verifyNoMoreInteractions(mockConnectedUserObserver);
+    }
+
+    @Test
+    public void testOnEndOfDetailsActivity() {
+
+        testGetLunchmatesLiveData();//Add a lunchmate
+        userRepository.onEndOfDetailsActivity();
+        LiveDataTestUtils.observeForTesting(userRepository.getLunchmatesLiveData(placeId), value -> {
+            // Then check list of lunchmates empty
+            assertTrue(value.isEmpty());
+        });
+
     }
 
 

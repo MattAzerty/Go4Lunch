@@ -253,7 +253,7 @@ public class UserRepository {
             public void onEvent(@Nullable QuerySnapshot value,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    lunchmatesMutableLiveData.postValue(new ArrayList<>());//TODO handle error
+                    lunchmatesMutableLiveData.postValue(new ArrayList<>());
                     return;
                 }
                 ArrayList<User> lunchmates = new ArrayList<>();
