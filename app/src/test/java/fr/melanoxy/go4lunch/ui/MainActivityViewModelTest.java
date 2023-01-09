@@ -356,7 +356,7 @@ public class MainActivityViewModelTest {
         // Then
         LiveDataTestUtils.observeForTesting(viewModel.getSnackBarSingleLiveEvent(), value -> {
             // Then
-            assertEquals(Integer.valueOf(R.string.restaurant_selected),// no restaurant selected integer
+            assertEquals(Integer.valueOf(R.string.my_restaurant),// no restaurant selected integer
                     value);
         });
     }

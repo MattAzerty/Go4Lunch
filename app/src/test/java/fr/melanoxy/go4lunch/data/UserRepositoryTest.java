@@ -320,7 +320,7 @@ public class UserRepositoryTest {
         });
         //How to mock forEach behavior with Mockito
         //https://stackoverflow.com/questions/49406075/how-to-mock-foreach-behavior-with-mockito
-        doCallRealMethod().when(mockedQuerySnapshot).forEach(any(Consumer.class));
+       // doCallRealMethod().when(mockedQuerySnapshot).forEach(any(Consumer.class));
         Iterator mockIterator = mock(Iterator.class);
         when((mockedQuerySnapshot).iterator()).thenReturn(mockIterator);
         when(mockIterator.hasNext()).thenReturn(true, false);
@@ -418,7 +418,30 @@ public class UserRepositoryTest {
     @Test
     public void testOnEndOfDetailsActivity() {
 
-        testGetLunchmatesLiveData();//Add a lunchmate
+        String placeId = "PLACE_ID";
+
+        CollectionReference collectionReference = mock(CollectionReference.class);
+        when(firebaseHelper.getWorkmateCollection()).thenReturn(collectionReference);
+
+        Query mockedQuery = mock(Query.class);
+        when(collectionReference.whereEqualTo("restaurant_for_today_id", placeId)).thenReturn(mockedQuery);
+
+        QuerySnapshot mockedQuerySnapshot = mock(QuerySnapshot.class);
+        FirebaseFirestoreException mockedException = mock(FirebaseFirestoreException.class);
+
+        ListenerRegistration mockedRegistration = mock(ListenerRegistration.class);
+        when(mockedQuery.addSnapshotListener(any())).thenAnswer(new Answer<ListenerRegistration>() {
+            @Override
+            public ListenerRegistration answer(InvocationOnMock invocation) throws Throwable {
+                eventListener = invocation.getArgument(0);
+                return mockedRegistration;
+            }
+        });
+
+        userRepository.getLunchmatesLiveData(placeId);
+        eventListener.onEvent(mockedQuerySnapshot,mockedException);//the Task is triggered manually
+
+
         userRepository.onEndOfDetailsActivity();
         LiveDataTestUtils.observeForTesting(userRepository.getLunchmatesLiveData(placeId), value -> {
             // Then check list of lunchmates empty
