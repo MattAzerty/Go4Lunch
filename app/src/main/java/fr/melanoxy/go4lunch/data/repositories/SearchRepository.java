@@ -18,5 +18,7 @@ public class SearchRepository {
         searchFieldMutableLiveData.setValue(query);
     }
 
-
+    public String getQuery() {
+       return searchFieldMutableLiveData.getValue();
+    }
 }

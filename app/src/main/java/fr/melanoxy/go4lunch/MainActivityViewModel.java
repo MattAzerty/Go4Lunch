@@ -184,6 +184,10 @@ public class MainActivityViewModel extends ViewModel {
         return progressBarMediatorLiveData;
     }
 
+    public String getQuery() {
+        return searchRepository.getQuery();
+    }
+
     //Ask repo to check on firebase if the user instance exist
     public Boolean isUserAuthenticated() {
         return userRepository.isUserAuthenticatedInFirebase();

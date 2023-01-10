@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -281,8 +282,12 @@ public class MainActivity extends AppCompatActivity {
             searchView.setQueryHint(getString(R.string.search_hint));//SearchView hint
             searchView.setSearchableInfo(
                     searchManager.getSearchableInfo(getComponentName()));
-            //searchView.setQuery("test",false);TODO searchView Bug
-
+        //handle case where there is already a search ongoing
+            if(mMainActivityViewModel.getQuery()!=null) {
+                searchView.setQuery(mMainActivityViewModel.getQuery(), false);//Set query if not null
+                searchView.setIconified(false);//open SearchView
+                searchView.clearFocus();//remove keyboard
+            }
             //Listener for searchfield
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
@@ -446,13 +451,13 @@ public class MainActivity extends AppCompatActivity {
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_main_nav_host_fragment);
-        NavController mNavController = Objects.requireNonNull(navHostFragment).getNavController();
+        NavController mNavController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(mMainActivityBinding.activityMainBottomNavigationView, mNavController);
 
         //fab remove when not in mapview
         mNavController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             //set title bar according to destination name
-            Objects.requireNonNull(MainActivity.this.getSupportActionBar()).setTitle(destination.getLabel());
+            MainActivity.this.getSupportActionBar().setTitle(destination.getLabel());
 
             //Change icon on fab according to gps access permission
             switch (destination.getId()) {
