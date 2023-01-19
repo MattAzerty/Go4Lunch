@@ -298,6 +298,73 @@ public class UserRepositoryTest {
     }
 
     @Test
+    public void testGetWorkmates() {
+
+        CollectionReference collectionReference = mock(CollectionReference.class);
+        when(firebaseHelper.getWorkmateCollection()).thenReturn(collectionReference);
+
+        QuerySnapshot mockedQuerySnapshot = mock(QuerySnapshot.class);
+
+        ListenerRegistration mockedRegistration = mock(ListenerRegistration.class);
+        when(collectionReference.addSnapshotListener(any())).thenAnswer(new Answer<ListenerRegistration>() {
+            @Override
+            public ListenerRegistration answer(InvocationOnMock invocation) throws Throwable {
+                eventListener = invocation.getArgument(0);
+                return mockedRegistration;
+            }
+        });
+        //How to mock forEach behavior with Mockito
+        //https://stackoverflow.com/questions/49406075/how-to-mock-foreach-behavior-with-mockito
+        // doCallRealMethod().when(mockedQuerySnapshot).forEach(any(Consumer.class));
+        Iterator mockIterator = mock(Iterator.class);
+        when((mockedQuerySnapshot).iterator()).thenReturn(mockIterator);
+        when(mockIterator.hasNext()).thenReturn(true, false);
+        QueryDocumentSnapshot queryDocumentSnapshot = mock(QueryDocumentSnapshot.class);
+        when(mockIterator.next()).thenReturn(queryDocumentSnapshot);
+
+        user.uid = "USER_UID";
+        when(queryDocumentSnapshot.get("username")).thenReturn("username");
+        when(queryDocumentSnapshot.toObject(any())).thenReturn(user);
+
+        userRepository.getWorkmates();
+        eventListener.onEvent(mockedQuerySnapshot,null);//the Task is triggered manually
+        LiveDataTestUtils.observeForTesting(userRepository.getWorkmates(), value -> {
+            // Then
+            assertEquals(user, value.get(0));
+        });
+
+    }
+
+    @Test
+    public void testGetWorkmatesIfError() {
+
+        CollectionReference collectionReference = mock(CollectionReference.class);
+        when(firebaseHelper.getWorkmateCollection()).thenReturn(collectionReference);
+
+        QuerySnapshot mockedQuerySnapshot = mock(QuerySnapshot.class);
+        FirebaseFirestoreException mockedException = mock(FirebaseFirestoreException.class);
+
+        ListenerRegistration mockedRegistration = mock(ListenerRegistration.class);
+        when(collectionReference.addSnapshotListener(any())).thenAnswer(new Answer<ListenerRegistration>() {
+            @Override
+            public ListenerRegistration answer(InvocationOnMock invocation) throws Throwable {
+                eventListener = invocation.getArgument(0);
+                return mockedRegistration;
+            }
+        });
+
+        user.uid = "USER_UID";
+
+        userRepository.getWorkmates();
+        eventListener.onEvent(mockedQuerySnapshot,mockedException);//the Task is triggered manually
+        LiveDataTestUtils.observeForTesting(userRepository.getWorkmates(), value -> {
+            // Then
+            assertTrue(value.isEmpty());
+        });
+
+    }
+
+    @Test
     public void testGetLunchmatesLiveData() {
 
         String placeId = "PLACE_ID";
