@@ -1,5 +1,7 @@
 package fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -22,8 +24,8 @@ public class RestaurantDetailsViewModel extends ViewModel {
     private final UserRepository userRepository;
     @NonNull
     private final RestaurantRepository restaurantRepository;
-    DetailsResult restaurantDetails;
-    private final MediatorLiveData<DetailsResult> restaurantDetailsMediatorLiveData = new MediatorLiveData<>();
+    //DetailsResult restaurantDetails;
+    private final MediatorLiveData<RestaurantDetailsStateItem> restaurantDetailsMediatorLiveData = new MediatorLiveData<>();
 
     public RestaurantDetailsViewModel(
             @NonNull UserRepository userRepository,
@@ -37,15 +39,38 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     private void combine(@Nullable final PlaceIdDetailsResponse placeIdDetailsResponse) {
-        restaurantDetails = placeIdDetailsResponse.getResult();
-        restaurantDetailsMediatorLiveData.setValue(restaurantDetails);
+
+        String openingHours = "";
+        String formattedPhoneNumber="";
+        String website = "";
+
+        if(placeIdDetailsResponse!=null){
+            DetailsResult restaurantDetails = placeIdDetailsResponse.getResult();
+            if(restaurantDetails.getOpeningHours()!=null){
+                openingHours = TextUtils.join("\n",restaurantDetails.getOpeningHours().getWeekdayText());
+            }
+            if(restaurantDetails.getFormattedPhoneNumber()!=null){
+                formattedPhoneNumber=restaurantDetails.getFormattedPhoneNumber();
+            }
+            if(restaurantDetails.getWebsite()!=null){
+                website=restaurantDetails.getWebsite();
+            }
+        }
+
+        RestaurantDetailsStateItem details = new RestaurantDetailsStateItem(
+                openingHours,
+                formattedPhoneNumber,
+                website
+        );
+
+        restaurantDetailsMediatorLiveData.setValue(details);
     }
 
     public void searchPlaceIdDetails(String place_id, String fields, String apiKey) {
         restaurantRepository.searchPlaceIdDetails(place_id, fields, apiKey);
     }
 
-    public LiveData<DetailsResult> getRestaurantDetailsResults() {
+    public LiveData<RestaurantDetailsStateItem> getRestaurantDetailsResults() {
         return restaurantDetailsMediatorLiveData;
     }
 

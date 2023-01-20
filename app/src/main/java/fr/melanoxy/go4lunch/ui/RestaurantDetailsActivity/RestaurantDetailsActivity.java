@@ -178,8 +178,8 @@ public class RestaurantDetailsActivity extends AppCompatActivity {
         //DETAILS INFO (Restaurant details)
         mViewModel.getRestaurantDetailsResults().observe(this, restaurantDetails -> {
             //Opening hours
-            List<String> list = restaurantDetails.getOpeningHours().getWeekdayText();
-            mRestaurantDetailsBinding.restaurantDetailOpeningHours.setText(TextUtils.join("\n",list));
+            //List<String> list = restaurantDetails.getOpeningHours().getWeekdayText();
+            mRestaurantDetailsBinding.restaurantDetailOpeningHours.setText(restaurantDetails.getOpeningHours());
 
             //Rating
             mRestaurantDetailsBinding.restaurantDetailsStar1.setVisibility(item.getPlace_rating()>=1? View.VISIBLE : View.INVISIBLE);

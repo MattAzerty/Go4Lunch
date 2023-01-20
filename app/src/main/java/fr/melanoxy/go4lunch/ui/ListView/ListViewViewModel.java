@@ -134,8 +134,8 @@ public class ListViewViewModel extends ViewModel {
                 result.getName(),
                 result.getFormattedAddress().trim(),
                 distance(userLocation, result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng()),
-                isOpen(result.getOpeningHours().getOpenNow()),
-                3 * result.getRating() / 5,
+                isOpen(result.getOpeningHours()!=null? result.getOpeningHours().getOpenNow():false),
+                result.getRating()!=null? (3 * result.getRating() / 5):0,
                 (result.getPhotos() != null) ?
                         restaurantRepository.getUrlPicture(result.getPhotos().get(0).getPhotoReference()) :
                         "https://upload.wikimedia.org/wikipedia/commons/2/23/Light_green.PNG",

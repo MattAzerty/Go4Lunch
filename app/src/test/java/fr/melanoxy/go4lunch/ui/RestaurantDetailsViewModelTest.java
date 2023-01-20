@@ -32,6 +32,7 @@ import fr.melanoxy.go4lunch.data.models.places_api_web.place_details.PlaceIdDeta
 import fr.melanoxy.go4lunch.data.repositories.RestaurantRepository;
 import fr.melanoxy.go4lunch.data.repositories.UserRepository;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.LunchmateStateItem;
+import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsStateItem;
 import fr.melanoxy.go4lunch.ui.RestaurantDetailsActivity.RestaurantDetailsViewModel;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -81,7 +82,7 @@ public class RestaurantDetailsViewModelTest {
                 restaurantRepository);
 
         // When
-        DetailsResult result = getOrAwaitValue(viewModel.getRestaurantDetailsResults());
+        RestaurantDetailsStateItem result = getOrAwaitValue(viewModel.getRestaurantDetailsResults());
 
         assertEquals("http://michaelsatshoreline.com/",
                 result.getWebsite());
