@@ -10,7 +10,7 @@ This project targets to consolidate the acquired knowledge and concepts and work
 - Firebase (authentication, firestore, storage, functions...)
 - REST APIs (Google Play Services APIs)
 - Retrofit
-- Repository pattern
+- MVVM pattern
 - ViewModel
 - LiveData
 - Permissions
