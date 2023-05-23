@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:elevation="0dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
+
+        <ImageView
+            android:id="@+id/restaurant_item_smallThumbnail"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginEnd="4dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:src="@tools:sample/avatars"/>
+
+    <TextView
+        android:id="@+id/restaurant_item_tv_bookmarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/white"
+        android:background="#80272B2E"
+        android:drawablePadding="2dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        android:text="3"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@+id/restaurant_item_smallThumbnail"
+        app:layout_constraintRight_toRightOf="@+id/restaurant_item_smallThumbnail"
+        app:drawableRightCompat="@drawable/ic_bookmarks_white_24dp" />
+
+        <RelativeLayout
+            android:id="@+id/restaurant_item_rl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="4dp"
+            android:paddingLeft="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/restaurant_item_smallThumbnail"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/restaurant_item_name"
+                android:text="Le Zinc"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:paddingRight="70dp"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/restaurant_item_distance"
+                android:text="120m"
+                android:textSize="20sp"
+                android:textColor="@color/lightWhite"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/restaurant_item_address"
+                android:text="French - 12 rue du Faubourg Poissonnière"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/lightWhite"
+                android:layout_below="@id/restaurant_item_name"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/restaurant_item_openhours"
+                android:text="- OPEN -"
+                android:textColor="@color/lightWhite"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/restaurant_item_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/restaurant_item_star1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_white_24dp"
+                android:layout_alignTop="@+id/restaurant_item_openhours"
+                android:layout_alignParentEnd="true"
+                app:tint="@color/primary" />
+
+            <ImageView
+                android:id="@+id/restaurant_item_star2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_white_24dp"
+                android:layout_alignTop="@+id/restaurant_item_openhours"
+                android:layout_toLeftOf="@id/restaurant_item_star1"
+                app:tint="@color/primary" />
+
+            <ImageView
+                android:id="@+id/restaurant_item_star3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_white_24dp"
+                android:layout_alignTop="@+id/restaurant_item_openhours"
+                android:layout_toLeftOf="@id/restaurant_item_star2"
+                app:tint="@color/primary" />
+
+        </RelativeLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/restaurant_item_divider"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/restaurant_item_smallThumbnail"
+        app:dividerColor="@color/primary"
+        android:layout_height="4dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

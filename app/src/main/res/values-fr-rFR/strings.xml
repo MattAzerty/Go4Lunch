@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="fragment_1">Carte</string>
+    <string name="fragment_2">Restos</string>
+    <string name="fragment_3">Collègues</string>
+    <string name="drawer_item_yourlunch">MON RESTO</string>
+    <string name="drawer_item_settings">PARAMETRES</string>
+    <string name="drawer_item_logout">DECONNEXION</string>
+    <string name="account">Mon compte:</string>
+    <string name="nav_map">Ma position:</string>
+    <string name="nav_workmates">Mes collègues:</string>
+    <string name="error_authentication_canceled">Authentification annulée</string>
+    <string name="error_no_internet">Aucune connexion internet !</string>
+    <string name="error_unknown_error">Une erreur inconnue s\'est produite</string>
+    <string name="connection_succeed">Authentification réussie !</string>
+    <string name="nav_list">Restaurants à proximité:</string>
+    <string name="my_position_marker">"Ma position: "</string>
+    <string name="search_hint">rechercher…</string>
+    <string name="search_title">rechercher</string>
+    <string name="CALL">TELEPHONE</string>
+    <string name="WEBSITE">SITE WEB</string>
+    <string name="LIKE">J\'AIME</string>
+    <string name="opening_hours">- Horaire d\'ouverture -</string>
+    <string name="hr_open">OUVERT</string>
+    <string name="hr_close">FERMÉ</string>
+    <string name="hr_unknown">HORAIRES NON COMMUNIQUÉES</string>
+    <string name="lunchmates_item">" y va !"</string>
+    <string name="workmates_eating_at">Je mange @</string>
+    <string name="workmates_restaurant_not_set">ne sais pas encore</string>
+    <string name="my_restaurant">aucun restaurant enregistré</string>
+    <string name="no_phone_number">aucun téléphone trouvé</string>
+    <string name="no_web_url">aucun site web trouvé</string>
+    <string name="marker_snipet">" personne(s) aujourd'hui"</string>
+    <string name="drawer_item_chat">DISCUSSIONS</string>
+    <string name="settings">PARAMÈTRES:</string>
+    <string name="change_username_here">CHANGER PSEUDO</string>
+    <string name="change_avatar">CHANGER PHOTO</string>
+    <string name="save">SAUVEGARDER</string>
+    <string name="restaurant_selected">aucun restaurant sélectionné</string>
+    <string name="error_gps">localisation non autorisée</string>
+    <string name="button_send_chat_activity">ENVOYER</string>
+    <string name="text_input_hint_chat_activity">Composer votre message</string>
+</resources>

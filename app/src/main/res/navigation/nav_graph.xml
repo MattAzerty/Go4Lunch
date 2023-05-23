@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_menu_item_mapview">
+
+    <fragment
+        android:id="@+id/nav_menu_item_mapview"
+        android:name="fr.melanoxy.go4lunch.ui.MapView.MapViewFragment"
+        android:label="@string/nav_map" />
+    <fragment
+        android:id="@+id/nav_menu_item_listview"
+        android:name="fr.melanoxy.go4lunch.ui.ListView.ListViewFragment"
+        android:label="@string/nav_list" />
+    <fragment
+        android:id="@+id/nav_menu_item_workmates"
+        android:name="fr.melanoxy.go4lunch.ui.Workmates.WorkmatesFragment"
+        android:label="@string/nav_workmates" />
+</navigation>

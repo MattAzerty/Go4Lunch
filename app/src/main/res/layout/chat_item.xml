@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- USERNAME -->
+    <TextView
+        android:id="@+id/chat_item_tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="true"
+        android:textStyle="bold"
+        android:textSize="@dimen/default_text_size"
+        android:padding="@dimen/default_margin"
+        tools:text="MyUsername:" />
+
+    <!-- TEXT MESSAGE -->
+    <TextView
+        android:id="@+id/chat_item_tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textIsSelectable="true"
+        android:textSize="@dimen/default_text_size"
+        tools:text="This is my message" />
+
+</LinearLayout>

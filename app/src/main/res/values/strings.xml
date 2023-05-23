@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">Go4Lunch</string>
+
+    <!-- MAIN ACTIVITY -->
+    <string name="fragment_1">Map View</string>
+    <string name="fragment_2">List View</string>
+    <string name="fragment_3">Workmates</string>
+    <string name="login" translatable="false">LOGIN</string>
+
+    <!-- DRAWER -->
+    <string name="drawer_item_yourlunch">YOUR LUNCH</string>
+    <string name="drawer_item_settings">SETTINGS</string>
+    <string name="drawer_item_chat">TALK</string>
+    <string name="drawer_item_logout">LOGOUT</string>
+    <string name="account">My account:</string>
+    <string name="username" translatable="false">Jean BINOT</string>
+    <string name="mail" translatable="false">jbinot@email.com</string>
+
+    <!-- NAVIGATION CONTROLER LABELS -->
+    <string name="nav_map">My location:</string>
+    <string name="nav_workmates">Available workmates:</string>
+
+    <!-- MAIN ACTIVITY -->
+    <string name="my_position_marker">I\'m here: </string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">3016277252002678</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb3016277252002678</string>
+    <!-- Twitter ID n key -->
+    <string name="twitter_consumer_key" translatable="false">Q3FNUU1NYlF3RlNXNmthVUZHdTg6MTpjaQ</string>
+    <string name="twitter_consumer_secret" translatable="false">7xa1V-e5ih3W_6g0cRGcZHdrE8oZZ3waL-9-4cuaSKtVOYR-BB</string>
+
+    <string name="option_retry" translatable="false">RETRY</string>
+    <string name="option_exit" translatable="false">EXIT</string>
+    <string name="error_authentication_canceled">Authentication canceled</string>
+    <string name="error_no_internet">" No internet connection!"</string>
+    <string name="error_gps">gps location not allowed</string>
+    <string name="error_unknown_error">" An unknown error has occurred"</string>
+    <string name="connection_succeed">Authentication successful!</string>
+    <string name="my_restaurant">no restaurant saved</string>
+    <string name="nav_list">Nearby restaurants:</string>
+    <string name="search_title">search</string>
+    <string name="search_hint">enter query…</string>
+    <string name="CALL">CALL</string>
+    <string name="LIKE">LIKE</string>
+    <string name="WEBSITE">WEBSITE</string>
+    <string name="opening_hours">- Opening hours -</string>
+    <string name="hr_open">OPEN</string>
+    <string name="hr_close">CLOSE</string>
+    <string name="hr_unknown">" HOURS UNKNOWN"</string>
+    <string name="lunchmates_item">" is joining!"</string>
+    <string name="workmates_eating_at">"i'm eating @"</string>
+    <string name="workmates_restaurant_not_set">"hasn't decided yet"</string>
+    <string name="no_phone_number">"no phone number found"</string>
+    <string name="no_web_url">"no website found"</string>
+    <string name="marker_snipet">" people eat here today"</string>
+    <string name="settings">SETTINGS:</string>
+    <string name="notification" translatable="false">Notification ?</string>
+    <string name="save">SAVE</string>
+    <string name="change_username_here">CHANGE USERNAME</string>
+    <string name="change_avatar">CHANGE AVATAR</string>
+    <string name="restaurant_selected">no restaurant selected</string>
+    <string name="text_input_hint_chat_activity">Type your message</string>
+    <string name="button_send_chat_activity">SEND</string>
+</resources>

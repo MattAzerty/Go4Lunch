@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/restaurant_detail_cl_main"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.RestaurantDetailsActivity.RestaurantDetailsActivity">
+
+    <!-- Layout "AppBar" (the collapsing one) -->
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/restaurant_detail_abl"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.NoTitle">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/restaurant_detail_ctl"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@+id/restaurant_detail_toolbar">
+
+            <ImageView
+                android:id="@+id/restaurant_detail_iv_preview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                tools:src="@tools:sample/avatars" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:src="@drawable/text_on_image_background"/>
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/restaurant_detail_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:outlineProvider="none"
+                android:elevation="0dp"
+                app:layout_collapseMode="pin" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Rest of the layout (the not collapsing one) -->
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/restaurant_detail_nsv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/restaurant_detail_cv_info"
+                android:layout_width="0dp"
+                android:elevation="0dp"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/primary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+<!-- This is a ConstraintLayout for the entire CardView including the expandable portion -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/restaurant_detail_cl_main_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/restaurant_detail_tv_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Le Zinc" />
+
+                    <TextView
+                        android:id="@+id/restaurant_detail_tv_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:paddingTop="16dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/restaurant_detail_tv_name"
+                        tools:text="French restaurant - 12 Rue du Faubourg Poissonnières" />
+
+                    <ImageView
+                        android:id="@+id/restaurant_details_star1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_detail_tv_name"
+                        app:layout_constraintTop_toTopOf="@id/restaurant_detail_tv_name"
+                        android:layout_marginLeft="8dp"
+                        android:src="@drawable/ic_star_white_24dp"/>
+
+                    <ImageView
+                        android:id="@+id/restaurant_details_star2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_details_star1"
+                        app:layout_constraintTop_toTopOf="@id/restaurant_details_star1"
+                        android:src="@drawable/ic_star_white_24dp"/>
+
+                    <ImageView
+                        android:id="@+id/restaurant_details_star3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_details_star2"
+                        app:layout_constraintTop_toTopOf="@id/restaurant_details_star2"
+                        android:src="@drawable/ic_star_white_24dp" />
+
+
+
+                    <!-- This is ImageButton for the expansion icon -->
+                    <ImageButton
+                        android:id="@+id/restaurant_detail_arrow_button"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_arrow_drop_down_white_24dp"
+                        android:background="@color/primary"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/restaurant_detail_tv_address"/>
+
+                    <!-- The following is the expandable portion whose visibility is initially set to 'gone' -->
+
+                    <RelativeLayout
+                        android:id="@+id/restaurant_detail_rl_hidden"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@id/restaurant_detail_arrow_button">
+
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            app:dividerColor="@color/white"
+                            android:layout_height="2dp"/>
+
+                        <TextView
+                            android:id="@+id/restaurant_detail_hoursTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="12dp"
+                            android:textColor="@color/white"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:text="@string/opening_hours"/>
+
+                        <TextView
+                            android:id="@+id/restaurant_detail_opening_hours"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="4dp"
+                            android:paddingLeft="16dp"
+                            android:paddingBottom="16dp"
+                            android:layout_marginRight="16dp"
+                            android:layout_below="@id/restaurant_detail_hoursTitle"
+                            android:textSize="16sp"
+                            android:textColor="@color/white"
+                            tools:text="lundi: 10:00 – 01:00\nmardi: 10:00 – 01:00\nmercredi: 10:00 – 01:00\njeudi: 10:00 – 01:00\nvendredi: 10:00 – 01:00\nsamedi: 10:00 – 01:00\ndimanche: 10:00 – 01:00" />
+
+                    </RelativeLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/restaurant_detail_cv_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:layout_constraintTop_toBottomOf="@id/restaurant_detail_cv_info">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/restaurant_detail_cl_buttons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/restaurant_detail_call"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/CALL"
+                        android:layout_marginStart="12dp"
+                        android:elevation="0dp"
+                        android:outlineProvider="none"
+                        android:backgroundTint="@color/white"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:drawableTop="@drawable/ic_call_white_24dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/restaurant_detail_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/LIKE"
+                        android:elevation="0dp"
+                        android:outlineProvider="none"
+                        android:backgroundTint="@color/white"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:drawableTop="@drawable/ic_favorite_border_primary_24dp"
+                        app:layout_constraintStart_toEndOf="@id/restaurant_detail_call"
+                        app:layout_constraintEnd_toStartOf="@id/restaurant_detail_website"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/restaurant_detail_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/WEBSITE"
+                        android:layout_marginEnd="12dp"
+                        android:elevation="0dp"
+                        android:outlineProvider="none"
+                        android:backgroundTint="@color/white"
+                        android:textStyle="bold"
+                        android:textColor="@color/primary"
+                        android:drawableTop="@drawable/ic_web_white_24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/restaurant_detail_cv_buttons"
+                app:layout_constraintEnd_toEndOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/restaurant_details_workmates_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_marginTop="8dp"
+                tools:layout_editor_absoluteX="0dp"
+                tools:listitem="@layout/workmate_restaurant_details_item" />
+
+        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/restaurant_detail_fab_today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:elevation="4dp"
+        app:layout_anchor="@id/restaurant_detail_nsv"
+        app:layout_anchorGravity="top|end"
+        app:backgroundTint="@color/white"
+        app:rippleColor="@color/primary"
+        app:maxImageSize="34dp"
+        app:fabSize="auto"
+        app:tint="@color/primary"
+        android:src="@drawable/ic_bookmark_border_white_24dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

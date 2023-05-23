@@ -1,0 +1,93 @@
+{
+   "html_attributions" : [],
+   "result" : {
+      "formatted_phone_number" : "(650) 962-1014",
+      "opening_hours" : {
+         "open_now" : false,
+         "periods" : [
+            {
+               "close" : {
+                  "day" : 0,
+                  "time" : "1600"
+               },
+               "open" : {
+                  "day" : 0,
+                  "time" : "0800"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 1,
+                  "time" : "1500"
+               },
+               "open" : {
+                  "day" : 1,
+                  "time" : "1000"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 2,
+                  "time" : "1500"
+               },
+               "open" : {
+                  "day" : 2,
+                  "time" : "1000"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 3,
+                  "time" : "1500"
+               },
+               "open" : {
+                  "day" : 3,
+                  "time" : "1000"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 4,
+                  "time" : "1500"
+               },
+               "open" : {
+                  "day" : 4,
+                  "time" : "1000"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 5,
+                  "time" : "1500"
+               },
+               "open" : {
+                  "day" : 5,
+                  "time" : "1000"
+               }
+            },
+            {
+               "close" : {
+                  "day" : 6,
+                  "time" : "1600"
+               },
+               "open" : {
+                  "day" : 6,
+                  "time" : "0800"
+               }
+            }
+         ],
+         "weekday_text" : [
+            "Monday: 10:00 AM – 3:00 PM",
+            "Tuesday: 10:00 AM – 3:00 PM",
+            "Wednesday: 10:00 AM – 3:00 PM",
+            "Thursday: 10:00 AM – 3:00 PM",
+            "Friday: 10:00 AM – 3:00 PM",
+            "Saturday: 8:00 AM – 4:00 PM",
+            "Sunday: 8:00 AM – 4:00 PM"
+         ]
+      },
+      "rating" : 4.1,
+      "website" : "http://michaelsatshoreline.com/"
+   },
+   "status" : "OK"
+}

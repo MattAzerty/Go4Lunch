@@ -1,0 +1,144 @@
+plugins {
+    id 'com.android.application'
+    // Add the Google services Gradle plugin
+    id 'com.google.gms.google-services'
+    //for API n google maps use
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    //hilt
+    id 'com.google.dagger.hilt.android'
+}
+
+apply plugin: 'dagger.hilt.android.plugin'
+android {
+    namespace 'fr.melanoxy.go4lunch'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "fr.melanoxy.go4lunch"
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+        vectorDrawables.useSupportLibrary = true //for API 21 vector issue (before 6.0) need to be combined with scaleType='fitXY'
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+//ENABLE VIEW_BINDING
+    buildFeatures {
+        viewBinding true
+    }
+
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true//resources folder
+        }
+        unitTests.returnDefaultValues = true//to use Location in unit test
+    }
+}
+
+dependencies {
+
+//VERSIONS
+    def nav_version = "2.5.3"
+    def lifecycle_version = "2.5.1"
+    def arch_version = "2.1.0"
+    def work_version = "2.7.1"
+
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'com.google.android.material:material:1.7.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    // Helps mocking objects (Mockito.mock() or Mockito.spy())
+    testImplementation 'org.mockito:mockito-core:4.0.0'
+    testImplementation 'org.mockito:mockito-inline:3.8.0'//mock final classes
+    //powermockito
+    //testImplementation 'org.powermock:powermock-module-junit4:2.0.7'
+    //testImplementation 'org.powermock:powermock-api-mockito2:2.0.7'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+
+//NAVIGATION BOTTOM
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+//FIREBASE
+    // https://firebase.google.com/docs/android/setup#available-libraries
+    // Import the BoM for the Firebase platform
+    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+    implementation 'com.google.firebase:firebase-analytics'
+//FIREBASE UI
+    // FirebaseUI for Firebase Auth
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+    //Facebook
+    implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
+    implementation("com.facebook.android:facebook-login:12.0.0")
+
+//FIRESTORE
+    implementation 'com.google.firebase:firebase-firestore'
+    // FirebaseUI for Cloud Storage
+    implementation 'com.firebaseui:firebase-ui-storage:8.0.2'
+//GLIDE
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+//LIFECYCLE
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    // Helps testing livedata : InstantTaskExecutorRule, for example
+    testImplementation "androidx.arch.core:core-testing:$arch_version"
+
+//GOOGLE PLAY services for Maps SDK
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+
+// GPS-related classes : FusedLocationProviderClient
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+//Retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    //(optional) get HTTP request and response logs for our Android app within Logcat.
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
+//WorkManager
+    // (Java only)
+    implementation "androidx.work:work-runtime:$work_version"
+    //localTime for API 21 mini
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+//hilt
+    implementation "com.google.dagger:hilt-android:2.44"
+        annotationProcessor "com.google.dagger:hilt-compiler:2.44"
+    //work
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+        // When using Java.
+        annotationProcessor 'androidx.hilt:hilt-compiler:1.0.0'
+
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.4'
+}
+

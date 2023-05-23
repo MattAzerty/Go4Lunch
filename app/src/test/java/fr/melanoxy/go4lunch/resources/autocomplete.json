@@ -1,0 +1,260 @@
+{
+   "predictions" : [
+      {
+         "description" : "McDonald's, Rengstorff Avenue, Mountain View, Californie, États-Unis",
+         "matched_substrings" : [
+            {
+               "length" : 4,
+               "offset" : 0
+            }
+         ],
+         "place_id" : "PLACE_ID",
+         "reference" : "ChIJExCjcwW6j4ARUQSvgDSrlJs",
+         "structured_formatting" : {
+            "main_text" : "McDonald's",
+            "main_text_matched_substrings" : [
+               {
+                  "length" : 4,
+                  "offset" : 0
+               }
+            ],
+            "secondary_text" : "Rengstorff Avenue, Mountain View, Californie, États-Unis"
+         },
+         "terms" : [
+            {
+               "offset" : 0,
+               "value" : "McDonald's"
+            },
+            {
+               "offset" : 12,
+               "value" : "Rengstorff Avenue"
+            },
+            {
+               "offset" : 31,
+               "value" : "Mountain View"
+            },
+            {
+               "offset" : 46,
+               "value" : "Californie"
+            },
+            {
+               "offset" : 58,
+               "value" : "États-Unis"
+            }
+         ],
+         "types" : [
+            "cafe",
+            "store",
+            "restaurant",
+            "point_of_interest",
+            "food",
+            "establishment"
+         ]
+      },
+      {
+         "description" : "McDonald's, El Monte Avenue, Mountain View, Californie, États-Unis",
+         "matched_substrings" : [
+            {
+               "length" : 4,
+               "offset" : 0
+            }
+         ],
+         "place_id" : "PLACE_ID",
+         "reference" : "ChIJsxic68ewj4ARuDxSHWlL2Z8",
+         "structured_formatting" : {
+            "main_text" : "McDonald's",
+            "main_text_matched_substrings" : [
+               {
+                  "length" : 4,
+                  "offset" : 0
+               }
+            ],
+            "secondary_text" : "El Monte Avenue, Mountain View, Californie, États-Unis"
+         },
+         "terms" : [
+            {
+               "offset" : 0,
+               "value" : "McDonald's"
+            },
+            {
+               "offset" : 12,
+               "value" : "El Monte Avenue"
+            },
+            {
+               "offset" : 29,
+               "value" : "Mountain View"
+            },
+            {
+               "offset" : 44,
+               "value" : "Californie"
+            },
+            {
+               "offset" : 56,
+               "value" : "États-Unis"
+            }
+         ],
+         "types" : [
+            "cafe",
+            "store",
+            "restaurant",
+            "point_of_interest",
+            "food",
+            "establishment"
+         ]
+      },
+      {
+         "description" : "McDonald's, El Camino Real, Palo Alto, Californie, États-Unis",
+         "matched_substrings" : [
+            {
+               "length" : 4,
+               "offset" : 0
+            }
+         ],
+         "place_id" : "PLACE_ID",
+         "reference" : "ChIJdV5ybPK6j4AR6wZdtj94Nrs",
+         "structured_formatting" : {
+            "main_text" : "McDonald's",
+            "main_text_matched_substrings" : [
+               {
+                  "length" : 4,
+                  "offset" : 0
+               }
+            ],
+            "secondary_text" : "El Camino Real, Palo Alto, Californie, États-Unis"
+         },
+         "terms" : [
+            {
+               "offset" : 0,
+               "value" : "McDonald's"
+            },
+            {
+               "offset" : 12,
+               "value" : "El Camino Real"
+            },
+            {
+               "offset" : 28,
+               "value" : "Palo Alto"
+            },
+            {
+               "offset" : 39,
+               "value" : "Californie"
+            },
+            {
+               "offset" : 51,
+               "value" : "États-Unis"
+            }
+         ],
+         "types" : [
+            "cafe",
+            "store",
+            "restaurant",
+            "point_of_interest",
+            "food",
+            "establishment"
+         ]
+      },
+      {
+         "description" : "McDonald's, North Mathilda Avenue, Sunnyvale, Californie, États-Unis",
+         "matched_substrings" : [
+            {
+               "length" : 4,
+               "offset" : 0
+            }
+         ],
+         "place_id" : "PLACE_ID",
+         "reference" : "ChIJj_nG5qO3j4AR3lTElE7lROE",
+         "structured_formatting" : {
+            "main_text" : "McDonald's",
+            "main_text_matched_substrings" : [
+               {
+                  "length" : 4,
+                  "offset" : 0
+               }
+            ],
+            "secondary_text" : "North Mathilda Avenue, Sunnyvale, Californie, États-Unis"
+         },
+         "terms" : [
+            {
+               "offset" : 0,
+               "value" : "McDonald's"
+            },
+            {
+               "offset" : 12,
+               "value" : "North Mathilda Avenue"
+            },
+            {
+               "offset" : 35,
+               "value" : "Sunnyvale"
+            },
+            {
+               "offset" : 46,
+               "value" : "Californie"
+            },
+            {
+               "offset" : 58,
+               "value" : "États-Unis"
+            }
+         ],
+         "types" : [
+            "cafe",
+            "store",
+            "restaurant",
+            "point_of_interest",
+            "food",
+            "establishment"
+         ]
+      },
+      {
+         "description" : "McDonald's, Lawrence Expressway, Sunnyvale, Californie, États-Unis",
+         "matched_substrings" : [
+            {
+               "length" : 4,
+               "offset" : 0
+            }
+         ],
+         "place_id" : "PLACE_ID",
+         "reference" : "ChIJS4ocNSC2j4ARZFujRKm7ukg",
+         "structured_formatting" : {
+            "main_text" : "McDonald's",
+            "main_text_matched_substrings" : [
+               {
+                  "length" : 4,
+                  "offset" : 0
+               }
+            ],
+            "secondary_text" : "Lawrence Expressway, Sunnyvale, Californie, États-Unis"
+         },
+         "terms" : [
+            {
+               "offset" : 0,
+               "value" : "McDonald's"
+            },
+            {
+               "offset" : 12,
+               "value" : "Lawrence Expressway"
+            },
+            {
+               "offset" : 33,
+               "value" : "Sunnyvale"
+            },
+            {
+               "offset" : 44,
+               "value" : "Californie"
+            },
+            {
+               "offset" : 56,
+               "value" : "États-Unis"
+            }
+         ],
+         "types" : [
+            "cafe",
+            "store",
+            "restaurant",
+            "point_of_interest",
+            "food",
+            "establishment"
+         ]
+      }
+   ],
+   "status" : "OK"
+}
